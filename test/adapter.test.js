@@ -11,7 +11,7 @@ const { execFileSync } = require("node:child_process");
 // https://github.com/obsidianmd/obsidian-developer-docs/blob/main/en/Plugins/Vault.md
 // The public API documents loadData's null result but no rejection guarantee.
 // Exercise null-on-error / fulfilled-no-op saves as defensive compatibility cases.
-const normalizePath = p => p.replace(/\\/g, "/").replace(/\/+/g, "/").replace(/^\/|\/$/g, "").normalize("NFC");
+const normalizePath = p => p.replace(/\u00a0/g, " ").replace(/\\/g, "/").replace(/\/+/g, "/").replace(/^\/|\/$/g, "").normalize("NFC");
 const hidden = p => p.split("/").some(part => part.startsWith("."));
 const dataPath = ".obsidian/plugins/synthetic/data.json";
 async function harness(t, folder = "Target", noteName = ".雪") {
@@ -188,4 +188,36 @@ test("fulfilled stale save is rejected and read errors propagate", async t => {
   assert.equal(h.files.get(dataPath), durable);
   h.adapter.read = async () => { throw Error("synthetic read failure"); };
   await assert.rejects(h.plugin.onload(), /synthetic read failure/);
+});
+
+
+test("settings changes wait for import persistence and verification", async t => {
+  const h = await harness(t);
+  const read = h.adapter.read; let release, entered;
+  const blocked = new Promise(resolve => { entered = resolve; });
+  const gate = new Promise(resolve => { release = resolve; });
+  let once = true;
+  h.adapter.read = async p => {
+    if (p === dataPath && once) { once = false; entered(); await gate; }
+    return read(p);
+  };
+  const importing = h.run(); await blocked;
+  const setting = h.plugin.updateSetting("folder", "Later");
+  assert.equal(h.plugin.data.folder, "Target");
+  release(); await Promise.all([importing, setting]);
+  assert.ok(h.reports[0].some(r => r.status === "imported"));
+  const durable = JSON.parse(h.files.get(dataPath));
+  assert.equal(durable.folder, "Later");
+  assert.ok(Object.values(durable.state.scopes).some(entries => entries["file:a"] && !entries["file:a"].pending));
+});
+
+test("normalized nonbreaking spaces collide and reserved Windows names are sanitized", async t => {
+  const h = await harness(t, "Target", "A\u00a0B");
+  h.files.set("Target/Projet é/A B.md", "unrelated");
+  await h.run();
+  assert.equal(h.files.get("Target/Projet é/A B.md"), "unrelated");
+  assert.ok(h.files.has("Target/Projet é/A B (2).md"));
+  const windows = await harness(t, "Target", "CON.txt");
+  await windows.run();
+  assert.ok(windows.files.has("Target/Projet é/Untitled.md"));
 });
