@@ -1,0 +1,42 @@
+{
+ "app_asar_sha256": "7f73eccbc1fdee8caaa3f0e7c04154bebc3eb75767df901747765051b0044980",
+ "better_sqlite3_linux_x64_prebuild_sha256": "6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d",
+ "electron": {
+  "published_sha256": "04586a0ec46c3283fbdaef85530f561f71f0b5e136ad0cb9ef63683615609780",
+  "release": "https://github.com/electron/electron/releases/download/v44.4.5",
+  "version": "44.4.5",
+  "zip": "electron-v44.4.5-linux-x64.zip"
+ },
+ "installer": {
+  "archived_origin_etag": "\"aa726a47d2df1432c0e1b89ceb903bad-15\"",
+  "archived_origin_last_modified": "Mon, 05 Oct 2026 18:20:52 GMT",
+  "authenticode": {
+   "chain_verified_ignoring_expiry": true,
+   "computed_pe_sha256": "0fdd60ab6876e5d33d7fa84ab2ccb721dbe976c8fa67012fb3a5b9c6000ea7ba",
+   "embedded_pe_sha256": "0fdd60ab6876e5d33d7fa84ab2ccb721dbe976c8fa67012fb3a5b9c6000ea7ba",
+   "signer_issuer": "issuer=C=US, O=Microsoft Corporation, CN=Microsoft ID Verified CS EOC CA 04",
+   "signer_not_after": "notAfter=Oct  6 23:24:02 2026 GMT",
+   "signer_not_before": "notBefore=Oct  3 23:24:02 2026 GMT",
+   "signer_sha256_fingerprint": "sha256 Fingerprint=F2:BC:F5:54:D4:D6:5F:F4:9B:08:33:C7:F0:B6:53:3E:4D:64:26:69:7F:E4:84:59:AC:FB:4E:6B:F8:EC:1F:F3",
+   "signer_subject": "subject=C=US, ST=Virginia, L=Smithfield, O=BYOK LLC, CN=BYOK LLC",
+   "trust_anchor": "https://www.microsoft.com/pkiops/certs/Microsoft%20Identity%20Verification%20Root%20Certificate%20Authority%202020.crt",
+   "trust_anchor_sha256_fingerprint": "sha256 Fingerprint=53:67:F2:0C:7A:DE:0E:2B:CA:79:09:15:05:6D:08:6B:72:0C:33:C1:FA:2A:26:61:AC:F7:87:E3:29:2E:12:70"
+  },
+  "capture_time_utc": "20261007005325",
+  "capture_url": "https://web.archive.org/web/20261007005325id_/https://byok-studio-downloads.s3.amazonaws.com/studio/latest/Studio-win-x64.exe",
+  "original_url_not_contacted": "https://byok-studio-downloads.s3.amazonaws.com/studio/latest/Studio-win-x64.exe",
+  "sha256": "2b8e45ad9978b67b010c9189bf6b77221183f324c5cdfdc614964ea22a9b1939",
+  "size": 121998864,
+  "wayback_index_entry": {
+   "digest": "ZDKKFG6WI6OC76MNKBNOKHH3ZSV6UDJ7",
+   "length": "121994852",
+   "mimetype": "application/vnd.microsoft.portable-executable",
+   "original": "https://byok-studio-downloads.s3.amazonaws.com/studio/latest/Studio-win-x64.exe",
+   "statuscode": "200",
+   "timestamp": "20261007005325",
+   "urlkey": "com,amazonaws,s3,byok-studio-downloads)/studio/latest/studio-win-x64.exe"
+  }
+ },
+ "staged_files_modified": "none; the Windows-only better-sqlite3 build directory is omitted, and Electron's binary is renamed to `studio`, matching the 1.1.3 port",
+ "studio_version": "0.5.2"
+}

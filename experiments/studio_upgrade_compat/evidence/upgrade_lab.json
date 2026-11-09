@@ -1,0 +1,1837 @@
+{
+ "after_upgrade": {
+  "application_id": 0,
+  "auth_token_rows": 0,
+  "files": {
+   "2980b0db-59e5-4c90-aa8c-6966b4df8870": {
+    "created_at": "2026-11-09T18:36:41.160Z",
+    "data": "{\"id\":\"2980b0db-59e5-4c90-aa8c-6966b4df8870\",\"project\":\"b78ab92a-1de0-4f14-932d-3f1b73351969\",\"folder\":null,\"name\":\"Untitled Text\",\"type\":\"text\",\"content\":\"<p class=\\\"editor-paragraph\\\">First synthetic paragraph typed in the older Studio build. Second synthetic sentence typed in the older Studio build.</p>\",\"file\":null,\"createdAt\":\"2026-11-09T18:36:41.160Z\",\"updatedAt\":\"2026-11-09T18:36:54.687Z\",\"contentUpdatedAt\":\"2026-11-09T18:36:54.687Z\",\"isTrashed\":false,\"position\":0,\"gridLayout\":null,\"cardColor\":null,\"tags\":[],\"isFavorited\":false,\"description\":\"\",\"plainSyncWarningAcked\":false,\"autoLinkedDeviceIds\":[]}",
+    "data_sha256": "fe51e1efe768a0c55909dc6c708bdfc730f0bd52ac1f174dcd8093f88246b470",
+    "folder_id": null,
+    "is_trashed": 0,
+    "position": 0,
+    "project_id": "b78ab92a-1de0-4f14-932d-3f1b73351969",
+    "type": "text",
+    "user_id": "local"
+   },
+   "upgrade-extra-keys": {
+    "created_at": "2026-11-09T18:36:41.160Z",
+    "data": "{\"id\":\"upgrade-extra-keys\",\"project\":\"upgrade-bridge-project\",\"folder\":null,\"name\":\"Synthetic Extra Keys Record\",\"type\":\"text\",\"content\":\"<p>Synthetic record with extra JSON keys.</p>\",\"file\":null,\"createdAt\":\"2026-11-09T18:36:41.160Z\",\"updatedAt\":\"2026-11-09T18:36:54.687Z\",\"contentUpdatedAt\":\"2026-11-09T18:36:54.687Z\",\"isTrashed\":false,\"position\":0,\"gridLayout\":null,\"cardColor\":null,\"tags\":[],\"isFavorited\":false,\"description\":\"\",\"plainSyncWarningAcked\":false,\"autoLinkedDeviceIds\":[],\"legacyKeepMe\":{\"nested\":[1,\"two\",null]},\"wordGoal\":500}",
+    "data_sha256": "092d2a5f1ea28a345619f00b5a298e39f169d2cfe6b84ebe199b8d5290a8c4a5",
+    "folder_id": null,
+    "is_trashed": 0,
+    "position": 0,
+    "project_id": "upgrade-bridge-project",
+    "type": "text",
+    "user_id": "local"
+   },
+   "upgrade-folder-file": {
+    "created_at": "2026-11-09T18:36:41.160Z",
+    "data": "{\"id\":\"upgrade-folder-file\",\"project\":\"upgrade-bridge-project\",\"folder\":\"upgrade-folder\",\"name\":\"Synthetic Folder Record\",\"type\":\"text\",\"content\":\"<p>Synthetic paragraph inside a folder.</p>\",\"file\":null,\"createdAt\":\"2026-11-09T18:36:41.160Z\",\"updatedAt\":\"2026-11-09T18:36:54.687Z\",\"contentUpdatedAt\":\"2026-11-09T18:36:54.687Z\",\"isTrashed\":false,\"position\":0,\"gridLayout\":null,\"cardColor\":null,\"tags\":[],\"isFavorited\":false,\"description\":\"\",\"plainSyncWarningAcked\":false,\"autoLinkedDeviceIds\":[]}",
+    "data_sha256": "766984b1ff0b5afbd7487aeec379608a775520acbea184f51c6552d6b90ebea6",
+    "folder_id": "upgrade-folder",
+    "is_trashed": 0,
+    "position": 0,
+    "project_id": "upgrade-bridge-project",
+    "type": "text",
+    "user_id": "local"
+   },
+   "upgrade-in-ui-project": {
+    "created_at": "2026-11-09T18:36:41.160Z",
+    "data": "{\"id\":\"upgrade-in-ui-project\",\"project\":\"b78ab92a-1de0-4f14-932d-3f1b73351969\",\"folder\":null,\"name\":\"Synthetic Record In UI Project\",\"type\":\"text\",\"content\":\"<p>Outbox-free record inside a UI-created project.</p>\",\"file\":null,\"createdAt\":\"2026-11-09T18:36:41.160Z\",\"updatedAt\":\"2026-11-09T18:36:54.687Z\",\"contentUpdatedAt\":\"2026-11-09T18:36:54.687Z\",\"isTrashed\":false,\"position\":0,\"gridLayout\":null,\"cardColor\":null,\"tags\":[],\"isFavorited\":false,\"description\":\"\",\"plainSyncWarningAcked\":false,\"autoLinkedDeviceIds\":[]}",
+    "data_sha256": "bb4603366a5d6909d86a6b1850301ca2c8ae9062b01ed776467591b641ce36be",
+    "folder_id": null,
+    "is_trashed": 0,
+    "position": 0,
+    "project_id": "b78ab92a-1de0-4f14-932d-3f1b73351969",
+    "type": "text",
+    "user_id": "local"
+   },
+   "upgrade-nontext": {
+    "created_at": "2026-11-09T18:36:41.160Z",
+    "data": "{\"id\":\"upgrade-nontext\",\"project\":\"upgrade-bridge-project\",\"folder\":null,\"name\":\"Synthetic Non-text Record\",\"type\":\"grid\",\"content\":\"{\\\"rows\\\":[]}\",\"file\":null,\"createdAt\":\"2026-11-09T18:36:41.160Z\",\"updatedAt\":\"2026-11-09T18:36:54.687Z\",\"contentUpdatedAt\":\"2026-11-09T18:36:54.687Z\",\"isTrashed\":false,\"position\":0,\"gridLayout\":null,\"cardColor\":null,\"tags\":[],\"isFavorited\":false,\"description\":\"\",\"plainSyncWarningAcked\":false,\"autoLinkedDeviceIds\":[]}",
+    "data_sha256": "66fe3c3e9b183fcf5d949685df1c3279de48e8d165f1e879e122edb4cc4c8c47",
+    "folder_id": null,
+    "is_trashed": 0,
+    "position": 0,
+    "project_id": "upgrade-bridge-project",
+    "type": "grid",
+    "user_id": "local"
+   },
+   "upgrade-plain": {
+    "created_at": "2026-11-09T18:36:41.160Z",
+    "data": "{\"id\":\"upgrade-plain\",\"project\":\"upgrade-bridge-project\",\"folder\":null,\"name\":\"Synthetic Plain Record\",\"type\":\"text\",\"content\":\"<p>Plain synthetic paragraph from the older build.</p>\",\"file\":null,\"createdAt\":\"2026-11-09T18:36:41.160Z\",\"updatedAt\":\"2026-11-09T18:36:54.687Z\",\"contentUpdatedAt\":\"2026-11-09T18:36:54.687Z\",\"isTrashed\":false,\"position\":0,\"gridLayout\":null,\"cardColor\":null,\"tags\":[],\"isFavorited\":false,\"description\":\"\",\"plainSyncWarningAcked\":false,\"autoLinkedDeviceIds\":[]}",
+    "data_sha256": "13302e70a711fede1c1432061599e37fd3b37d23f853378d7e509c02dfdabc18",
+    "folder_id": null,
+    "is_trashed": 0,
+    "position": 0,
+    "project_id": "upgrade-bridge-project",
+    "type": "text",
+    "user_id": "local"
+   },
+   "upgrade-rich": {
+    "created_at": "2026-11-09T18:36:41.160Z",
+    "data": "{\"id\":\"upgrade-rich\",\"project\":\"upgrade-bridge-project\",\"folder\":null,\"name\":\"Synthetic Rich Record\",\"type\":\"text\",\"content\":\"<h2>Synthetic heading</h2><p><strong>Bold</strong> synthetic body.</p>\",\"file\":null,\"createdAt\":\"2026-11-09T18:36:41.160Z\",\"updatedAt\":\"2026-11-09T18:36:54.687Z\",\"contentUpdatedAt\":\"2026-11-09T18:36:54.687Z\",\"isTrashed\":false,\"position\":0,\"gridLayout\":null,\"cardColor\":null,\"tags\":[],\"isFavorited\":false,\"description\":\"\",\"plainSyncWarningAcked\":false,\"autoLinkedDeviceIds\":[]}",
+    "data_sha256": "39d3ccde01db4380720ad143106435b8bf7cdc0c9edb713ea21378aac7b51d84",
+    "folder_id": null,
+    "is_trashed": 0,
+    "position": 0,
+    "project_id": "upgrade-bridge-project",
+    "type": "text",
+    "user_id": "local"
+   },
+   "upgrade-studio-html": {
+    "created_at": "2026-11-09T18:36:41.160Z",
+    "data": "{\"id\":\"upgrade-studio-html\",\"project\":\"upgrade-bridge-project\",\"folder\":null,\"name\":\"Synthetic Studio HTML Record\",\"type\":\"text\",\"content\":\"<p class=\\\"editor-paragraph\\\">First synthetic paragraph typed in the older Studio build. Second synthetic sentence typed in the older Studio build.</p>\",\"file\":null,\"createdAt\":\"2026-11-09T18:36:41.160Z\",\"updatedAt\":\"2026-11-09T18:36:54.687Z\",\"contentUpdatedAt\":\"2026-11-09T18:36:54.687Z\",\"isTrashed\":false,\"position\":0,\"gridLayout\":null,\"cardColor\":null,\"tags\":[],\"isFavorited\":false,\"description\":\"\",\"plainSyncWarningAcked\":false,\"autoLinkedDeviceIds\":[]}",
+    "data_sha256": "87967dc450dbf815e141320605137afe7e3bfdbcf1e4e86c9da00d50022bb994",
+    "folder_id": null,
+    "is_trashed": 0,
+    "position": 0,
+    "project_id": "upgrade-bridge-project",
+    "type": "text",
+    "user_id": "local"
+   }
+  },
+  "foreign_key_violations": 0,
+  "integrity": "ok",
+  "local_versions": [
+   [
+    "db1ab93f-b458-4920-8907-cbd160fd0de3",
+    "2980b0db-59e5-4c90-aa8c-6966b4df8870",
+    "manual",
+    "4764d27e49f7be493cc48e53d37dbac4bdb038cb4dd7c3d64a42d89ed81045a0"
+   ]
+  ],
+  "metadata": {
+   "currentUserId": "local",
+   "schema_version": "3",
+   "telemetry.firstVersion": "0.5.2",
+   "telemetry.installId": "b5b3d5dc-4d30-4480-b3cc-9e77bd507384",
+   "telemetry.installedAt": "1794249380651",
+   "telemetry.lastHeartbeatDate": "2026-11-09",
+   "telemetry.lastVersion": "1.1.3",
+   "telemetry.launchCount": "3",
+   "telemetry.noticeSeen": "1"
+  },
+  "outbox": [
+   {
+    "body_sha256": "804d87f60242a6a91b2693f911e5fc9c66428271539dd7d72b0a6c43dfa4ff84",
+    "entity_id": "b78ab92a-1de0-4f14-932d-3f1b73351969",
+    "id": 1,
+    "kind": "project.create",
+    "method": "POST",
+    "status": "pending",
+    "url": "/projects/"
+   },
+   {
+    "body_sha256": "d7b0b1144b5c4e5da3a19db9da04c08ed8a1d080aecc321bd45c053f95f1a29b",
+    "entity_id": "2980b0db-59e5-4c90-aa8c-6966b4df8870",
+    "id": 2,
+    "kind": "file.create",
+    "method": "POST",
+    "status": "pending",
+    "url": "/projects/b78ab92a-1de0-4f14-932d-3f1b73351969/files/"
+   },
+   {
+    "body_sha256": "e9eba7812db2764545152b5cc91396f5fecbce9bb22bfb36a49791d52dae6897",
+    "entity_id": "2980b0db-59e5-4c90-aa8c-6966b4df8870",
+    "id": 3,
+    "kind": "file.update",
+    "method": "PUT",
+    "status": "pending",
+    "url": "/files/2980b0db-59e5-4c90-aa8c-6966b4df8870/"
+   }
+  ],
+  "projects": {
+   "b78ab92a-1de0-4f14-932d-3f1b73351969": "{\"id\":\"b78ab92a-1de0-4f14-932d-3f1b73351969\",\"name\":\"Synthetic Upgrade Project\",\"color\":\"#f0f0f0\",\"titleColor\":\"#4A4A4A\",\"pinned\":false,\"pinnedAt\":null,\"type\":\"book\",\"user\":null,\"createdAt\":\"2026-11-09T18:36:29.097Z\",\"updatedAt\":\"2026-11-09T18:36:29.097Z\",\"backgroundImage\":null,\"overlayOpacity\":\"0.20\",\"borderColor\":\"var(--tile-background)\",\"isTutorial\":false,\"tags\":[]}",
+   "upgrade-bridge-project": "{\"id\":\"upgrade-bridge-project\",\"name\":\"Synthetic Bridge Project\",\"type\":\"book\",\"createdAt\":\"2026-11-09T18:36:41.160Z\",\"updatedAt\":\"2026-11-09T18:36:54.687Z\"}"
+  },
+  "schema": [
+   [
+    "index",
+    "idx_comments_file",
+    "CREATE INDEX idx_comments_file ON comments(file_id)"
+   ],
+   [
+    "index",
+    "idx_files_folder",
+    "CREATE INDEX idx_files_folder ON files(folder_id)"
+   ],
+   [
+    "index",
+    "idx_files_project",
+    "CREATE INDEX idx_files_project ON files(project_id, is_trashed)"
+   ],
+   [
+    "index",
+    "idx_folders_project",
+    "CREATE INDEX idx_folders_project ON folders(project_id, is_trashed)"
+   ],
+   [
+    "index",
+    "idx_local_versions_file",
+    "CREATE INDEX idx_local_versions_file ON local_versions(file_id, created_at)"
+   ],
+   [
+    "index",
+    "idx_manuscripts_project",
+    "CREATE INDEX idx_manuscripts_project ON manuscript_files(project_id, is_trashed)"
+   ],
+   [
+    "index",
+    "idx_outbox_entity",
+    "CREATE INDEX idx_outbox_entity ON outbox(entity_id)"
+   ],
+   [
+    "index",
+    "idx_outbox_status",
+    "CREATE INDEX idx_outbox_status ON outbox(status, id)"
+   ],
+   [
+    "index",
+    "idx_projects_user",
+    "CREATE INDEX idx_projects_user ON projects(user_id)"
+   ],
+   [
+    "index",
+    "idx_scratchpad_project",
+    "CREATE INDEX idx_scratchpad_project ON scratchpad_entries(project_id)"
+   ],
+   [
+    "table",
+    "card_catalog",
+    "CREATE TABLE card_catalog (\n      kind TEXT PRIMARY KEY,\n      json TEXT NOT NULL,\n      fetched_at INTEGER NOT NULL\n    )"
+   ],
+   [
+    "table",
+    "card_installs",
+    "CREATE TABLE card_installs (\n      card_id TEXT NOT NULL,\n      kind TEXT NOT NULL,\n      slug TEXT NOT NULL,\n      version TEXT,\n      installed_at INTEGER NOT NULL,\n      dat_action TEXT,\n      PRIMARY KEY (card_id, kind, slug)\n    )"
+   ],
+   [
+    "table",
+    "comments",
+    "CREATE TABLE comments (\n      id TEXT PRIMARY KEY,\n      user_id TEXT,\n      project_id TEXT,\n      file_id TEXT NOT NULL,\n      created_at TEXT,\n      data TEXT NOT NULL,\n      mirrored_at INTEGER NOT NULL\n    )"
+   ],
+   [
+    "table",
+    "device_cards",
+    "CREATE TABLE device_cards (\n      card_id TEXT PRIMARY KEY,\n      device_id TEXT,\n      registration_code TEXT,\n      firmware_version TEXT,\n      label TEXT,\n      auto_import INTEGER NOT NULL DEFAULT 0,\n      first_seen INTEGER NOT NULL,\n      last_seen INTEGER NOT NULL\n    )"
+   ],
+   [
+    "table",
+    "device_files",
+    "CREATE TABLE device_files (\n      card_id TEXT NOT NULL,\n      file_key TEXT NOT NULL,\n      project_key TEXT NOT NULL,\n      studio_file_id TEXT NOT NULL,\n      studio_project_id TEXT,\n      name TEXT,\n      card_hash TEXT,\n      studio_hash TEXT,\n      imported_at INTEGER NOT NULL,\n      PRIMARY KEY (card_id, file_key)\n    )"
+   ],
+   [
+    "table",
+    "device_projects",
+    "CREATE TABLE device_projects (\n      card_id TEXT NOT NULL,\n      project_key TEXT NOT NULL,\n      studio_project_id TEXT NOT NULL,\n      name TEXT,\n      PRIMARY KEY (card_id, project_key)\n    )"
+   ],
+   [
+    "table",
+    "files",
+    "CREATE TABLE files (\n        id TEXT PRIMARY KEY,\n        user_id TEXT,\n        project_id TEXT NOT NULL,\n        folder_id TEXT,\n        type TEXT,\n        is_trashed INTEGER NOT NULL DEFAULT 0,\n        position INTEGER NOT NULL DEFAULT 0,\n        created_at TEXT,\n        data TEXT NOT NULL,\n        mirrored_at INTEGER NOT NULL\n      )"
+   ],
+   [
+    "table",
+    "folders",
+    "CREATE TABLE folders (\n        id TEXT PRIMARY KEY,\n        user_id TEXT,\n        project_id TEXT NOT NULL,\n        parent_folder_id TEXT,\n        is_trashed INTEGER NOT NULL DEFAULT 0,\n        position INTEGER NOT NULL DEFAULT 0,\n        data TEXT NOT NULL,\n        mirrored_at INTEGER NOT NULL\n      )"
+   ],
+   [
+    "table",
+    "id_map",
+    "CREATE TABLE id_map (\n        temp_id TEXT PRIMARY KEY,\n        server_id TEXT NOT NULL,\n        entity_type TEXT,\n        mapped_at INTEGER NOT NULL\n      )"
+   ],
+   [
+    "table",
+    "local_versions",
+    "CREATE TABLE local_versions (\n      id TEXT PRIMARY KEY,\n      file_id TEXT NOT NULL,\n      content TEXT,\n      extras TEXT,\n      fingerprint TEXT NOT NULL,\n      reason TEXT NOT NULL,\n      file_name TEXT,\n      content_size INTEGER NOT NULL DEFAULT 0,\n      created_at TEXT NOT NULL\n    )"
+   ],
+   [
+    "table",
+    "manuscript_files",
+    "CREATE TABLE manuscript_files (\n        id TEXT PRIMARY KEY,\n        user_id TEXT,\n        project_id TEXT NOT NULL,\n        folder_id TEXT,\n        is_trashed INTEGER NOT NULL DEFAULT 0,\n        position INTEGER NOT NULL DEFAULT 0,\n        data TEXT NOT NULL,\n        mirrored_at INTEGER NOT NULL\n      )"
+   ],
+   [
+    "table",
+    "metadata",
+    "CREATE TABLE metadata (\n      key TEXT PRIMARY KEY,\n      value TEXT\n    )"
+   ],
+   [
+    "table",
+    "outbox",
+    "CREATE TABLE outbox (\n        id INTEGER PRIMARY KEY AUTOINCREMENT,\n        user_id TEXT,\n        kind TEXT NOT NULL,\n        entity_type TEXT,\n        entity_id TEXT,\n        method TEXT NOT NULL,\n        url TEXT NOT NULL,\n        body TEXT,\n        temp_ids TEXT,\n        status TEXT NOT NULL DEFAULT 'pending',\n        attempts INTEGER NOT NULL DEFAULT 0,\n        last_error TEXT,\n        created_at INTEGER NOT NULL,\n        updated_at INTEGER NOT NULL\n      )"
+   ],
+   [
+    "table",
+    "project_tags",
+    "CREATE TABLE project_tags (\n        project_id TEXT PRIMARY KEY,\n        user_id TEXT,\n        data TEXT NOT NULL,\n        mirrored_at INTEGER NOT NULL\n      )"
+   ],
+   [
+    "table",
+    "projects",
+    "CREATE TABLE projects (\n        id TEXT PRIMARY KEY,\n        user_id TEXT,\n        created_at TEXT,\n        data TEXT NOT NULL,\n        mirrored_at INTEGER NOT NULL\n      )"
+   ],
+   [
+    "table",
+    "scratchpad_entries",
+    "CREATE TABLE scratchpad_entries (\n      id TEXT PRIMARY KEY,\n      user_id TEXT,\n      project_id TEXT NOT NULL,\n      is_pinned INTEGER NOT NULL DEFAULT 0,\n      position INTEGER NOT NULL DEFAULT 0,\n      created_at TEXT,\n      data TEXT NOT NULL,\n      mirrored_at INTEGER NOT NULL\n    )"
+   ],
+   [
+    "table",
+    "telemetry_queue",
+    "CREATE TABLE telemetry_queue (\n      id INTEGER PRIMARY KEY AUTOINCREMENT,\n      name TEXT NOT NULL,\n      props TEXT NOT NULL,\n      session_id TEXT,\n      occurred_at INTEGER NOT NULL,\n      attempts INTEGER NOT NULL DEFAULT 0\n    )"
+   ],
+   [
+    "table",
+    "users",
+    "CREATE TABLE users (\n        id TEXT PRIMARY KEY,\n        data TEXT NOT NULL,\n        mirrored_at INTEGER NOT NULL\n      )"
+   ]
+  ],
+  "schema_sha256": "e9b90c3dd34e8b500f906210982a29a53b5a8594c284c30d76cb419be57ffdc0",
+  "tables": {
+   "card_catalog": {
+    "count": 0,
+    "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+   },
+   "card_installs": {
+    "count": 0,
+    "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+   },
+   "comments": {
+    "count": 0,
+    "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+   },
+   "device_cards": {
+    "count": 0,
+    "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+   },
+   "device_files": {
+    "count": 0,
+    "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+   },
+   "device_projects": {
+    "count": 0,
+    "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+   },
+   "files": {
+    "count": 8,
+    "sha256": "c7c6abb87c385fff65b3e37db88c97abeeb10d44954db88e60aacc560bec621c"
+   },
+   "folders": {
+    "count": 1,
+    "sha256": "74e9eafbff3dd6efca82d1d9b8cb90e7a9b8d9c5618ec8e9fc966f0c35830bb2"
+   },
+   "id_map": {
+    "count": 0,
+    "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+   },
+   "local_versions": {
+    "count": 1,
+    "sha256": "ef5e06ec23189f169745415ab084ca9d98c45b6584914b95767e0a6d4218e5ab"
+   },
+   "manuscript_files": {
+    "count": 0,
+    "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+   },
+   "outbox": {
+    "count": 3,
+    "sha256": "1f635c42456a914a72be5733007b9858395155b41655373a3f079f87beb38fb1"
+   },
+   "project_tags": {
+    "count": 0,
+    "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+   },
+   "projects": {
+    "count": 2,
+    "sha256": "71b643151eb9e7bd9b0fbd8cbff1a7817c1fa564bd15a07b5c12234f6cf82bd2"
+   },
+   "scratchpad_entries": {
+    "count": 0,
+    "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+   },
+   "users": {
+    "count": 0,
+    "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+   }
+  },
+  "user_version": 0
+ },
+ "before_upgrade": {
+  "application_id": 0,
+  "auth_token_rows": 0,
+  "files": {
+   "2980b0db-59e5-4c90-aa8c-6966b4df8870": {
+    "created_at": "2026-11-09T18:36:41.160Z",
+    "data": "{\"id\":\"2980b0db-59e5-4c90-aa8c-6966b4df8870\",\"project\":\"b78ab92a-1de0-4f14-932d-3f1b73351969\",\"folder\":null,\"name\":\"Untitled Text\",\"type\":\"text\",\"content\":\"<p class=\\\"editor-paragraph\\\">First synthetic paragraph typed in the older Studio build. Second synthetic sentence typed in the older Studio build.</p>\",\"file\":null,\"createdAt\":\"2026-11-09T18:36:41.160Z\",\"updatedAt\":\"2026-11-09T18:36:54.687Z\",\"contentUpdatedAt\":\"2026-11-09T18:36:54.687Z\",\"isTrashed\":false,\"position\":0,\"gridLayout\":null,\"cardColor\":null,\"tags\":[],\"isFavorited\":false,\"description\":\"\",\"plainSyncWarningAcked\":false,\"autoLinkedDeviceIds\":[]}",
+    "data_sha256": "fe51e1efe768a0c55909dc6c708bdfc730f0bd52ac1f174dcd8093f88246b470",
+    "folder_id": null,
+    "is_trashed": 0,
+    "position": 0,
+    "project_id": "b78ab92a-1de0-4f14-932d-3f1b73351969",
+    "type": "text",
+    "user_id": "local"
+   },
+   "upgrade-extra-keys": {
+    "created_at": "2026-11-09T18:36:41.160Z",
+    "data": "{\"id\":\"upgrade-extra-keys\",\"project\":\"upgrade-bridge-project\",\"folder\":null,\"name\":\"Synthetic Extra Keys Record\",\"type\":\"text\",\"content\":\"<p>Synthetic record with extra JSON keys.</p>\",\"file\":null,\"createdAt\":\"2026-11-09T18:36:41.160Z\",\"updatedAt\":\"2026-11-09T18:36:54.687Z\",\"contentUpdatedAt\":\"2026-11-09T18:36:54.687Z\",\"isTrashed\":false,\"position\":0,\"gridLayout\":null,\"cardColor\":null,\"tags\":[],\"isFavorited\":false,\"description\":\"\",\"plainSyncWarningAcked\":false,\"autoLinkedDeviceIds\":[],\"legacyKeepMe\":{\"nested\":[1,\"two\",null]},\"wordGoal\":500}",
+    "data_sha256": "092d2a5f1ea28a345619f00b5a298e39f169d2cfe6b84ebe199b8d5290a8c4a5",
+    "folder_id": null,
+    "is_trashed": 0,
+    "position": 0,
+    "project_id": "upgrade-bridge-project",
+    "type": "text",
+    "user_id": "local"
+   },
+   "upgrade-folder-file": {
+    "created_at": "2026-11-09T18:36:41.160Z",
+    "data": "{\"id\":\"upgrade-folder-file\",\"project\":\"upgrade-bridge-project\",\"folder\":\"upgrade-folder\",\"name\":\"Synthetic Folder Record\",\"type\":\"text\",\"content\":\"<p>Synthetic paragraph inside a folder.</p>\",\"file\":null,\"createdAt\":\"2026-11-09T18:36:41.160Z\",\"updatedAt\":\"2026-11-09T18:36:54.687Z\",\"contentUpdatedAt\":\"2026-11-09T18:36:54.687Z\",\"isTrashed\":false,\"position\":0,\"gridLayout\":null,\"cardColor\":null,\"tags\":[],\"isFavorited\":false,\"description\":\"\",\"plainSyncWarningAcked\":false,\"autoLinkedDeviceIds\":[]}",
+    "data_sha256": "766984b1ff0b5afbd7487aeec379608a775520acbea184f51c6552d6b90ebea6",
+    "folder_id": "upgrade-folder",
+    "is_trashed": 0,
+    "position": 0,
+    "project_id": "upgrade-bridge-project",
+    "type": "text",
+    "user_id": "local"
+   },
+   "upgrade-in-ui-project": {
+    "created_at": "2026-11-09T18:36:41.160Z",
+    "data": "{\"id\":\"upgrade-in-ui-project\",\"project\":\"b78ab92a-1de0-4f14-932d-3f1b73351969\",\"folder\":null,\"name\":\"Synthetic Record In UI Project\",\"type\":\"text\",\"content\":\"<p>Outbox-free record inside a UI-created project.</p>\",\"file\":null,\"createdAt\":\"2026-11-09T18:36:41.160Z\",\"updatedAt\":\"2026-11-09T18:36:54.687Z\",\"contentUpdatedAt\":\"2026-11-09T18:36:54.687Z\",\"isTrashed\":false,\"position\":0,\"gridLayout\":null,\"cardColor\":null,\"tags\":[],\"isFavorited\":false,\"description\":\"\",\"plainSyncWarningAcked\":false,\"autoLinkedDeviceIds\":[]}",
+    "data_sha256": "bb4603366a5d6909d86a6b1850301ca2c8ae9062b01ed776467591b641ce36be",
+    "folder_id": null,
+    "is_trashed": 0,
+    "position": 0,
+    "project_id": "b78ab92a-1de0-4f14-932d-3f1b73351969",
+    "type": "text",
+    "user_id": "local"
+   },
+   "upgrade-nontext": {
+    "created_at": "2026-11-09T18:36:41.160Z",
+    "data": "{\"id\":\"upgrade-nontext\",\"project\":\"upgrade-bridge-project\",\"folder\":null,\"name\":\"Synthetic Non-text Record\",\"type\":\"grid\",\"content\":\"{\\\"rows\\\":[]}\",\"file\":null,\"createdAt\":\"2026-11-09T18:36:41.160Z\",\"updatedAt\":\"2026-11-09T18:36:54.687Z\",\"contentUpdatedAt\":\"2026-11-09T18:36:54.687Z\",\"isTrashed\":false,\"position\":0,\"gridLayout\":null,\"cardColor\":null,\"tags\":[],\"isFavorited\":false,\"description\":\"\",\"plainSyncWarningAcked\":false,\"autoLinkedDeviceIds\":[]}",
+    "data_sha256": "66fe3c3e9b183fcf5d949685df1c3279de48e8d165f1e879e122edb4cc4c8c47",
+    "folder_id": null,
+    "is_trashed": 0,
+    "position": 0,
+    "project_id": "upgrade-bridge-project",
+    "type": "grid",
+    "user_id": "local"
+   },
+   "upgrade-plain": {
+    "created_at": "2026-11-09T18:36:41.160Z",
+    "data": "{\"id\":\"upgrade-plain\",\"project\":\"upgrade-bridge-project\",\"folder\":null,\"name\":\"Synthetic Plain Record\",\"type\":\"text\",\"content\":\"<p>Plain synthetic paragraph from the older build.</p>\",\"file\":null,\"createdAt\":\"2026-11-09T18:36:41.160Z\",\"updatedAt\":\"2026-11-09T18:36:54.687Z\",\"contentUpdatedAt\":\"2026-11-09T18:36:54.687Z\",\"isTrashed\":false,\"position\":0,\"gridLayout\":null,\"cardColor\":null,\"tags\":[],\"isFavorited\":false,\"description\":\"\",\"plainSyncWarningAcked\":false,\"autoLinkedDeviceIds\":[]}",
+    "data_sha256": "13302e70a711fede1c1432061599e37fd3b37d23f853378d7e509c02dfdabc18",
+    "folder_id": null,
+    "is_trashed": 0,
+    "position": 0,
+    "project_id": "upgrade-bridge-project",
+    "type": "text",
+    "user_id": "local"
+   },
+   "upgrade-rich": {
+    "created_at": "2026-11-09T18:36:41.160Z",
+    "data": "{\"id\":\"upgrade-rich\",\"project\":\"upgrade-bridge-project\",\"folder\":null,\"name\":\"Synthetic Rich Record\",\"type\":\"text\",\"content\":\"<h2>Synthetic heading</h2><p><strong>Bold</strong> synthetic body.</p>\",\"file\":null,\"createdAt\":\"2026-11-09T18:36:41.160Z\",\"updatedAt\":\"2026-11-09T18:36:54.687Z\",\"contentUpdatedAt\":\"2026-11-09T18:36:54.687Z\",\"isTrashed\":false,\"position\":0,\"gridLayout\":null,\"cardColor\":null,\"tags\":[],\"isFavorited\":false,\"description\":\"\",\"plainSyncWarningAcked\":false,\"autoLinkedDeviceIds\":[]}",
+    "data_sha256": "39d3ccde01db4380720ad143106435b8bf7cdc0c9edb713ea21378aac7b51d84",
+    "folder_id": null,
+    "is_trashed": 0,
+    "position": 0,
+    "project_id": "upgrade-bridge-project",
+    "type": "text",
+    "user_id": "local"
+   },
+   "upgrade-studio-html": {
+    "created_at": "2026-11-09T18:36:41.160Z",
+    "data": "{\"id\":\"upgrade-studio-html\",\"project\":\"upgrade-bridge-project\",\"folder\":null,\"name\":\"Synthetic Studio HTML Record\",\"type\":\"text\",\"content\":\"<p class=\\\"editor-paragraph\\\">First synthetic paragraph typed in the older Studio build. Second synthetic sentence typed in the older Studio build.</p>\",\"file\":null,\"createdAt\":\"2026-11-09T18:36:41.160Z\",\"updatedAt\":\"2026-11-09T18:36:54.687Z\",\"contentUpdatedAt\":\"2026-11-09T18:36:54.687Z\",\"isTrashed\":false,\"position\":0,\"gridLayout\":null,\"cardColor\":null,\"tags\":[],\"isFavorited\":false,\"description\":\"\",\"plainSyncWarningAcked\":false,\"autoLinkedDeviceIds\":[]}",
+    "data_sha256": "87967dc450dbf815e141320605137afe7e3bfdbcf1e4e86c9da00d50022bb994",
+    "folder_id": null,
+    "is_trashed": 0,
+    "position": 0,
+    "project_id": "upgrade-bridge-project",
+    "type": "text",
+    "user_id": "local"
+   }
+  },
+  "foreign_key_violations": 0,
+  "integrity": "ok",
+  "local_versions": [
+   [
+    "db1ab93f-b458-4920-8907-cbd160fd0de3",
+    "2980b0db-59e5-4c90-aa8c-6966b4df8870",
+    "manual",
+    "4764d27e49f7be493cc48e53d37dbac4bdb038cb4dd7c3d64a42d89ed81045a0"
+   ]
+  ],
+  "metadata": {
+   "currentUserId": "local",
+   "schema_version": "3",
+   "telemetry.firstVersion": "0.5.2",
+   "telemetry.installId": "b5b3d5dc-4d30-4480-b3cc-9e77bd507384",
+   "telemetry.installedAt": "1794249380651",
+   "telemetry.lastHeartbeatDate": "2026-11-09",
+   "telemetry.lastVersion": "0.5.2",
+   "telemetry.launchCount": "2",
+   "telemetry.noticeSeen": "1"
+  },
+  "outbox": [
+   {
+    "body_sha256": "804d87f60242a6a91b2693f911e5fc9c66428271539dd7d72b0a6c43dfa4ff84",
+    "entity_id": "b78ab92a-1de0-4f14-932d-3f1b73351969",
+    "id": 1,
+    "kind": "project.create",
+    "method": "POST",
+    "status": "pending",
+    "url": "/projects/"
+   },
+   {
+    "body_sha256": "d7b0b1144b5c4e5da3a19db9da04c08ed8a1d080aecc321bd45c053f95f1a29b",
+    "entity_id": "2980b0db-59e5-4c90-aa8c-6966b4df8870",
+    "id": 2,
+    "kind": "file.create",
+    "method": "POST",
+    "status": "pending",
+    "url": "/projects/b78ab92a-1de0-4f14-932d-3f1b73351969/files/"
+   },
+   {
+    "body_sha256": "e9eba7812db2764545152b5cc91396f5fecbce9bb22bfb36a49791d52dae6897",
+    "entity_id": "2980b0db-59e5-4c90-aa8c-6966b4df8870",
+    "id": 3,
+    "kind": "file.update",
+    "method": "PUT",
+    "status": "pending",
+    "url": "/files/2980b0db-59e5-4c90-aa8c-6966b4df8870/"
+   }
+  ],
+  "projects": {
+   "b78ab92a-1de0-4f14-932d-3f1b73351969": "{\"id\":\"b78ab92a-1de0-4f14-932d-3f1b73351969\",\"name\":\"Synthetic Upgrade Project\",\"color\":\"#f0f0f0\",\"titleColor\":\"#4A4A4A\",\"pinned\":false,\"pinnedAt\":null,\"type\":\"book\",\"user\":null,\"createdAt\":\"2026-11-09T18:36:29.097Z\",\"updatedAt\":\"2026-11-09T18:36:29.097Z\",\"backgroundImage\":null,\"overlayOpacity\":\"0.20\",\"borderColor\":\"var(--tile-background)\",\"isTutorial\":false,\"tags\":[]}",
+   "upgrade-bridge-project": "{\"id\":\"upgrade-bridge-project\",\"name\":\"Synthetic Bridge Project\",\"type\":\"book\",\"createdAt\":\"2026-11-09T18:36:41.160Z\",\"updatedAt\":\"2026-11-09T18:36:54.687Z\"}"
+  },
+  "schema": [
+   [
+    "index",
+    "idx_files_folder",
+    "CREATE INDEX idx_files_folder ON files(folder_id)"
+   ],
+   [
+    "index",
+    "idx_files_project",
+    "CREATE INDEX idx_files_project ON files(project_id, is_trashed)"
+   ],
+   [
+    "index",
+    "idx_folders_project",
+    "CREATE INDEX idx_folders_project ON folders(project_id, is_trashed)"
+   ],
+   [
+    "index",
+    "idx_local_versions_file",
+    "CREATE INDEX idx_local_versions_file ON local_versions(file_id, created_at)"
+   ],
+   [
+    "index",
+    "idx_manuscripts_project",
+    "CREATE INDEX idx_manuscripts_project ON manuscript_files(project_id, is_trashed)"
+   ],
+   [
+    "index",
+    "idx_outbox_entity",
+    "CREATE INDEX idx_outbox_entity ON outbox(entity_id)"
+   ],
+   [
+    "index",
+    "idx_outbox_status",
+    "CREATE INDEX idx_outbox_status ON outbox(status, id)"
+   ],
+   [
+    "index",
+    "idx_projects_user",
+    "CREATE INDEX idx_projects_user ON projects(user_id)"
+   ],
+   [
+    "index",
+    "idx_scratchpad_project",
+    "CREATE INDEX idx_scratchpad_project ON scratchpad_entries(project_id)"
+   ],
+   [
+    "table",
+    "device_cards",
+    "CREATE TABLE device_cards (\n      card_id TEXT PRIMARY KEY,\n      device_id TEXT,\n      registration_code TEXT,\n      firmware_version TEXT,\n      label TEXT,\n      auto_import INTEGER NOT NULL DEFAULT 0,\n      first_seen INTEGER NOT NULL,\n      last_seen INTEGER NOT NULL\n    )"
+   ],
+   [
+    "table",
+    "device_files",
+    "CREATE TABLE device_files (\n      card_id TEXT NOT NULL,\n      file_key TEXT NOT NULL,\n      project_key TEXT NOT NULL,\n      studio_file_id TEXT NOT NULL,\n      studio_project_id TEXT,\n      name TEXT,\n      card_hash TEXT,\n      studio_hash TEXT,\n      imported_at INTEGER NOT NULL,\n      PRIMARY KEY (card_id, file_key)\n    )"
+   ],
+   [
+    "table",
+    "device_projects",
+    "CREATE TABLE device_projects (\n      card_id TEXT NOT NULL,\n      project_key TEXT NOT NULL,\n      studio_project_id TEXT NOT NULL,\n      name TEXT,\n      PRIMARY KEY (card_id, project_key)\n    )"
+   ],
+   [
+    "table",
+    "files",
+    "CREATE TABLE files (\n        id TEXT PRIMARY KEY,\n        user_id TEXT,\n        project_id TEXT NOT NULL,\n        folder_id TEXT,\n        type TEXT,\n        is_trashed INTEGER NOT NULL DEFAULT 0,\n        position INTEGER NOT NULL DEFAULT 0,\n        created_at TEXT,\n        data TEXT NOT NULL,\n        mirrored_at INTEGER NOT NULL\n      )"
+   ],
+   [
+    "table",
+    "folders",
+    "CREATE TABLE folders (\n        id TEXT PRIMARY KEY,\n        user_id TEXT,\n        project_id TEXT NOT NULL,\n        parent_folder_id TEXT,\n        is_trashed INTEGER NOT NULL DEFAULT 0,\n        position INTEGER NOT NULL DEFAULT 0,\n        data TEXT NOT NULL,\n        mirrored_at INTEGER NOT NULL\n      )"
+   ],
+   [
+    "table",
+    "id_map",
+    "CREATE TABLE id_map (\n        temp_id TEXT PRIMARY KEY,\n        server_id TEXT NOT NULL,\n        entity_type TEXT,\n        mapped_at INTEGER NOT NULL\n      )"
+   ],
+   [
+    "table",
+    "local_versions",
+    "CREATE TABLE local_versions (\n      id TEXT PRIMARY KEY,\n      file_id TEXT NOT NULL,\n      content TEXT,\n      extras TEXT,\n      fingerprint TEXT NOT NULL,\n      reason TEXT NOT NULL,\n      file_name TEXT,\n      content_size INTEGER NOT NULL DEFAULT 0,\n      created_at TEXT NOT NULL\n    )"
+   ],
+   [
+    "table",
+    "manuscript_files",
+    "CREATE TABLE manuscript_files (\n        id TEXT PRIMARY KEY,\n        user_id TEXT,\n        project_id TEXT NOT NULL,\n        folder_id TEXT,\n        is_trashed INTEGER NOT NULL DEFAULT 0,\n        position INTEGER NOT NULL DEFAULT 0,\n        data TEXT NOT NULL,\n        mirrored_at INTEGER NOT NULL\n      )"
+   ],
+   [
+    "table",
+    "metadata",
+    "CREATE TABLE metadata (\n      key TEXT PRIMARY KEY,\n      value TEXT\n    )"
+   ],
+   [
+    "table",
+    "outbox",
+    "CREATE TABLE outbox (\n        id INTEGER PRIMARY KEY AUTOINCREMENT,\n        user_id TEXT,\n        kind TEXT NOT NULL,\n        entity_type TEXT,\n        entity_id TEXT,\n        method TEXT NOT NULL,\n        url TEXT NOT NULL,\n        body TEXT,\n        temp_ids TEXT,\n        status TEXT NOT NULL DEFAULT 'pending',\n        attempts INTEGER NOT NULL DEFAULT 0,\n        last_error TEXT,\n        created_at INTEGER NOT NULL,\n        updated_at INTEGER NOT NULL\n      )"
+   ],
+   [
+    "table",
+    "project_tags",
+    "CREATE TABLE project_tags (\n        project_id TEXT PRIMARY KEY,\n        user_id TEXT,\n        data TEXT NOT NULL,\n        mirrored_at INTEGER NOT NULL\n      )"
+   ],
+   [
+    "table",
+    "projects",
+    "CREATE TABLE projects (\n        id TEXT PRIMARY KEY,\n        user_id TEXT,\n        created_at TEXT,\n        data TEXT NOT NULL,\n        mirrored_at INTEGER NOT NULL\n      )"
+   ],
+   [
+    "table",
+    "scratchpad_entries",
+    "CREATE TABLE scratchpad_entries (\n      id TEXT PRIMARY KEY,\n      user_id TEXT,\n      project_id TEXT NOT NULL,\n      is_pinned INTEGER NOT NULL DEFAULT 0,\n      position INTEGER NOT NULL DEFAULT 0,\n      created_at TEXT,\n      data TEXT NOT NULL,\n      mirrored_at INTEGER NOT NULL\n    )"
+   ],
+   [
+    "table",
+    "telemetry_queue",
+    "CREATE TABLE telemetry_queue (\n      id INTEGER PRIMARY KEY AUTOINCREMENT,\n      name TEXT NOT NULL,\n      props TEXT NOT NULL,\n      session_id TEXT,\n      occurred_at INTEGER NOT NULL,\n      attempts INTEGER NOT NULL DEFAULT 0\n    )"
+   ],
+   [
+    "table",
+    "users",
+    "CREATE TABLE users (\n        id TEXT PRIMARY KEY,\n        data TEXT NOT NULL,\n        mirrored_at INTEGER NOT NULL\n      )"
+   ]
+  ],
+  "schema_sha256": "375cf674bf811d407701d2cffdc9a38b787ab26bcfbae7252bef40e63532073c",
+  "tables": {
+   "device_cards": {
+    "count": 0,
+    "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+   },
+   "device_files": {
+    "count": 0,
+    "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+   },
+   "device_projects": {
+    "count": 0,
+    "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+   },
+   "files": {
+    "count": 8,
+    "sha256": "c7c6abb87c385fff65b3e37db88c97abeeb10d44954db88e60aacc560bec621c"
+   },
+   "folders": {
+    "count": 1,
+    "sha256": "74e9eafbff3dd6efca82d1d9b8cb90e7a9b8d9c5618ec8e9fc966f0c35830bb2"
+   },
+   "id_map": {
+    "count": 0,
+    "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+   },
+   "local_versions": {
+    "count": 1,
+    "sha256": "ef5e06ec23189f169745415ab084ca9d98c45b6584914b95767e0a6d4218e5ab"
+   },
+   "manuscript_files": {
+    "count": 0,
+    "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+   },
+   "outbox": {
+    "count": 3,
+    "sha256": "1f635c42456a914a72be5733007b9858395155b41655373a3f079f87beb38fb1"
+   },
+   "project_tags": {
+    "count": 0,
+    "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+   },
+   "projects": {
+    "count": 2,
+    "sha256": "71b643151eb9e7bd9b0fbd8cbff1a7817c1fa564bd15a07b5c12234f6cf82bd2"
+   },
+   "scratchpad_entries": {
+    "count": 0,
+    "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+   },
+   "users": {
+    "count": 0,
+    "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+   }
+  },
+  "user_version": 0
+ },
+ "checks": {
+  "accepted_writes_changed_only_their_row": true,
+  "accepted_writes_kept_other_json_fields": true,
+  "accepted_writes_kept_preimage_version": true,
+  "accepted_writes_left_outbox_alone": true,
+  "all_pre_upgrade_guard_attempts_refused": true,
+  "every_accepted_write_was_reopened": true,
+  "expected_records_accepted": true,
+  "guard_refuses_for_outbox_after_ui_edit": true,
+  "jails_only_loopback": true,
+  "local_mode_throughout": true,
+  "new_build_reports_1_1_3": true,
+  "no_auth_token_row": true,
+  "old_build_reports_0_5_2": true,
+  "outbox_free_record_in_ui_project_refused_for_ancestor": true,
+  "post_upgrade_refusals_left_bytes_alone": true,
+  "pre_upgrade_refusals_left_bytes_alone": true,
+  "reopen_editor_kept_written_text": true,
+  "reopen_integrity_ok": true,
+  "reopen_returned_written_content": true,
+  "ui_created_file_refused_for_outbox": true,
+  "ui_project_stores_json_null_user": true,
+  "upgrade_did_not_change_file_rows": true,
+  "upgrade_integrity_ok": true,
+  "upgrade_kept_every_file_row": true,
+  "upgrade_left_outbox_unchanged": true,
+  "upgraded_schema_identical_to_tested": true
+ },
+ "environment": {
+  "electron_new": "44.4.5",
+  "electron_old": "44.4.5",
+  "new_app_asar_sha256": "25e93b78fb4753f7b47236a91f8907e674c341aab19af271d93c7dd1e04dbcfa",
+  "new_studio_exit": {
+   "code": 0,
+   "signal": null
+  },
+  "old_app_asar_sha256": "7f73eccbc1fdee8caaa3f0e7c04154bebc3eb75767df901747765051b0044980",
+  "old_studio_exit": {
+   "code": 0,
+   "signal": null
+  },
+  "sqlite_cli": "3.53.4",
+  "xvfb_sha256": "ffe89f25f4aa76a7c97d72bd4fa8b74d8304a1b4811a70a2614b0c953c241396"
+ },
+ "post_upgrade_accepted": [
+  "upgrade-plain",
+  "upgrade-studio-html",
+  "upgrade-folder-file",
+  "upgrade-extra-keys"
+ ],
+ "post_upgrade_guard": [
+  {
+   "bytes_unchanged": true,
+   "content_after": "<p class=\"editor-paragraph\">First synthetic paragraph typed in the older Studio build. Second synthetic sentence typed in the older Studio build.</p>",
+   "difference": {
+    "files_changed": [],
+    "other_files_changed": [],
+    "outbox_unchanged": true,
+    "schema_unchanged": true,
+    "tables_changed": []
+   },
+   "file_id": "2980b0db-59e5-4c90-aa8c-6966b4df8870",
+   "label": "post_upgrade_2980b0db-59e5-4c90-aa8c-6966b4df8870",
+   "only_content_and_times_changed": true,
+   "preimage_version_kept": false,
+   "result": {
+    "accepted": false,
+    "reason": "Write refused: Outbox references this file regardless of status, or an encoded URL prevents ruling out a reference. Preserve the vault edit; use a clean synthetic fixture without queued work. Do not delete or rewrite outbox rows."
+   },
+   "wal_left_behind": true
+  },
+  {
+   "bytes_unchanged": false,
+   "content_after": "<p>Written by the current guard after the upgrade.</p>",
+   "difference": {
+    "files_changed": [
+     "upgrade-plain"
+    ],
+    "other_files_changed": [],
+    "outbox_unchanged": true,
+    "schema_unchanged": true,
+    "tables_changed": [
+     "files",
+     "local_versions"
+    ]
+   },
+   "file_id": "upgrade-plain",
+   "label": "post_upgrade_upgrade-plain",
+   "only_content_and_times_changed": true,
+   "preimage_version_kept": true,
+   "result": {
+    "accepted": true,
+    "stamp": "2026-11-09T18:37:26.315Z"
+   },
+   "wal_left_behind": true
+  },
+  {
+   "bytes_unchanged": false,
+   "content_after": "<p class=\"editor-paragraph\">Guarded first paragraph after the upgrade.</p><p class=\"editor-paragraph\">Guarded second paragraph after the upgrade.</p>",
+   "difference": {
+    "files_changed": [
+     "upgrade-studio-html"
+    ],
+    "other_files_changed": [],
+    "outbox_unchanged": true,
+    "schema_unchanged": true,
+    "tables_changed": [
+     "files",
+     "local_versions"
+    ]
+   },
+   "file_id": "upgrade-studio-html",
+   "label": "post_upgrade_upgrade-studio-html",
+   "only_content_and_times_changed": true,
+   "preimage_version_kept": true,
+   "result": {
+    "accepted": true,
+    "stamp": "2026-11-09T18:38:04.039Z"
+   },
+   "wal_left_behind": true
+  },
+  {
+   "bytes_unchanged": false,
+   "content_after": "<p>Written by the current guard after the upgrade.</p>",
+   "difference": {
+    "files_changed": [
+     "upgrade-folder-file"
+    ],
+    "other_files_changed": [],
+    "outbox_unchanged": true,
+    "schema_unchanged": true,
+    "tables_changed": [
+     "files",
+     "local_versions"
+    ]
+   },
+   "file_id": "upgrade-folder-file",
+   "label": "post_upgrade_upgrade-folder-file",
+   "only_content_and_times_changed": true,
+   "preimage_version_kept": true,
+   "result": {
+    "accepted": true,
+    "stamp": "2026-11-09T18:38:41.716Z"
+   },
+   "wal_left_behind": true
+  },
+  {
+   "bytes_unchanged": true,
+   "content_after": "<h2>Synthetic heading</h2><p><strong>Bold</strong> synthetic body.</p>",
+   "difference": {
+    "files_changed": [],
+    "other_files_changed": [],
+    "outbox_unchanged": true,
+    "schema_unchanged": true,
+    "tables_changed": []
+   },
+   "file_id": "upgrade-rich",
+   "label": "post_upgrade_upgrade-rich",
+   "only_content_and_times_changed": true,
+   "preimage_version_kept": false,
+   "result": {
+    "accepted": false,
+    "reason": "Unsupported paragraph HTML or Markdown syntax. Preserve the vault edit and use literal paragraphs with one uniform supported paragraph form."
+   },
+   "wal_left_behind": true
+  },
+  {
+   "bytes_unchanged": false,
+   "content_after": "<p>Written by the current guard after the upgrade.</p>",
+   "difference": {
+    "files_changed": [
+     "upgrade-extra-keys"
+    ],
+    "other_files_changed": [],
+    "outbox_unchanged": true,
+    "schema_unchanged": true,
+    "tables_changed": [
+     "files",
+     "local_versions"
+    ]
+   },
+   "file_id": "upgrade-extra-keys",
+   "label": "post_upgrade_upgrade-extra-keys",
+   "only_content_and_times_changed": true,
+   "preimage_version_kept": true,
+   "result": {
+    "accepted": true,
+    "stamp": "2026-11-09T18:39:19.440Z"
+   },
+   "wal_left_behind": true
+  },
+  {
+   "bytes_unchanged": true,
+   "content_after": "{\"rows\":[]}",
+   "difference": {
+    "files_changed": [],
+    "other_files_changed": [],
+    "outbox_unchanged": true,
+    "schema_unchanged": true,
+    "tables_changed": []
+   },
+   "file_id": "upgrade-nontext",
+   "label": "post_upgrade_upgrade-nontext",
+   "only_content_and_times_changed": true,
+   "preimage_version_kept": false,
+   "result": {
+    "accepted": false,
+    "reason": "Unsupported paragraph HTML or Markdown syntax. Preserve the vault edit and use literal paragraphs with one uniform supported paragraph form."
+   },
+   "wal_left_behind": true
+  },
+  {
+   "bytes_unchanged": true,
+   "content_after": "<p>Outbox-free record inside a UI-created project.</p>",
+   "difference": {
+    "files_changed": [],
+    "other_files_changed": [],
+    "outbox_unchanged": true,
+    "schema_unchanged": true,
+    "tables_changed": []
+   },
+   "file_id": "upgrade-in-ui-project",
+   "label": "post_upgrade_upgrade-in-ui-project",
+   "only_content_and_times_changed": true,
+   "preimage_version_kept": false,
+   "result": {
+    "accepted": false,
+    "reason": "Write refused: Missing, foreign-owned, trashed, or inconsistent project/folder ancestor. Preserve the vault edit and repair the synthetic hierarchy before retrying."
+   },
+   "wal_left_behind": true
+  }
+ ],
+ "post_upgrade_refused": {
+  "2980b0db-59e5-4c90-aa8c-6966b4df8870": "Write refused: Outbox references this file regardless of status, or an encoded URL prevents ruling out a reference. Preserve the vault edit; use a clean synthetic fixture without queued work. Do not delete or rewrite outbox rows.",
+  "upgrade-in-ui-project": "Write refused: Missing, foreign-owned, trashed, or inconsistent project/folder ancestor. Preserve the vault edit and repair the synthetic hierarchy before retrying.",
+  "upgrade-nontext": "Unsupported paragraph HTML or Markdown syntax. Preserve the vault edit and use literal paragraphs with one uniform supported paragraph form.",
+  "upgrade-rich": "Unsupported paragraph HTML or Markdown syntax. Preserve the vault edit and use literal paragraphs with one uniform supported paragraph form."
+ },
+ "pre_upgrade_guard": [
+  {
+   "bytes_unchanged": true,
+   "content_after": "<p class=\"editor-paragraph\">First synthetic paragraph typed in the older Studio build. Second synthetic sentence typed in the older Studio build.</p>",
+   "difference": {
+    "files_changed": [],
+    "other_files_changed": [],
+    "outbox_unchanged": true,
+    "schema_unchanged": true,
+    "tables_changed": []
+   },
+   "file_id": "2980b0db-59e5-4c90-aa8c-6966b4df8870",
+   "label": "pre_upgrade_2980b0db-59e5-4c90-aa8c-6966b4df8870",
+   "only_content_and_times_changed": true,
+   "preimage_version_kept": false,
+   "result": {
+    "accepted": false,
+    "reason": "Write refused: Incompatible schema or migration metadata. Keep write-back disabled and use a fresh tested disposable fixture."
+   },
+   "wal_left_behind": true
+  },
+  {
+   "bytes_unchanged": true,
+   "content_after": "<p>Plain synthetic paragraph from the older build.</p>",
+   "difference": {
+    "files_changed": [],
+    "other_files_changed": [],
+    "outbox_unchanged": true,
+    "schema_unchanged": true,
+    "tables_changed": []
+   },
+   "file_id": "upgrade-plain",
+   "label": "pre_upgrade_upgrade-plain",
+   "only_content_and_times_changed": true,
+   "preimage_version_kept": false,
+   "result": {
+    "accepted": false,
+    "reason": "Write refused: Incompatible schema or migration metadata. Keep write-back disabled and use a fresh tested disposable fixture."
+   },
+   "wal_left_behind": true
+  },
+  {
+   "bytes_unchanged": true,
+   "content_after": "<p class=\"editor-paragraph\">First synthetic paragraph typed in the older Studio build. Second synthetic sentence typed in the older Studio build.</p>",
+   "difference": {
+    "files_changed": [],
+    "other_files_changed": [],
+    "outbox_unchanged": true,
+    "schema_unchanged": true,
+    "tables_changed": []
+   },
+   "file_id": "upgrade-studio-html",
+   "label": "pre_upgrade_upgrade-studio-html",
+   "only_content_and_times_changed": true,
+   "preimage_version_kept": false,
+   "result": {
+    "accepted": false,
+    "reason": "Write refused: Incompatible schema or migration metadata. Keep write-back disabled and use a fresh tested disposable fixture."
+   },
+   "wal_left_behind": true
+  },
+  {
+   "bytes_unchanged": true,
+   "content_after": "<p>Synthetic paragraph inside a folder.</p>",
+   "difference": {
+    "files_changed": [],
+    "other_files_changed": [],
+    "outbox_unchanged": true,
+    "schema_unchanged": true,
+    "tables_changed": []
+   },
+   "file_id": "upgrade-folder-file",
+   "label": "pre_upgrade_upgrade-folder-file",
+   "only_content_and_times_changed": true,
+   "preimage_version_kept": false,
+   "result": {
+    "accepted": false,
+    "reason": "Write refused: Incompatible schema or migration metadata. Keep write-back disabled and use a fresh tested disposable fixture."
+   },
+   "wal_left_behind": true
+  },
+  {
+   "bytes_unchanged": true,
+   "content_after": "<h2>Synthetic heading</h2><p><strong>Bold</strong> synthetic body.</p>",
+   "difference": {
+    "files_changed": [],
+    "other_files_changed": [],
+    "outbox_unchanged": true,
+    "schema_unchanged": true,
+    "tables_changed": []
+   },
+   "file_id": "upgrade-rich",
+   "label": "pre_upgrade_upgrade-rich",
+   "only_content_and_times_changed": true,
+   "preimage_version_kept": false,
+   "result": {
+    "accepted": false,
+    "reason": "Unsupported paragraph HTML or Markdown syntax. Preserve the vault edit and use literal paragraphs with one uniform supported paragraph form."
+   },
+   "wal_left_behind": true
+  },
+  {
+   "bytes_unchanged": true,
+   "content_after": "<p>Synthetic record with extra JSON keys.</p>",
+   "difference": {
+    "files_changed": [],
+    "other_files_changed": [],
+    "outbox_unchanged": true,
+    "schema_unchanged": true,
+    "tables_changed": []
+   },
+   "file_id": "upgrade-extra-keys",
+   "label": "pre_upgrade_upgrade-extra-keys",
+   "only_content_and_times_changed": true,
+   "preimage_version_kept": false,
+   "result": {
+    "accepted": false,
+    "reason": "Write refused: Incompatible schema or migration metadata. Keep write-back disabled and use a fresh tested disposable fixture."
+   },
+   "wal_left_behind": true
+  },
+  {
+   "bytes_unchanged": true,
+   "content_after": "{\"rows\":[]}",
+   "difference": {
+    "files_changed": [],
+    "other_files_changed": [],
+    "outbox_unchanged": true,
+    "schema_unchanged": true,
+    "tables_changed": []
+   },
+   "file_id": "upgrade-nontext",
+   "label": "pre_upgrade_upgrade-nontext",
+   "only_content_and_times_changed": true,
+   "preimage_version_kept": false,
+   "result": {
+    "accepted": false,
+    "reason": "Unsupported paragraph HTML or Markdown syntax. Preserve the vault edit and use literal paragraphs with one uniform supported paragraph form."
+   },
+   "wal_left_behind": true
+  },
+  {
+   "bytes_unchanged": true,
+   "content_after": "<p>Outbox-free record inside a UI-created project.</p>",
+   "difference": {
+    "files_changed": [],
+    "other_files_changed": [],
+    "outbox_unchanged": true,
+    "schema_unchanged": true,
+    "tables_changed": []
+   },
+   "file_id": "upgrade-in-ui-project",
+   "label": "pre_upgrade_upgrade-in-ui-project",
+   "only_content_and_times_changed": true,
+   "preimage_version_kept": false,
+   "result": {
+    "accepted": false,
+    "reason": "Write refused: Incompatible schema or migration metadata. Keep write-back disabled and use a fresh tested disposable fixture."
+   },
+   "wal_left_behind": true
+  }
+ ],
+ "reopen": {
+  "upgrade-extra-keys": {
+   "after_ui_edit": {
+    "editor_html": "<p class=\"editor-paragraph\">Written by the current guard after the upgrade.</p>",
+    "file": {
+     "autoLinkedDeviceIds": [],
+     "cardColor": null,
+     "content": "<p class=\"editor-paragraph\">Edit typed in Studio 1.1.3 after the upgrade.Written by the current guard after the upgrade.</p>",
+     "contentUpdatedAt": "2026-11-09T18:39:50.009Z",
+     "createdAt": "2026-11-09T18:36:41.160Z",
+     "description": "",
+     "file": null,
+     "folder": null,
+     "gridLayout": null,
+     "id": "upgrade-extra-keys",
+     "isFavorited": false,
+     "isTrashed": false,
+     "legacyKeepMe": {
+      "nested": [
+       1,
+       "two",
+       null
+      ]
+     },
+     "name": "Synthetic Extra Keys Record",
+     "plainSyncWarningAcked": false,
+     "position": 0,
+     "project": "upgrade-bridge-project",
+     "tags": [],
+     "type": "text",
+     "updatedAt": "2026-11-09T18:39:50.009Z",
+     "wordGoal": 500
+    },
+    "studio_exit": {
+     "code": 0,
+     "signal": null
+    },
+    "versions": [
+     {
+      "contentSize": 47,
+      "createdAt": "2026-11-09T18:39:19.440Z",
+      "extras": null,
+      "file": "upgrade-extra-keys",
+      "fileName": "Synthetic Extra Keys Record",
+      "id": "94acf8f6-8eb6-4508-82c3-e53b4557578f",
+      "reason": "manual",
+      "reasonDisplay": "Manual Snapshot"
+     }
+    ]
+   },
+   "boot_changed": {
+    "files_changed": [],
+    "other_files_changed": [],
+    "outbox_unchanged": true,
+    "schema_unchanged": true,
+    "tables_changed": []
+   },
+   "foreign_key_violations": 0,
+   "guard_after_ui_edit": {
+    "bytes_unchanged": true,
+    "content_after": "<p class=\"editor-paragraph\">Edit typed in Studio 1.1.3 after the upgrade.Written by the current guard after the upgrade.</p>",
+    "difference": {
+     "files_changed": [],
+     "other_files_changed": [],
+     "outbox_unchanged": true,
+     "schema_unchanged": true,
+     "tables_changed": []
+    },
+    "file_id": "upgrade-extra-keys",
+    "label": "after_ui_edit_upgrade-extra-keys",
+    "only_content_and_times_changed": true,
+    "preimage_version_kept": false,
+    "result": {
+     "accepted": false,
+     "reason": "Write refused: Outbox references this file regardless of status, or an encoded URL prevents ruling out a reference. Preserve the vault edit; use a clean synthetic fixture without queued work. Do not delete or rewrite outbox rows."
+    },
+    "wal_left_behind": true
+   },
+   "integrity": "ok",
+   "outbox_after_ui_edit": [
+    {
+     "body_sha256": "804d87f60242a6a91b2693f911e5fc9c66428271539dd7d72b0a6c43dfa4ff84",
+     "entity_id": "b78ab92a-1de0-4f14-932d-3f1b73351969",
+     "id": 1,
+     "kind": "project.create",
+     "method": "POST",
+     "status": "pending",
+     "url": "/projects/"
+    },
+    {
+     "body_sha256": "d7b0b1144b5c4e5da3a19db9da04c08ed8a1d080aecc321bd45c053f95f1a29b",
+     "entity_id": "2980b0db-59e5-4c90-aa8c-6966b4df8870",
+     "id": 2,
+     "kind": "file.create",
+     "method": "POST",
+     "status": "pending",
+     "url": "/projects/b78ab92a-1de0-4f14-932d-3f1b73351969/files/"
+    },
+    {
+     "body_sha256": "e9eba7812db2764545152b5cc91396f5fecbce9bb22bfb36a49791d52dae6897",
+     "entity_id": "2980b0db-59e5-4c90-aa8c-6966b4df8870",
+     "id": 3,
+     "kind": "file.update",
+     "method": "PUT",
+     "status": "pending",
+     "url": "/files/2980b0db-59e5-4c90-aa8c-6966b4df8870/"
+    },
+    {
+     "body_sha256": "43d9bf31e9e9d9bde5736357656b14f7678ce5f964676e1a454c790bea90b81b",
+     "entity_id": "upgrade-extra-keys",
+     "id": 4,
+     "kind": "file.update",
+     "method": "PUT",
+     "status": "pending",
+     "url": "/files/upgrade-extra-keys/"
+    }
+   ],
+   "read_after_guarded_write": {
+    "file": {
+     "autoLinkedDeviceIds": [],
+     "cardColor": null,
+     "content": "<p>Written by the current guard after the upgrade.</p>",
+     "contentUpdatedAt": "2026-11-09T18:39:19.440Z",
+     "createdAt": "2026-11-09T18:36:41.160Z",
+     "description": "",
+     "file": null,
+     "folder": null,
+     "gridLayout": null,
+     "id": "upgrade-extra-keys",
+     "isFavorited": false,
+     "isTrashed": false,
+     "legacyKeepMe": {
+      "nested": [
+       1,
+       "two",
+       null
+      ]
+     },
+     "name": "Synthetic Extra Keys Record",
+     "plainSyncWarningAcked": false,
+     "position": 0,
+     "project": "upgrade-bridge-project",
+     "tags": [],
+     "type": "text",
+     "updatedAt": "2026-11-09T18:39:19.440Z",
+     "wordGoal": 500
+    },
+    "stats": {
+     "failedOps": 0,
+     "files": 8,
+     "folders": 1,
+     "lastMirroredAt": 1794249418190,
+     "manuscriptFiles": 0,
+     "pendingOps": 3,
+     "projects": 2,
+     "scratchpadEntries": 0,
+     "userId": "local"
+    },
+    "studio_exit": {
+     "code": 0,
+     "signal": null
+    }
+   },
+   "ui_edit_changed": {
+    "files_changed": [
+     "upgrade-extra-keys"
+    ],
+    "other_files_changed": [],
+    "outbox_unchanged": false,
+    "schema_unchanged": true,
+    "tables_changed": [
+     "files",
+     "outbox"
+    ]
+   }
+  },
+  "upgrade-folder-file": {
+   "after_ui_edit": {
+    "editor_html": "<p class=\"editor-paragraph\">Written by the current guard after the upgrade.</p>",
+    "file": {
+     "autoLinkedDeviceIds": [],
+     "cardColor": null,
+     "content": "<p class=\"editor-paragraph\">Edit typed in Studio 1.1.3 after the upgrade.Written by the current guard after the upgrade.</p>",
+     "contentUpdatedAt": "2026-11-09T18:39:12.235Z",
+     "createdAt": "2026-11-09T18:36:41.160Z",
+     "description": "",
+     "file": null,
+     "folder": "upgrade-folder",
+     "gridLayout": null,
+     "id": "upgrade-folder-file",
+     "isFavorited": false,
+     "isTrashed": false,
+     "name": "Synthetic Folder Record",
+     "plainSyncWarningAcked": false,
+     "position": 0,
+     "project": "upgrade-bridge-project",
+     "tags": [],
+     "type": "text",
+     "updatedAt": "2026-11-09T18:39:12.235Z"
+    },
+    "studio_exit": {
+     "code": 0,
+     "signal": null
+    },
+    "versions": [
+     {
+      "contentSize": 45,
+      "createdAt": "2026-11-09T18:38:41.716Z",
+      "extras": null,
+      "file": "upgrade-folder-file",
+      "fileName": "Synthetic Folder Record",
+      "id": "1fd98202-2df0-4b96-bdd7-17dc621be921",
+      "reason": "manual",
+      "reasonDisplay": "Manual Snapshot"
+     }
+    ]
+   },
+   "boot_changed": {
+    "files_changed": [],
+    "other_files_changed": [],
+    "outbox_unchanged": true,
+    "schema_unchanged": true,
+    "tables_changed": []
+   },
+   "foreign_key_violations": 0,
+   "guard_after_ui_edit": {
+    "bytes_unchanged": true,
+    "content_after": "<p class=\"editor-paragraph\">Edit typed in Studio 1.1.3 after the upgrade.Written by the current guard after the upgrade.</p>",
+    "difference": {
+     "files_changed": [],
+     "other_files_changed": [],
+     "outbox_unchanged": true,
+     "schema_unchanged": true,
+     "tables_changed": []
+    },
+    "file_id": "upgrade-folder-file",
+    "label": "after_ui_edit_upgrade-folder-file",
+    "only_content_and_times_changed": true,
+    "preimage_version_kept": false,
+    "result": {
+     "accepted": false,
+     "reason": "Write refused: Outbox references this file regardless of status, or an encoded URL prevents ruling out a reference. Preserve the vault edit; use a clean synthetic fixture without queued work. Do not delete or rewrite outbox rows."
+    },
+    "wal_left_behind": true
+   },
+   "integrity": "ok",
+   "outbox_after_ui_edit": [
+    {
+     "body_sha256": "804d87f60242a6a91b2693f911e5fc9c66428271539dd7d72b0a6c43dfa4ff84",
+     "entity_id": "b78ab92a-1de0-4f14-932d-3f1b73351969",
+     "id": 1,
+     "kind": "project.create",
+     "method": "POST",
+     "status": "pending",
+     "url": "/projects/"
+    },
+    {
+     "body_sha256": "d7b0b1144b5c4e5da3a19db9da04c08ed8a1d080aecc321bd45c053f95f1a29b",
+     "entity_id": "2980b0db-59e5-4c90-aa8c-6966b4df8870",
+     "id": 2,
+     "kind": "file.create",
+     "method": "POST",
+     "status": "pending",
+     "url": "/projects/b78ab92a-1de0-4f14-932d-3f1b73351969/files/"
+    },
+    {
+     "body_sha256": "e9eba7812db2764545152b5cc91396f5fecbce9bb22bfb36a49791d52dae6897",
+     "entity_id": "2980b0db-59e5-4c90-aa8c-6966b4df8870",
+     "id": 3,
+     "kind": "file.update",
+     "method": "PUT",
+     "status": "pending",
+     "url": "/files/2980b0db-59e5-4c90-aa8c-6966b4df8870/"
+    },
+    {
+     "body_sha256": "76a02ac80142b740ee63cf9bbf709f2838fde265965ea02ac738b5e6ae4ae091",
+     "entity_id": "upgrade-folder-file",
+     "id": 4,
+     "kind": "file.update",
+     "method": "PUT",
+     "status": "pending",
+     "url": "/files/upgrade-folder-file/"
+    }
+   ],
+   "read_after_guarded_write": {
+    "file": {
+     "autoLinkedDeviceIds": [],
+     "cardColor": null,
+     "content": "<p>Written by the current guard after the upgrade.</p>",
+     "contentUpdatedAt": "2026-11-09T18:38:41.716Z",
+     "createdAt": "2026-11-09T18:36:41.160Z",
+     "description": "",
+     "file": null,
+     "folder": "upgrade-folder",
+     "gridLayout": null,
+     "id": "upgrade-folder-file",
+     "isFavorited": false,
+     "isTrashed": false,
+     "name": "Synthetic Folder Record",
+     "plainSyncWarningAcked": false,
+     "position": 0,
+     "project": "upgrade-bridge-project",
+     "tags": [],
+     "type": "text",
+     "updatedAt": "2026-11-09T18:38:41.716Z"
+    },
+    "stats": {
+     "failedOps": 0,
+     "files": 8,
+     "folders": 1,
+     "lastMirroredAt": 1794249418190,
+     "manuscriptFiles": 0,
+     "pendingOps": 3,
+     "projects": 2,
+     "scratchpadEntries": 0,
+     "userId": "local"
+    },
+    "studio_exit": {
+     "code": 0,
+     "signal": null
+    }
+   },
+   "ui_edit_changed": {
+    "files_changed": [
+     "upgrade-folder-file"
+    ],
+    "other_files_changed": [],
+    "outbox_unchanged": false,
+    "schema_unchanged": true,
+    "tables_changed": [
+     "files",
+     "outbox"
+    ]
+   }
+  },
+  "upgrade-plain": {
+   "after_ui_edit": {
+    "editor_html": "<p class=\"editor-paragraph\">Written by the current guard after the upgrade.</p>",
+    "file": {
+     "autoLinkedDeviceIds": [],
+     "cardColor": null,
+     "content": "<p class=\"editor-paragraph\">Edit typed in Studio 1.1.3 after the upgrade.Written by the current guard after the upgrade.</p>",
+     "contentUpdatedAt": "2026-11-09T18:37:56.878Z",
+     "createdAt": "2026-11-09T18:36:41.160Z",
+     "description": "",
+     "file": null,
+     "folder": null,
+     "gridLayout": null,
+     "id": "upgrade-plain",
+     "isFavorited": false,
+     "isTrashed": false,
+     "name": "Synthetic Plain Record",
+     "plainSyncWarningAcked": false,
+     "position": 0,
+     "project": "upgrade-bridge-project",
+     "tags": [],
+     "type": "text",
+     "updatedAt": "2026-11-09T18:37:56.878Z"
+    },
+    "studio_exit": {
+     "code": 0,
+     "signal": null
+    },
+    "versions": [
+     {
+      "contentSize": 56,
+      "createdAt": "2026-11-09T18:37:26.315Z",
+      "extras": null,
+      "file": "upgrade-plain",
+      "fileName": "Synthetic Plain Record",
+      "id": "d66a952b-c073-469f-acc5-11ff409b3db9",
+      "reason": "manual",
+      "reasonDisplay": "Manual Snapshot"
+     }
+    ]
+   },
+   "boot_changed": {
+    "files_changed": [],
+    "other_files_changed": [],
+    "outbox_unchanged": true,
+    "schema_unchanged": true,
+    "tables_changed": []
+   },
+   "foreign_key_violations": 0,
+   "guard_after_ui_edit": {
+    "bytes_unchanged": true,
+    "content_after": "<p class=\"editor-paragraph\">Edit typed in Studio 1.1.3 after the upgrade.Written by the current guard after the upgrade.</p>",
+    "difference": {
+     "files_changed": [],
+     "other_files_changed": [],
+     "outbox_unchanged": true,
+     "schema_unchanged": true,
+     "tables_changed": []
+    },
+    "file_id": "upgrade-plain",
+    "label": "after_ui_edit_upgrade-plain",
+    "only_content_and_times_changed": true,
+    "preimage_version_kept": false,
+    "result": {
+     "accepted": false,
+     "reason": "Write refused: Outbox references this file regardless of status, or an encoded URL prevents ruling out a reference. Preserve the vault edit; use a clean synthetic fixture without queued work. Do not delete or rewrite outbox rows."
+    },
+    "wal_left_behind": true
+   },
+   "integrity": "ok",
+   "outbox_after_ui_edit": [
+    {
+     "body_sha256": "804d87f60242a6a91b2693f911e5fc9c66428271539dd7d72b0a6c43dfa4ff84",
+     "entity_id": "b78ab92a-1de0-4f14-932d-3f1b73351969",
+     "id": 1,
+     "kind": "project.create",
+     "method": "POST",
+     "status": "pending",
+     "url": "/projects/"
+    },
+    {
+     "body_sha256": "d7b0b1144b5c4e5da3a19db9da04c08ed8a1d080aecc321bd45c053f95f1a29b",
+     "entity_id": "2980b0db-59e5-4c90-aa8c-6966b4df8870",
+     "id": 2,
+     "kind": "file.create",
+     "method": "POST",
+     "status": "pending",
+     "url": "/projects/b78ab92a-1de0-4f14-932d-3f1b73351969/files/"
+    },
+    {
+     "body_sha256": "e9eba7812db2764545152b5cc91396f5fecbce9bb22bfb36a49791d52dae6897",
+     "entity_id": "2980b0db-59e5-4c90-aa8c-6966b4df8870",
+     "id": 3,
+     "kind": "file.update",
+     "method": "PUT",
+     "status": "pending",
+     "url": "/files/2980b0db-59e5-4c90-aa8c-6966b4df8870/"
+    },
+    {
+     "body_sha256": "99e82c698591811b1b541402c83f6f2d29516a237972a28e48a6e9638adb3447",
+     "entity_id": "upgrade-plain",
+     "id": 4,
+     "kind": "file.update",
+     "method": "PUT",
+     "status": "pending",
+     "url": "/files/upgrade-plain/"
+    }
+   ],
+   "read_after_guarded_write": {
+    "file": {
+     "autoLinkedDeviceIds": [],
+     "cardColor": null,
+     "content": "<p>Written by the current guard after the upgrade.</p>",
+     "contentUpdatedAt": "2026-11-09T18:37:26.315Z",
+     "createdAt": "2026-11-09T18:36:41.160Z",
+     "description": "",
+     "file": null,
+     "folder": null,
+     "gridLayout": null,
+     "id": "upgrade-plain",
+     "isFavorited": false,
+     "isTrashed": false,
+     "name": "Synthetic Plain Record",
+     "plainSyncWarningAcked": false,
+     "position": 0,
+     "project": "upgrade-bridge-project",
+     "tags": [],
+     "type": "text",
+     "updatedAt": "2026-11-09T18:37:26.315Z"
+    },
+    "stats": {
+     "failedOps": 0,
+     "files": 8,
+     "folders": 1,
+     "lastMirroredAt": 1794249418190,
+     "manuscriptFiles": 0,
+     "pendingOps": 3,
+     "projects": 2,
+     "scratchpadEntries": 0,
+     "userId": "local"
+    },
+    "studio_exit": {
+     "code": 0,
+     "signal": null
+    }
+   },
+   "ui_edit_changed": {
+    "files_changed": [
+     "upgrade-plain"
+    ],
+    "other_files_changed": [],
+    "outbox_unchanged": false,
+    "schema_unchanged": true,
+    "tables_changed": [
+     "files",
+     "outbox"
+    ]
+   }
+  },
+  "upgrade-studio-html": {
+   "after_ui_edit": {
+    "editor_html": "<p class=\"editor-paragraph\">Guarded first paragraph after the upgrade.</p><p class=\"editor-paragraph\">Guarded second paragraph after the upgrade.</p>",
+    "file": {
+     "autoLinkedDeviceIds": [],
+     "cardColor": null,
+     "content": "<p class=\"editor-paragraph\">Edit typed in Studio 1.1.3 after the upgrade.Guarded first paragraph after the upgrade.</p><p class=\"editor-paragraph\">Guarded second paragraph after the upgrade.</p>",
+     "contentUpdatedAt": "2026-11-09T18:38:34.573Z",
+     "createdAt": "2026-11-09T18:36:41.160Z",
+     "description": "",
+     "file": null,
+     "folder": null,
+     "gridLayout": null,
+     "id": "upgrade-studio-html",
+     "isFavorited": false,
+     "isTrashed": false,
+     "name": "Synthetic Studio HTML Record",
+     "plainSyncWarningAcked": false,
+     "position": 0,
+     "project": "upgrade-bridge-project",
+     "tags": [],
+     "type": "text",
+     "updatedAt": "2026-11-09T18:38:34.573Z"
+    },
+    "studio_exit": {
+     "code": 0,
+     "signal": null
+    },
+    "versions": [
+     {
+      "contentSize": 153,
+      "createdAt": "2026-11-09T18:38:04.039Z",
+      "extras": null,
+      "file": "upgrade-studio-html",
+      "fileName": "Synthetic Studio HTML Record",
+      "id": "eaeaa7db-4353-49f1-baf8-b2ce36c5acd0",
+      "reason": "manual",
+      "reasonDisplay": "Manual Snapshot"
+     }
+    ]
+   },
+   "boot_changed": {
+    "files_changed": [],
+    "other_files_changed": [],
+    "outbox_unchanged": true,
+    "schema_unchanged": true,
+    "tables_changed": []
+   },
+   "foreign_key_violations": 0,
+   "guard_after_ui_edit": {
+    "bytes_unchanged": true,
+    "content_after": "<p class=\"editor-paragraph\">Edit typed in Studio 1.1.3 after the upgrade.Guarded first paragraph after the upgrade.</p><p class=\"editor-paragraph\">Guarded second paragraph after the upgrade.</p>",
+    "difference": {
+     "files_changed": [],
+     "other_files_changed": [],
+     "outbox_unchanged": true,
+     "schema_unchanged": true,
+     "tables_changed": []
+    },
+    "file_id": "upgrade-studio-html",
+    "label": "after_ui_edit_upgrade-studio-html",
+    "only_content_and_times_changed": true,
+    "preimage_version_kept": false,
+    "result": {
+     "accepted": false,
+     "reason": "Write refused: Outbox references this file regardless of status, or an encoded URL prevents ruling out a reference. Preserve the vault edit; use a clean synthetic fixture without queued work. Do not delete or rewrite outbox rows."
+    },
+    "wal_left_behind": true
+   },
+   "integrity": "ok",
+   "outbox_after_ui_edit": [
+    {
+     "body_sha256": "804d87f60242a6a91b2693f911e5fc9c66428271539dd7d72b0a6c43dfa4ff84",
+     "entity_id": "b78ab92a-1de0-4f14-932d-3f1b73351969",
+     "id": 1,
+     "kind": "project.create",
+     "method": "POST",
+     "status": "pending",
+     "url": "/projects/"
+    },
+    {
+     "body_sha256": "d7b0b1144b5c4e5da3a19db9da04c08ed8a1d080aecc321bd45c053f95f1a29b",
+     "entity_id": "2980b0db-59e5-4c90-aa8c-6966b4df8870",
+     "id": 2,
+     "kind": "file.create",
+     "method": "POST",
+     "status": "pending",
+     "url": "/projects/b78ab92a-1de0-4f14-932d-3f1b73351969/files/"
+    },
+    {
+     "body_sha256": "e9eba7812db2764545152b5cc91396f5fecbce9bb22bfb36a49791d52dae6897",
+     "entity_id": "2980b0db-59e5-4c90-aa8c-6966b4df8870",
+     "id": 3,
+     "kind": "file.update",
+     "method": "PUT",
+     "status": "pending",
+     "url": "/files/2980b0db-59e5-4c90-aa8c-6966b4df8870/"
+    },
+    {
+     "body_sha256": "9f4d9c2d6bd18d4d97cebd40cfd04af2e5e8076cf519b2e8cef3e9db50b19c48",
+     "entity_id": "upgrade-studio-html",
+     "id": 4,
+     "kind": "file.update",
+     "method": "PUT",
+     "status": "pending",
+     "url": "/files/upgrade-studio-html/"
+    }
+   ],
+   "read_after_guarded_write": {
+    "file": {
+     "autoLinkedDeviceIds": [],
+     "cardColor": null,
+     "content": "<p class=\"editor-paragraph\">Guarded first paragraph after the upgrade.</p><p class=\"editor-paragraph\">Guarded second paragraph after the upgrade.</p>",
+     "contentUpdatedAt": "2026-11-09T18:38:04.039Z",
+     "createdAt": "2026-11-09T18:36:41.160Z",
+     "description": "",
+     "file": null,
+     "folder": null,
+     "gridLayout": null,
+     "id": "upgrade-studio-html",
+     "isFavorited": false,
+     "isTrashed": false,
+     "name": "Synthetic Studio HTML Record",
+     "plainSyncWarningAcked": false,
+     "position": 0,
+     "project": "upgrade-bridge-project",
+     "tags": [],
+     "type": "text",
+     "updatedAt": "2026-11-09T18:38:04.039Z"
+    },
+    "stats": {
+     "failedOps": 0,
+     "files": 8,
+     "folders": 1,
+     "lastMirroredAt": 1794249418190,
+     "manuscriptFiles": 0,
+     "pendingOps": 3,
+     "projects": 2,
+     "scratchpadEntries": 0,
+     "userId": "local"
+    },
+    "studio_exit": {
+     "code": 0,
+     "signal": null
+    }
+   },
+   "ui_edit_changed": {
+    "files_changed": [
+     "upgrade-studio-html"
+    ],
+    "other_files_changed": [],
+    "outbox_unchanged": false,
+    "schema_unchanged": true,
+    "tables_changed": [
+     "files",
+     "outbox"
+    ]
+   }
+  }
+ },
+ "schema_migration": {
+  "added": [
+   [
+    "index",
+    "idx_comments_file"
+   ],
+   [
+    "table",
+    "card_catalog"
+   ],
+   [
+    "table",
+    "card_installs"
+   ],
+   [
+    "table",
+    "comments"
+   ]
+  ],
+  "definition_changed": [],
+  "removed": []
+ },
+ "schema_vs_tested": {
+  "extra_objects": [],
+  "identical_to_tested": true,
+  "missing_objects": [],
+  "object_count": 28,
+  "tested_object_count": 28,
+  "text_differs": []
+ },
+ "seed": {
+  "bridge_ids": [
+   "upgrade-plain",
+   "upgrade-studio-html",
+   "upgrade-folder-file",
+   "upgrade-rich",
+   "upgrade-extra-keys",
+   "upgrade-nontext",
+   "upgrade-in-ui-project"
+  ],
+  "project_id": "b78ab92a-1de0-4f14-932d-3f1b73351969",
+  "put_files": [
+   {
+    "ok": true
+   },
+   {
+    "ok": true
+   },
+   {
+    "ok": true
+   },
+   {
+    "ok": true
+   },
+   {
+    "ok": true
+   },
+   {
+    "ok": true
+   },
+   {
+    "ok": true
+   }
+  ],
+  "put_folder": {
+   "ok": true
+  },
+  "put_project": {
+   "ok": true
+  },
+  "studio_snapshot": {
+   "ok": true,
+   "version": {
+    "content": "<p class=\"editor-paragraph\">First synthetic paragraph typed in the older Studio build.</p>",
+    "contentSize": 94,
+    "createdAt": "2026-11-09T18:36:52.177Z",
+    "extras": null,
+    "file": "2980b0db-59e5-4c90-aa8c-6966b4df8870",
+    "fileName": "Untitled Text",
+    "id": "db1ab93f-b458-4920-8907-cbd160fd0de3",
+    "reason": "manual",
+    "reasonDisplay": "Manual Snapshot"
+   }
+  },
+  "ui_file_id": "2980b0db-59e5-4c90-aa8c-6966b4df8870"
+ },
+ "upgrade_difference": {
+  "files_changed": [],
+  "other_files_changed": [],
+  "outbox_unchanged": true,
+  "schema_unchanged": false,
+  "tables_changed": [
+   "card_catalog",
+   "card_installs",
+   "comments"
+  ]
+ }
+}
