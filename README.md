@@ -85,6 +85,9 @@ notes nor state. Its `written` label means “would write” in that mode.
 
 - Export only. There is no import back into Studio; use Studio's own
   Markdown import for that.
+  [`experiments/studio_writeback/`](experiments/studio_writeback/README.md)
+  records research into writing back on a disposable library; it is not a
+  feature and must not be pointed at a real library.
 - Relies on Studio's undocumented internal schema, which may change.
 - Renamed or deleted Studio items do not remove old exported files.
 - Names are sanitized but collisions are not resolved. Duplicate names in
