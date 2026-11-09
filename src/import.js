@@ -2,6 +2,7 @@ const { execFile } = require("node:child_process");
 const { promisify } = require("node:util");
 const { realpath } = require("node:fs/promises");
 const { parseDocument } = require("htmlparser2");
+const { htmlToMarkdown, markdownToHtml } = require("./text-codec");
 const exec = promisify(execFile);
 
 // A single SELECT holds one SQLite read snapshot across all tables, including WAL.
@@ -99,9 +100,14 @@ async function sync({ database, folder, vault, vaultId, state, save }) {
         if (current === null) { reports.push({ id, status: "missing", path: prior.path }); continue; }
         if (current === content) { reports.push({ id, status: current === prior.baseline ? "unchanged" : "changed", path: prior.path, ...(current === prior.baseline ? {} : { detail: "Baseline differs; manual recovery required" }) }); continue; }
         if (current !== prior.baseline) {
-          // Conversion is not proven reversible, and direct Studio writes are unsafe:
-          // pending outbox entries and future cloud sync cannot be controlled here.
-          reports.push({ id, status: "changed", path: prior.path, detail: "Vault edit preserved; Studio write-back is unavailable" }); continue;
+          // Classify a narrow reversible subset without enabling database writes.
+          const prefix = metadata(row.id, row.data.updatedAt);
+          const original = htmlToMarkdown(row.data.content);
+          const edited = current.startsWith(prefix) ? markdownToHtml(current.slice(prefix.length)) : null;
+          const reversible = original !== null && prefix + original === prior.baseline && edited !== null;
+          reports.push({ id, status: "changed", path: prior.path, detail: reversible
+            ? "Vault edit preserved; reversible text, but closed-Studio write guard is unavailable"
+            : "Vault edit preserved; conversion is unsupported or lossy and Studio write-back is unavailable" }); continue;
         }
         // Verify the source snapshot again, then compare and replace the note atomically.
         const fresh = (await readLibrary(library)).find(r => r.kind === row.kind && String(r.id) === String(row.id));

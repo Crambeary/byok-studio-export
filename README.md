@@ -31,8 +31,13 @@ the imported content and record paths per database path, vault path, destination
 data; moving a database or vault, upgrading from the previous import-only
 state, or removing state starts a separate import and can create additional
 notes. Do not edit or delete that state if you
-want to retain the mapping. Studio write-back is disabled: closed-Studio status and safety against stale
-outbox entries or later cloud sync cannot be established. No Studio database
+want to retain the mapping. Studio write-back is disabled: there is no guard that
+can establish Studio remains closed throughout a database transaction. A process
+list or SQLite lock alone cannot prevent Studio starting concurrently. The narrow
+literal-paragraph codec identifies some reversible edits but does not enable writes.
+Pending outbox operations may contain stale text and must be checked before any
+future write-back; the experiment observed this hazard. Future Studio sync behavior
+is outside the plugin's control and has not been verified. No Studio database
 writes are performed. A state-save failure after a note update requires manual
 recovery; the prior baseline is retained.
 
