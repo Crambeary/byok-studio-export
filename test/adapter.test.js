@@ -84,10 +84,12 @@ test("missing and corrupt marker are distinguished through filesystem", async t 
   const h = await harness(t); await h.run();
   const marker = [...h.files.keys()].find(p => p.includes(".byok-sync-"));
   assert.ok(marker);
+  const originalMarker = h.files.get(marker);
   h.files.set(marker, "{"); await h.run();
   assert.match(h.notices.at(-1), /Invalid import marker/);
   h.files.delete(marker); await h.run();
-  assert.ok(h.reports.at(-1).some(r => r.status === "unchanged"));
+  assert.match(h.notices.at(-1), /Import marker missing/);
+  h.files.set(marker, originalMarker);
   h.plugin.data.state = { version: 1, scopes: {} };
   h.files.set(dataPath, JSON.stringify(h.plugin.data)); await h.run();
   assert.match(h.notices.at(-1), /state missing/);
