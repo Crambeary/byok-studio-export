@@ -45,6 +45,9 @@ c=sqlite3.connect(sys.argv[1]); d=json.loads(c.execute("select data from files w
   assert.match(notes.get(a), /Studio edit/);
   const baseline = state.scopes[JSON.stringify([db, tmp, 'Target'])]['file:a'].baseline;
   assert.equal(baseline, notes.get(a));
+  notes.set(a, baseline.replace('Studio edit', 'Vault edit'));
+  assert.ok((await run()).some(r => r.id === 'file:a' && r.status === 'changed' && r.detail.includes('reversible text')));
+  assert.equal(state.scopes[JSON.stringify([db, tmp, 'Target'])]['file:a'].baseline, baseline);
   notes.set(a, 'my edit');
   assert.ok((await run()).some(r => r.id === 'file:a' && r.status === 'changed'));
   assert.equal(notes.get(a), 'my edit');
