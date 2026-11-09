@@ -142,3 +142,27 @@ notes nor state. Its `written` label means “would write” in that mode.
 ## License
 
 MIT
+
+### Import recovery and editor safety
+
+Close all Markdown editors before importing. The plugin refuses note mutations while
+any Markdown view is open because unsaved editor buffers cannot be reliably compared
+with vault files. Do not open an editor during an import. A per-destination hidden
+`.byok-sync-*.json` marker detects a missing scope in plugin data; keep it with the
+vault and back up both the vault and the plugin's `data.json`. If state or the marker
+is corrupt, restore the matching files from a backup before retrying. Do not delete
+markers to bypass a refusal. Loss of both the marker and state cannot be detected.
+
+A first import saves a reservation before creating a note. After an interrupted save,
+retry with the same plugin data: an unchanged reserved note is recovered, while a
+note that differs is left untouched for manual inspection. Restore a matching backup
+if the reservation itself was lost. Existing imports made before markers were added
+are protected once run with this version; state already lost before that cannot be
+identified automatically. Note creation still saves state per record to preserve
+these recovery guarantees, so large imports can remain slow.
+
+Studio 1.1.3 has been observed creating local projects with JSON `user: null`
+([synthetic upgrade evidence](experiments/studio_upgrade_compat/README.md)), but
+that experiment did not prove that accepting null preserves the account ownership
+guard. Write-back therefore continues to refuse it; disposable-only and outbox
+checks remain in force.
