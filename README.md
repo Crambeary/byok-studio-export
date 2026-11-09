@@ -31,14 +31,10 @@ the imported content and record paths per database path, vault path, destination
 data; moving a database or vault, upgrading from the previous import-only
 state, or removing state starts a separate import and can create additional
 notes. Do not edit or delete that state if you
-want to retain the mapping. Studio write-back is disabled: there is no guard that
-can establish Studio remains closed throughout a database transaction. A process
-list or SQLite lock alone cannot prevent Studio starting concurrently. The narrow
-literal-paragraph codec identifies some reversible edits but does not enable writes.
+want to retain the mapping. Experimental write-back is restricted to explicitly marked disposable libraries, using the Linux Studio 1.1.3 WAL exclusive-lock guard. The setting requires the tested Studio app.asar. Library migration provenance and further boundary tests remain unresolved, so this is not enabled for real libraries. The narrow literal-paragraph codec limits eligible edits.
 Pending outbox operations may contain stale text and must be checked before any
 future write-back; the experiment observed this hazard. Future Studio sync behavior
-is outside the plugin's control and has not been verified. No Studio database
-writes are performed. A state-save failure after a note update requires manual
+is outside the plugin's control and has not been verified. No unmarked Studio database is written. A state-save failure after a note update requires manual
 recovery; the prior baseline is retained.
 
 Run `npm test` for the disposable SQLite/WAL sync-boundary tests. The original

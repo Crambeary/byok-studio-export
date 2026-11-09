@@ -2,6 +2,7 @@ const { execFile } = require("node:child_process");
 const { promisify } = require("node:util");
 const { realpath } = require("node:fs/promises");
 const { parseDocument } = require("htmlparser2");
+const { guardedWrite } = require("./writeback");
 const { htmlToMarkdown, markdownToHtml } = require("./text-codec");
 const exec = promisify(execFile);
 
@@ -12,7 +13,7 @@ async function readLibrary(path) {
     UNION ALL SELECT 'file', id, project_id, folder_id, type, is_trashed, data FROM files
     UNION ALL SELECT 'manuscript', id, project_id, folder_id, 'manuscript', is_trashed, data FROM manuscript_files;`;
   const { stdout } = await exec("sqlite3", ["-readonly", "-json", path, sql], { maxBuffer: 128 * 1024 * 1024 });
-  return JSON.parse(stdout || "[]").map(row => ({ ...row, data: JSON.parse(row.data) }));
+  return JSON.parse(stdout || "[]").map(row => ({ ...row, rawData: row.data, data: JSON.parse(row.data) }));
 }
 function safe(value) {
   const name = String(value || "Untitled").replace(/[\\/:*?"<>|#^\[\]\x00-\x1f]/g, "-").trim().replace(/[. ]+$/g, "");
@@ -47,7 +48,7 @@ function destination(value) {
   if (parts.some(p => p === "." || p === ".." || safe(p) !== p)) throw new Error("Invalid destination folder");
   return parts.join("/");
 }
-async function sync({ database, folder, vault, vaultId, state, save }) {
+async function sync({ database, folder, vault, vaultId, state, save, studioAsar }) {
   const root = destination(folder);
   const library = await realpath(database);
   const rows = await readLibrary(library); // no vault mutations until the source has been read
@@ -105,9 +106,23 @@ async function sync({ database, folder, vault, vaultId, state, save }) {
           const original = htmlToMarkdown(row.data.content);
           const edited = current.startsWith(prefix) ? markdownToHtml(current.slice(prefix.length)) : null;
           const reversible = original !== null && prefix + original === prior.baseline && edited !== null;
-          reports.push({ id, status: "changed", path: prior.path, detail: reversible
-            ? "Vault edit preserved; reversible text, but closed-Studio write guard is unavailable"
-            : "Vault edit preserved; conversion is unsupported or lossy and Studio write-back is unavailable" }); continue;
+          if (!reversible || !studioAsar) {
+            reports.push({ id, status: "changed", path: prior.path, detail: reversible
+              ? "Vault edit preserved; reversible text, but closed-Studio write guard is unavailable"
+              : "Vault edit preserved; conversion is unsupported or lossy and Studio write-back is unavailable" }); continue;
+          }
+          if (typeof vault.compareAndWrite !== "function" || await vault.read(prior.path) !== current) {
+            reports.push({ id, status: "changed-during-sync", path: prior.path }); continue;
+          }
+          const stamp = await guardedWrite(library, row, edited, studioAsar);
+          const applied = metadata(row.id, stamp) + current.slice(prefix.length);
+          if (!await vault.compareAndWrite(prior.path, current, applied)) {
+            reports.push({ id, status: "failed", path: prior.path, detail: "Studio updated, but vault changed; manual recovery required" }); continue;
+          }
+          const oldBaseline = prior.baseline;
+          prior.baseline = applied;
+          try { await save(state); } catch (error) { prior.baseline = oldBaseline; throw error; }
+          reports.push({ id, status: "written-back", path: prior.path }); continue;
         }
         // Verify the source snapshot again, then compare and replace the note atomically.
         const fresh = (await readLibrary(library)).find(r => r.kind === row.kind && String(r.id) === String(row.id));
