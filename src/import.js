@@ -48,7 +48,8 @@ function destination(value) {
   if (parts.some(p => p === "." || p === ".." || safe(p) !== p)) throw new Error("Invalid destination folder");
   return parts.join("/");
 }
-async function sync({ database, folder, vault, vaultId, state, save, studioAsar }) {
+function createSync(write = guardedWrite) {
+return async function sync({ database, folder, vault, vaultId, state, save, studioAsar }) {
   const root = destination(folder);
   const library = await realpath(database);
   const rows = await readLibrary(library); // no vault mutations until the source has been read
@@ -114,7 +115,7 @@ async function sync({ database, folder, vault, vaultId, state, save, studioAsar 
           if (typeof vault.compareAndWrite !== "function" || await vault.read(prior.path) !== current) {
             reports.push({ id, status: "changed-during-sync", path: prior.path }); continue;
           }
-          const stamp = await guardedWrite(library, row, edited, studioAsar);
+          const stamp = await write(library, row, edited, studioAsar);
           const applied = metadata(row.id, stamp) + current.slice(prefix.length);
           if (!await vault.compareAndWrite(prior.path, current, applied)) {
             reports.push({ id, status: "failed", path: prior.path, detail: "Studio updated, but vault changed; manual recovery required" }); continue;
@@ -152,4 +153,6 @@ async function sync({ database, folder, vault, vaultId, state, save, studioAsar 
   for (const id of Object.keys(entries)) if (!seen.has(id)) reports.push({ id, status: "deleted", path: entries[id].path });
   return reports;
 }
-module.exports = { sync, readLibrary, destination };
+}
+const sync = createSync();
+module.exports = { sync, createSync, readLibrary, destination };

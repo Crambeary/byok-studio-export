@@ -31,13 +31,13 @@ the imported content and record paths per database path, vault path, destination
 data; moving a database or vault, upgrading from the previous import-only
 state, or removing state starts a separate import and can create additional
 notes. Do not edit or delete that state if you
-want to retain the mapping. Experimental write-back is restricted to explicitly marked disposable libraries, using the Linux Studio 1.1.3 WAL exclusive-lock guard. The setting requires the tested Studio app.asar. Library migration provenance and further boundary tests remain unresolved, so this is not enabled for real libraries. The narrow literal-paragraph codec limits eligible edits.
+want to retain the mapping. Experimental write-back is restricted to explicitly marked disposable libraries, using the Linux Studio 1.1.3 WAL exclusive-lock guard. The setting requires the tested Studio app.asar. The transaction checks the exact schema recorded in `experiments/studio_writeback/evidence/schema.sql`, including rejecting extra objects. This does not establish migration provenance: the experiment did not record migration history or show how older libraries reach this schema, and matching the installed binary cannot prove which build last migrated a library. Real libraries remain ineligible. The narrow literal-paragraph codec limits eligible edits.
 Pending outbox operations may contain stale text and must be checked before any
 future write-back; the experiment observed this hazard. Future Studio sync behavior
 is outside the plugin's control and has not been verified. No unmarked Studio database is written. A state-save failure after a note update requires manual
 recovery; the prior baseline is retained.
 
-Run `npm test` for the disposable SQLite/WAL sync-boundary tests. The original
+Run `npm test` for the disposable SQLite/WAL sync-boundary tests; these run without the proprietary Studio binary. The schema allowlist in `src/tested-schema.json` is reproducible by executing the checked-in schema in SQLite and selecting `type, name, sql` from `sqlite_master` excluding `sqlite_%`, ordered by type and name. The original
 Python exporter described below remains separate from the plugin.
 
 One-way export of your [BYOK Studio](https://byok.io/studio) desktop library to
