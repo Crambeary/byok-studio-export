@@ -1,0 +1,261 @@
+{
+ "cli_sqlite": "3.53.4",
+ "python_sqlite": "3.53.4",
+ "results": {
+  "begin_exclusive_alone_is_not_a_guard": {
+   "note": "BEGIN EXCLUSIVE without the pragma succeeded while another connection was open",
+   "pass": true
+  },
+  "begin_immediate_is_not_a_guard": {
+   "note": "BEGIN IMMEDIATE succeeded while another connection was open",
+   "pass": true
+  },
+  "compare_and_swap_detects_change": {
+   "pass": true,
+   "reason": "changed-since-read"
+  },
+  "guard_after_clean_close": {
+   "acquired": true,
+   "ms": 0.4,
+   "pass": true
+  },
+  "guard_refused_during_studio_write_transaction": {
+   "acquired": false,
+   "ms": 0.1,
+   "pass": true,
+   "reason": "library-in-use",
+   "sqlite": "database is locked"
+  },
+  "guard_refused_while_idle_connection_open": {
+   "acquired": false,
+   "ms": 0.2,
+   "pass": true,
+   "reason": "library-in-use",
+   "sqlite": "database is locked"
+  },
+  "idle_studio_connection_holds_a_file_lock": {
+   "holder_pid": "61",
+   "pass": true,
+   "proc_locks": [
+    [
+     "2:",
+     "POSIX",
+     "ADVISORY",
+     "READ",
+     "61",
+     "00:3c:265868",
+     "1073741826",
+     "1073742335"
+    ]
+   ],
+   "sqlite_of_studio": "3.53.4"
+  },
+  "new_studio_errors_if_guard_outlasts_busy_timeout": {
+   "code": "SQLITE_BUSY",
+   "error": "database is locked",
+   "event": "open",
+   "ms": 5012,
+   "ok": false,
+   "pass": true,
+   "writer_errors": []
+  },
+  "new_studio_waits_then_sees_commit": {
+   "content_seen": "written under guard",
+   "event": "open",
+   "ms": 1534,
+   "ok": true,
+   "pass": true,
+   "pid": 83,
+   "sqlite": "3.53.4",
+   "writer_errors": []
+  },
+  "no_writer_can_interleave_during_guard": {
+   "pass": true,
+   "read": "database is locked",
+   "write": "database is locked"
+  },
+  "outbox_matrix": {
+   "cases": {
+    "body_reference_only": {
+     "pass": true,
+     "refused": "stale-outbox",
+     "row_unchanged": true,
+     "rows": [
+      [
+       1,
+       "items.reorder",
+       "pending"
+      ]
+     ],
+     "wal_existed_before": false
+    },
+    "failed_update_entity": {
+     "pass": true,
+     "refused": "stale-outbox",
+     "row_unchanged": true,
+     "rows": [
+      [
+       1,
+       "file.update",
+       "failed"
+      ]
+     ],
+     "wal_existed_before": false
+    },
+    "malformed_body": {
+     "pass": true,
+     "refused": "stale-outbox",
+     "row_unchanged": true,
+     "rows": [
+      [
+       1,
+       "file.update",
+       "pending"
+      ]
+     ],
+     "wal_existed_before": false
+    },
+    "no_rows": {
+     "pass": true,
+     "refused": null,
+     "row_unchanged": false
+    },
+    "other_entity_only": {
+     "pass": true,
+     "refused": null,
+     "row_unchanged": false
+    },
+    "pending_create": {
+     "pass": true,
+     "refused": "stale-outbox",
+     "row_unchanged": true,
+     "rows": [
+      [
+       1,
+       "file.create",
+       "pending"
+      ]
+     ],
+     "wal_existed_before": false
+    },
+    "pending_update_entity": {
+     "pass": true,
+     "refused": "stale-outbox",
+     "row_unchanged": true,
+     "rows": [
+      [
+       1,
+       "file.update",
+       "pending"
+      ]
+     ],
+     "wal_existed_before": false
+    },
+    "temp_id_reference": {
+     "pass": true,
+     "refused": "stale-outbox",
+     "row_unchanged": true,
+     "rows": [
+      [
+       1,
+       "file.update",
+       "pending"
+      ]
+     ],
+     "wal_existed_before": false
+    },
+    "url_reference_only": {
+     "pass": true,
+     "refused": "stale-outbox",
+     "row_unchanged": true,
+     "rows": [
+      [
+       1,
+       "items.reorder",
+       "pending"
+      ]
+     ],
+     "wal_existed_before": false
+    }
+   },
+   "pass": true
+  },
+  "plugin_readonly_cli_also_blocks_guard_briefly": {
+   "after_read": {
+    "acquired": true,
+    "ms": 0.2
+   },
+   "during_read": {
+    "acquired": false,
+    "ms": 0.1,
+    "reason": "library-in-use",
+    "sqlite": "database is locked"
+   },
+   "pass": true
+  },
+  "pragma_after_earlier_read_still_refused": {
+   "begin_exclusive": "database is locked",
+   "pass": true
+  },
+  "rollback_journal_database_is_refused": {
+   "idle_probe": 0,
+   "pass": true,
+   "result": "not-wal"
+  },
+  "sqlite3_cli_guard": {
+   "alone": {
+    "exit": 0,
+    "stdout": "exclusive\nacquired"
+   },
+   "pass": true,
+   "with_studio_like": {
+    "exit": 1,
+    "stderr": "Error near line 3: database is locked"
+   }
+  },
+  "sqlite3_cli_transactional_compare_and_swap": {
+   "changed_since_read": {
+    "exit": 1,
+    "ok": true,
+    "stderr": "Error near line 9: CHECK constraint failed: ok = 1"
+   },
+   "clear": {
+    "exit": 0,
+    "ok": true
+   },
+   "pass": true,
+   "stale_outbox": {
+    "exit": 1,
+    "ok": true,
+    "stderr": "Error near line 5: CHECK constraint failed: ok = 1"
+   },
+   "studio_like_running": {
+    "exit": 1,
+    "ok": true,
+    "stderr": "Error near line 3: database is locked"
+   }
+  },
+  "stale_lock_free_after_studio_sigkill_and_wal_recovered": {
+   "content_recovered": "written by studio-like process",
+   "guard": {
+    "acquired": true,
+    "ms": 0.4
+   },
+   "pass": true,
+   "wal_bytes_at_kill": 4152
+  },
+  "write_commits_when_clear": {
+   "content_seen_by_studio_like": "written under guard",
+   "pass": true
+  },
+  "writer_killed_mid_transaction_leaves_library_intact": {
+   "guard_after": {
+    "acquired": true,
+    "ms": 0.3
+   },
+   "integrity": "ok",
+   "pass": true,
+   "writer_exit": -9
+  }
+ }
+}
