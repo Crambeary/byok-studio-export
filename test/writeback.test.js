@@ -20,7 +20,7 @@ test('guarded sync on a disposable WAL library', async t => {
     INSERT INTO projects(id,data,mirrored_at) VALUES('p','{"name":"Project"}',0);
     INSERT INTO files(id,project_id,type,data,mirrored_at) VALUES('a','p','text','{"id":"a","name":"File","content":"<p>Hello</p>"}',0);`);
   const notes = new Map(), state = { version: 1, scopes: {} };
-  const vault = { exists: async p => notes.has(p), read: async p => notes.get(p) ?? null,
+  const vault = { safeToMutate: async () => true, exists: async p => notes.has(p), read: async p => notes.get(p) ?? null,
     create: async (p,c) => notes.set(p,c), compareAndWrite: async (p,a,b) => { if (notes.get(p)!==a) return false; notes.set(p,b); return true; } };
   let write = createGuardedWrite(async () => {});
   const run = (extra = {}) => createSync((...args) => write(...args))({ database: db, folder: 'Target', vault, vaultId: dir, state, studioAsar: 'synthetic', save: async () => {}, ...extra });
@@ -31,7 +31,7 @@ test('guarded sync on a disposable WAL library', async t => {
   let reads = 0;
   vault.read = async p => {
     const value = await originalRead(p);
-    if (++reads === 2) sql("UPDATE files SET data=json_set(data,'$.content','<p>Racing source</p>') WHERE id='a'");
+    if (p === file && ++reads === 2) sql("UPDATE files SET data=json_set(data,'$.content','<p>Racing source</p>') WHERE id='a'");
     return value;
   };
   assert.ok((await run()).some(r => r.status === 'failed'));
@@ -40,7 +40,7 @@ test('guarded sync on a disposable WAL library', async t => {
   sql("UPDATE files SET data=json_set(data,'$.content','<p>Hello</p>') WHERE id='a'");
   vault.read = originalRead;
   reads = 0;
-  vault.read = async p => { const value = await originalRead(p); if (++reads === 2) { notes.set(p, 'racing vault edit'); return 'racing vault edit'; } return value; };
+  vault.read = async p => { const value = await originalRead(p); if (p === file && ++reads === 2) { notes.set(p, 'racing vault edit'); return 'racing vault edit'; } return value; };
   assert.ok((await run()).some(r => r.status === 'changed-during-sync'));
   assert.equal(notes.get(file), 'racing vault edit');
   vault.read = originalRead;

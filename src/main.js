@@ -13,16 +13,21 @@ module.exports = class ByokImport extends Plugin {
     try {
       const app = this.app;
       const vault = {
+        // Open Markdown views may hold edits that vault.read/process cannot observe.
+        // Refuse all mutations while any editor is open, including during callbacks.
+        safeToMutate: async () => typeof app.workspace.getLeavesOfType === "function" && app.workspace.getLeavesOfType("markdown").length === 0,
         exists: async path => !!app.vault.getAbstractFileByPath(path),
         read: async path => { const f = app.vault.getAbstractFileByPath(path); return f instanceof TFile ? app.vault.read(f) : null; },
         compareAndWrite: async (path, expected, content) => {
+          if (app.workspace.getLeavesOfType("markdown").length) return false;
           const f = app.vault.getAbstractFileByPath(path);
           if (!(f instanceof TFile)) return false;
           let written = false;
-          await app.vault.process(f, current => { if (current !== expected) return current; written = true; return content; });
+          await app.vault.process(f, current => { if (app.workspace.getLeavesOfType("markdown").length || current !== expected) return current; written = true; return content; });
           return written;
         },
         create: async (path, content) => {
+          if (app.workspace.getLeavesOfType("markdown").length) throw Error("Close all Markdown editors before importing");
           const parts = path.split("/"); parts.pop(); let dir = "";
           for (const part of parts) { dir = normalizePath(dir ? `${dir}/${part}` : part); if (!app.vault.getAbstractFileByPath(dir)) await app.vault.createFolder(dir); }
           await app.vault.create(path, content);
