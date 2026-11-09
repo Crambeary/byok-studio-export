@@ -73,6 +73,29 @@ test('guarded sync on a disposable WAL library', async t => {
   assert.equal(state.scopes[JSON.stringify([db, dir, 'Target'])]['file:a'].baseline, beforeBaseline);
   assert.equal(sql("SELECT json_extract(data,'$.content') FROM files WHERE id='a';").trim(), '<p>Second edit</p>');
   assert.match(notes.get(file), /Second edit/);
+  assert.ok((await run()).some(r => r.status === 'recovered'));
+  assert.equal(state.scopes[JSON.stringify([db, dir, 'Target'])]['file:a'].studioContent, '<p>Second edit</p>');
+
+  // Studio committed but the vault changed before its metadata could be updated.
+  const savedSecond = notes.get(file);
+  notes.set(file, savedSecond.replace('Second edit', 'Third edit'));
+  const compare = vault.compareAndWrite;
+  vault.compareAndWrite = async () => false;
+  assert.ok((await run()).some(r => r.status === 'failed'));
+  assert.equal(sql("SELECT json_extract(data,'$.content') FROM files WHERE id='a';").trim(), '<p>Third edit</p>');
+  vault.compareAndWrite = compare;
+  assert.ok((await run()).some(r => r.status === 'recovered'));
+  assert.match(notes.get(file), /Third edit/);
+
+  // A divergent vault edit after the partial write must never be adopted.
+  const savedThird = notes.get(file);
+  notes.set(file, savedThird.replace('Third edit', 'Fourth edit'));
+  vault.compareAndWrite = async (p, a, b) => { notes.set(p, 'independent vault edit'); return false; };
+  assert.ok((await run()).some(r => r.status === 'failed'));
+  vault.compareAndWrite = compare;
+  assert.ok((await run()).some(r => r.status === 'changed'));
+  assert.equal(notes.get(file), 'independent vault edit');
+  assert.equal(state.scopes[JSON.stringify([db, dir, 'Target'])]['file:a'].studioContent, '<p>Third edit</p>');
 });
 
 test('compatibility fails closed for unsupported environments', async () => {
