@@ -27,6 +27,16 @@ c.commit(); print('ready',flush=True); sys.stdin.readline(); c.close()`;
   const vault = { safeToMutate: async () => true, exists: async p => notes.has(p), read: async p => notes.get(p) ?? null, create: async (p, c) => { assert.ok(!notes.has(p)); notes.set(p, c); }, compareAndWrite: async (p, expected, content) => { if (notes.get(p) !== expected) return false; notes.set(p, content); return true; } };
   const state = { version: 1, scopes: {} }; let saves = 0;
   const run = () => sync({ database: db, folder: 'Target', vault, vaultId: tmp, state, save: async () => { saves++; } });
+  // Failure at the first reservation save must remain restartable, including peers.
+  const crashNotes = new Map(); let crashDurable = { version: 1, scopes: {} }, crashSaves = 0;
+  const crashVault = { safeToMutate: async () => true, exists: async p => crashNotes.has(p), read: async p => crashNotes.get(p) ?? null,
+    create: async (p, c) => { if (crashNotes.has(p)) throw Error('exists'); crashNotes.set(p, c); },
+    compareAndWrite: async (p, a, b) => { if (crashNotes.get(p) !== a) return false; crashNotes.set(p, b); return true; } };
+  const crashRun = (state, save) => sync({ database: db, folder: 'Crash', vault: crashVault, vaultId: tmp, state, save });
+  const failedReservation = await crashRun(structuredClone(crashDurable), async value => { if (++crashSaves === 2) throw Error('reservation failure'); crashDurable = structuredClone(value); });
+  assert.ok(failedReservation.some(r => r.id === 'file:a' && r.status === 'failed'));
+  const restarted = await crashRun(structuredClone(crashDurable), async value => { crashDurable = structuredClone(value); });
+  assert.ok(restarted.some(r => r.id === 'file:a' && (r.status === 'imported' || r.status === 'recovered')));
   // A failed save after first creation leaves a durable reservation, not an orphan.
   const isolated = new Map([['Recovery/Project/Folder/Same.md', 'unrelated recovery note']]);
   const recoveryVault = { safeToMutate: async () => true, exists: async p => isolated.has(p), read: async p => isolated.get(p) ?? null,
@@ -41,7 +51,8 @@ c.commit(); print('ready',flush=True); sys.stdin.readline(); c.close()`;
   assert.equal(reservation.pending, true);
   const recoveryState = structuredClone(durable);
   const retried = await recoveryRun(recoveryState, async value => { durable = structuredClone(value); });
-  assert.ok(retried.some(r => r.id === 'file:a' && r.status === 'recovered'));
+  assert.ok(retried.some(r => r.id === 'file:a' && r.status === 'changed' && /ownership/.test(r.detail)));
+  assert.equal(isolated.get(reservation.path), reservation.baseline);
   assert.equal(isolated.get('Recovery/Project/Folder/Same.md'), 'unrelated recovery note');
   assert.equal([...isolated.keys()].filter(p => p.includes('Same (2)')).length, 1);
   await assert.rejects(recoveryRun({ version: 1, scopes: {} }, async () => {}), /state missing/);
@@ -159,4 +170,38 @@ c=sqlite3.connect(sys.argv[1]); d=json.loads(c.execute("select data from files w
 
 test('invalid destination fails before writing', async () => {
   await assert.rejects(sync({ database: '/missing', folder: '../escape', vault: {}, state: {}, save() {} }), /Invalid destination/);
+});
+
+test('names remain safe and stable across restart; malformed records stay isolated', async t => {
+  const tmp = await fs.mkdtemp(path.join(os.tmpdir(), 'byok-names-'));
+  t.after(() => fs.rm(tmp, { recursive: true, force: true }));
+  const db = path.join(tmp, 'synthetic.sqlite');
+  execFileSync('python3', ['-c', `import sqlite3,json,sys
+c=sqlite3.connect(sys.argv[1]); c.executescript('create table projects(id text,data text); create table folders(id text,parent_folder_id text,data text); create table files(id text,project_id text,folder_id text,type text,is_trashed integer,data text); create table manuscript_files(id text,project_id text,folder_id text,is_trashed integer,data text);')
+c.execute('insert into projects values (?,?)',('p',json.dumps({'name':'.obsidian'})))
+c.execute('insert into folders values (?,?,?)',('f',None,json.dumps({'name':'.hidden'})))
+for i,name in enumerate(['  Title .  ','.secret','é','e\\u0301','x'*400,'x'*400]): c.execute('insert into files values (?,?,?,?,?,?)',(str(i),'p','f','text',0,json.dumps({'name':name,'content':'<p>text</p>'})))
+c.execute('insert into files values (?,?,?,?,?,?)',('broken','p','f','text',0,'{')); c.execute('insert into files values (?,?,?,?,?,?)',('trash','p','f','text',1,'{')); c.commit()`, db]);
+  const notes = new Map(), state = { version: 1, scopes: {} }; let durable;
+  let failMarker = true;
+  const vault = { safeToMutate: async () => true, exists: async p => notes.has(p), read: async p => notes.get(p) ?? null,
+    create: async (p,c) => { if (notes.has(p)) throw Error('exists'); notes.set(p,c); },
+    compareAndWrite: async (p,a,b) => { if (p.includes('.byok-sync-') && failMarker) { failMarker = false; return false; } if (notes.get(p) !== a) return false; notes.set(p,b); return true; } };
+  const run = state => sync({ database: db, folder: 'Target', vault, vaultId: tmp, state, save: async value => { durable = structuredClone(value); } });
+  const first = await run(state);
+  assert.ok(first.some(r => r.id === 'file:0' && r.status === 'failed'));
+  assert.ok(first.some(r => r.id === 'file:broken' && r.status === 'failed' && /Malformed/.test(r.detail)));
+  assert.ok(first.some(r => r.id === 'file:trash' && r.status === 'trashed'));
+  const second = await run(structuredClone(durable));
+  assert.ok(second.some(r => r.id === 'file:0' && r.status === 'recovered'));
+  const entries = Object.values(durable.scopes[JSON.stringify([db, tmp, 'Target'])]);
+  assert.equal(entries.length, 6);
+  assert.equal(new Set(entries.map(e => e.path.normalize('NFC').toLowerCase())).size, 6);
+  for (const e of entries) {
+    assert.ok(e.path.startsWith('Target/_.obsidian/_.hidden/'));
+    assert.ok(e.path.split('/').every(part => Buffer.byteLength(part) <= 180));
+  }
+  assert.ok(entries.some(e => e.path.endsWith('/Title.md')));
+  assert.ok(entries.some(e => e.path.endsWith('/_.secret.md')));
+  assert.ok((await run(structuredClone(durable))).some(r => r.status === 'unchanged'));
 });
