@@ -28,7 +28,7 @@ module.exports = class ByokImport extends Plugin {
           await app.vault.create(path, content);
         }
       };
-      const report = await sync({ database: this.data.database, folder: this.data.folder, vault, vaultId: await require("node:fs/promises").realpath(app.vault.adapter.getBasePath()), state: this.data.state, save: () => this.saveData(this.data) });
+      const report = await sync({ database: this.data.database, folder: this.data.folder, vault, vaultId: await require("node:fs/promises").realpath(app.vault.adapter.getBasePath()), state: this.data.state, studioAsar: this.data.studioAsar, save: () => this.saveData(this.data) });
       console.info("BYOK import report", report);
       new Notice(`BYOK import: ${report.filter(r => r.status === "imported").length} imported, ${report.filter(r => !["imported", "unchanged"].includes(r.status)).length} reports. See developer console.`, 12000);
     } catch (e) { console.error("BYOK import failed", e); new Notice(`BYOK import failed: ${e.message}`, 12000); }
@@ -40,6 +40,7 @@ class Settings extends PluginSettingTab {
   display() {
     this.containerEl.empty();
     new Setting(this.containerEl).setName("Studio database path").setDesc("Absolute path to the local db.sqlite. Requires the sqlite3 command on PATH.").addText(t => t.setValue(this.plugin.data.database).onChange(async value => { this.plugin.data.database = value; await this.plugin.saveData(this.plugin.data); }));
+    new Setting(this.containerEl).setName("Studio app.asar path (experimental write-back)").setDesc("Experimental: only marked disposable libraries and the tested Linux Studio 1.1.3 build are supported. Leave empty to disable writes.").addText(t => t.setValue(this.plugin.data.studioAsar || "").onChange(async value => { this.plugin.data.studioAsar = value; await this.plugin.saveData(this.plugin.data); }));
     new Setting(this.containerEl).setName("Vault destination folder").addText(t => t.setValue(this.plugin.data.folder).onChange(async value => { this.plugin.data.folder = value; await this.plugin.saveData(this.plugin.data); }));
   }
 }
