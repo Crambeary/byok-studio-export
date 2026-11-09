@@ -47,8 +47,15 @@ PRAGMA locking_mode=EXCLUSIVE;
 BEGIN EXCLUSIVE;
 CREATE TEMP TABLE guard(ok INTEGER CHECK(ok=1));
 INSERT INTO guard SELECT journal_mode='wal' FROM pragma_journal_mode;
-INSERT INTO guard SELECT count(*)=${testedSchema.length} FROM sqlite_master WHERE name NOT LIKE 'sqlite_%';
+INSERT INTO guard SELECT count(*)=${testedSchema.length} FROM sqlite_master WHERE name NOT GLOB 'sqlite_*';
 ${testedSchema.map(([type, name, definition]) => `INSERT INTO guard SELECT count(*)=1 FROM sqlite_master WHERE type=${q(type)} AND name=${q(name)} AND sql=${q(definition)};`).join('\n')}
+INSERT INTO guard SELECT user_version=0 FROM pragma_user_version;
+INSERT INTO guard SELECT application_id=0 FROM pragma_application_id;
+INSERT INTO guard SELECT count(*)=1 FROM metadata WHERE key='schema_version' AND typeof(value)='text' AND value='3';
+INSERT INTO guard SELECT count(*)=1 FROM metadata WHERE key='telemetry.lastVersion' AND typeof(value)='text' AND value='1.1.3';
+INSERT INTO guard SELECT count(*)=1 FROM metadata WHERE key='currentUserId' AND typeof(value)='text' AND value='local';
+INSERT INTO guard SELECT NOT EXISTS(SELECT 1 FROM metadata WHERE key='mode') OR (SELECT count(*)=1 FROM metadata WHERE key='mode' AND typeof(value)='text' AND value='local');
+INSERT INTO guard SELECT NOT EXISTS(SELECT 1 FROM metadata WHERE key='authToken');
 INSERT INTO guard SELECT count(*)=1 FROM files WHERE id=${id} AND type='text' AND is_trashed=0 AND data=${q(row.rawData)} AND project_id IS ${q(row.project_id)} AND folder_id IS ${row.folder_id == null ? 'NULL' : q(row.folder_id)};
 INSERT INTO guard SELECT NOT EXISTS(SELECT 1 FROM outbox WHERE status IN ('pending','failed') AND (entity_id=${id} OR instr(coalesce(temp_ids,''),${id})>0 OR instr(coalesce(url,''),${id})>0 OR instr(coalesce(body,''),${id})>0));
 INSERT INTO local_versions(id,file_id,content,extras,fingerprint,reason,file_name,content_size,created_at)
