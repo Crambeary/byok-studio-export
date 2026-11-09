@@ -46,12 +46,13 @@ function destination(value) {
   if (parts.some(p => p === "." || p === ".." || safe(p) !== p)) throw new Error("Invalid destination folder");
   return parts.join("/");
 }
-async function sync({ database, folder, vault, state, save }) {
+async function sync({ database, folder, vault, vaultId, state, save }) {
   const root = destination(folder);
   const library = await realpath(database);
   const rows = await readLibrary(library); // no vault mutations until the source has been read
   if (!state || state.version !== 1 || !state.scopes || typeof state.scopes !== "object") throw new Error("Invalid import state");
-  const key = JSON.stringify([library, root]);
+  if (typeof vaultId !== "string" || !vaultId) throw new Error("Vault identity required");
+  const key = JSON.stringify([library, vaultId, root]);
   const entries = state.scopes[key] || {};
   const reports = [];
   const projects = new Map(rows.filter(r => r.kind === "project").map(r => [String(r.id), r]));
@@ -93,15 +94,33 @@ async function sync({ database, folder, vault, state, save }) {
       const content = metadata(row.id, row.data.updatedAt) + body;
       const prior = entries[id];
       if (prior) {
+        if (typeof prior.path !== "string" || typeof prior.baseline !== "string") throw new Error("Invalid record baseline");
         const current = await vault.read(prior.path);
         if (current === null) { reports.push({ id, status: "missing", path: prior.path }); continue; }
-        if (current === content) { reports.push({ id, status: "unchanged", path: prior.path }); continue; }
-        // This foundation never overwrites either side; later reconciliation can use baseline.
-        reports.push({ id, status: "changed", path: prior.path }); continue;
+        if (current === content) { reports.push({ id, status: current === prior.baseline ? "unchanged" : "changed", path: prior.path, ...(current === prior.baseline ? {} : { detail: "Baseline differs; manual recovery required" }) }); continue; }
+        if (current !== prior.baseline) {
+          // Conversion is not proven reversible, and direct Studio writes are unsafe:
+          // pending outbox entries and future cloud sync cannot be controlled here.
+          reports.push({ id, status: "changed", path: prior.path, detail: "Vault edit preserved; Studio write-back is unavailable" }); continue;
+        }
+        // Verify the source snapshot again, then compare and replace the note atomically.
+        const fresh = (await readLibrary(library)).find(r => r.kind === row.kind && String(r.id) === String(row.id));
+        if (!fresh || JSON.stringify(fresh) !== JSON.stringify(row)) {
+          reports.push({ id, status: "changed-during-sync", path: prior.path }); continue;
+        }
+        if (typeof vault.compareAndWrite !== "function" || !await vault.compareAndWrite(prior.path, current, content)) {
+          reports.push({ id, status: "changed-during-sync", path: prior.path }); continue;
+        }
+        const oldBaseline = prior.baseline;
+        prior.baseline = content;
+        try { await save(state); } catch (error) { prior.baseline = oldBaseline; throw error; }
+        reports.push({ id, status: "updated", path: prior.path }); continue;
       }
       const base = [root, ...hierarchy(row), safe(row.data.name)].filter(Boolean).join("/");
       let path = `${base}.md`, n = 1;
       while (await vault.exists(path)) { if (n === 1) reports.push({ id, status: "collision", path }); path = `${base} (${++n}).md`; }
+      const fresh = (await readLibrary(library)).find(r => r.kind === row.kind && String(r.id) === String(row.id));
+      if (!fresh || JSON.stringify(fresh) !== JSON.stringify(row)) { reports.push({ id, status: "changed-during-sync", path }); continue; }
       await vault.create(path, content);
       entries[id] = { path, baseline: content };
       state.scopes[key] = entries;

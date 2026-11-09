@@ -15,13 +15,20 @@ module.exports = class ByokImport extends Plugin {
       const vault = {
         exists: async path => !!app.vault.getAbstractFileByPath(path),
         read: async path => { const f = app.vault.getAbstractFileByPath(path); return f instanceof TFile ? app.vault.read(f) : null; },
+        compareAndWrite: async (path, expected, content) => {
+          const f = app.vault.getAbstractFileByPath(path);
+          if (!(f instanceof TFile)) return false;
+          let written = false;
+          await app.vault.process(f, current => { if (current !== expected) return current; written = true; return content; });
+          return written;
+        },
         create: async (path, content) => {
           const parts = path.split("/"); parts.pop(); let dir = "";
           for (const part of parts) { dir = normalizePath(dir ? `${dir}/${part}` : part); if (!app.vault.getAbstractFileByPath(dir)) await app.vault.createFolder(dir); }
           await app.vault.create(path, content);
         }
       };
-      const report = await sync({ database: this.data.database, folder: this.data.folder, vault, state: this.data.state, save: () => this.saveData(this.data) });
+      const report = await sync({ database: this.data.database, folder: this.data.folder, vault, vaultId: await require("node:fs/promises").realpath(app.vault.adapter.getBasePath()), state: this.data.state, save: () => this.saveData(this.data) });
       console.info("BYOK import report", report);
       new Notice(`BYOK import: ${report.filter(r => r.status === "imported").length} imported, ${report.filter(r => !["imported", "unchanged"].includes(r.status)).length} reports. See developer console.`, 12000);
     } catch (e) { console.error("BYOK import failed", e); new Notice(`BYOK import failed: ${e.message}`, 12000); }

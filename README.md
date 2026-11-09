@@ -22,14 +22,19 @@ one consistent snapshot including committed WAL data; an incompatible schema,
 missing CLI, or inaccessible database fails the import. Only text records are
 imported. HTML conversion is incomplete and every converted record is reported
 as potentially lossy; other record types are reported without import. Original
-Studio data is never written. Existing notes are not overwritten: collisions
-receive a distinct name, and later changes on either side are reported for
-manual handling. Renames and deletions are not propagated. Plugin state keeps
-the imported content and record paths per database path and destination in the
-vault's plugin data; moving a database or removing that state starts a separate
-import and can create additional notes. Do not edit or delete that state if you
-want to retain the mapping. This foundation does not implement reconciliation
-or write-back.
+Studio data is never written. Existing notes are preserved on import: collisions receive a distinct name.
+A later Studio-only change refreshes an unchanged imported note after checking
+the source again and atomically checking the note. Vault edits are preserved
+and reported for manual handling. Conversion remains potentially lossy; the
+original Studio content is retained. Renames and deletions are not propagated. Plugin state keeps
+the imported content and record paths per database path, vault path, destination and Record in the vault's plugin
+data; moving a database or vault, upgrading from the previous import-only
+state, or removing state starts a separate import and can create additional
+notes. Do not edit or delete that state if you
+want to retain the mapping. Studio write-back is disabled: closed-Studio status and safety against stale
+outbox entries or later cloud sync cannot be established. No Studio database
+writes are performed. A state-save failure after a note update requires manual
+recovery; the prior baseline is retained.
 
 Run `npm test` for the disposable SQLite/WAL sync-boundary tests. The original
 Python exporter described below remains separate from the plugin.
@@ -119,6 +124,9 @@ notes nor state. Its `written` label means “would write” in that mode.
 
 - Export only. There is no import back into Studio; use Studio's own
   Markdown import for that.
+  [`experiments/studio_writeback/`](experiments/studio_writeback/README.md)
+  records research into writing back on a disposable library; it is not a
+  feature and must not be pointed at a real library.
 - Relies on Studio's undocumented internal schema, which may change.
 - Renamed or deleted Studio items do not remove old exported files.
 - Names are sanitized but collisions are not resolved. Duplicate names in
