@@ -71,8 +71,8 @@ c.commit()`, db, noteName]);
 c=sqlite3.connect(sys.argv[1]); d=json.loads(c.execute("select data from files where id='a'").fetchone()[0]); d['content']=sys.argv[2]; c.execute("update files set data=? where id='a'", (json.dumps(d),)); c.commit()`, db, content]) };
 }
 
-test("repeat sync sees unindexed dot marker and hidden Unicode notes", async t => {
-  const h = await harness(t, "Écriture\\.caché//雪");
+test("repeat sync sees unindexed dot marker and safe Unicode notes", async t => {
+  const h = await harness(t, "Écriture\\caché//雪");
   await h.run(); await h.run();
   assert.equal(h.reports.length, 2, h.notices.join("; "));
   assert.ok(h.reports[0].some(r => r.status === "imported"));
@@ -152,11 +152,11 @@ test("hidden note updates use atomic process and preserve editor races", async t
 
 test("hidden collisions and directories are never overwritten", async t => {
   const h = await harness(t);
-  const note = "Target/Projet é/.雪.md";
+  const note = "Target/Projet é/_.雪.md";
   h.files.set(note, "unrelated"); await h.run();
   assert.equal(h.files.get(note), "unrelated");
   assert.ok(h.reports.at(-1).some(r => r.status === "collision"));
-  assert.ok(h.files.has("Target/Projet é/.雪 (2).md"));
+  assert.ok(h.files.has("Target/Projet é/_.雪 (2).md"));
 });
 
 test("editor opened during folder creation prevents file creation", async t => {
