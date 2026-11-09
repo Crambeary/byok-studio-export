@@ -37,9 +37,9 @@ function safe(value) {
   let name = String(value || "Untitled").normalize("NFC").replace(/[\\/:*?"<>|#^\[\]\x00-\x1f]/g, "-").trim().replace(/[.\s]+$/u, "");
   if (name.startsWith(".")) name = "_" + name;
   name = limit(name);
-  return (!name || /^(con|prn|aux|nul|com[1-9]|lpt[1-9])$/i.test(name)) ? "Untitled" : name;
+  return (!name || /^(con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/i.test(name)) ? "Untitled" : name;
 }
-function collisionKey(path) { return path.normalize("NFC").toLowerCase(); }
+function collisionKey(path, normalize = value => value.replace(/\u00a0/g, " ")) { return normalize(path).normalize("NFC").toLowerCase(); }
 function withSuffix(name, suffix, extension = "") { return limit(name, 180 - Buffer.byteLength(suffix + extension)) + suffix + extension; }
 
 function render(html) {
@@ -72,7 +72,8 @@ function destination(value) {
   return parts.join("/");
 }
 function createSync(write = guardedWrite) {
-return async function sync({ database, folder, vault, vaultId, state, save, studioAsar }) {
+return async function sync({ database, folder, vault, vaultId, state, save, studioAsar, normalizePath }) {
+  const keyForPath = path => collisionKey(path, normalizePath);
   const root = destination(folder);
   const library = await realpath(database);
   const rows = await readLibrary(library); // no vault mutations until the source has been read
@@ -89,8 +90,8 @@ return async function sync({ database, folder, vault, vaultId, state, save, stud
   for (const entry of Object.values(entries)) {
     if (!object(entry) || typeof entry.path !== "string" || !entry.path || typeof entry.baseline !== "string" || (Object.hasOwn(entry, "studioContent") && typeof entry.studioContent !== "string") || (Object.hasOwn(entry, "pending") && entry.pending !== true)) throw new Error("Invalid record baseline");
     const parts = entry.path.split("/");
-    if (entry.path.includes("\\") || parts.some(p => !p || p === "." || p === ".." || safe(p) !== p) || (root && !entry.path.startsWith(root + "/")) || reservedPaths.has(collisionKey(entry.path))) throw new Error("Invalid or duplicate record path");
-    reservedPaths.add(collisionKey(entry.path));
+    if (entry.path.includes("\\") || parts.some(p => !p || p === "." || p === ".." || safe(p) !== p) || (root && !entry.path.startsWith(root + "/")) || reservedPaths.has(keyForPath(entry.path))) throw new Error("Invalid or duplicate record path");
+    reservedPaths.add(keyForPath(entry.path));
   }
   if (!hasScope) {
     state.scopes[key] = entries;
@@ -133,7 +134,7 @@ return async function sync({ database, folder, vault, vaultId, state, save, stud
   // Disambiguate same-named projects and sibling folders deterministically.
   function component(row, peers) {
     const name = safe(row.data?.name);
-    return peers.filter(p => collisionKey(safe(p.data?.name)) === collisionKey(name)).length > 1
+    return peers.filter(p => keyForPath(safe(p.data?.name)) === keyForPath(name)).length > 1
       ? withSuffix(name, ` (${createHash("sha256").update(String(row.id)).digest("hex").slice(0, 16)})`) : name;
   }
   function hierarchy(row) {
@@ -167,7 +168,7 @@ return async function sync({ database, folder, vault, vaultId, state, save, stud
           if (existing === null) {
             if (await vault.exists(prior.path)) { reports.push({ id, status: "changed", path: prior.path }); continue; }
             await vault.create(prior.path, prior.baseline);
-          } else { reports.push({ id, status: "changed", path: prior.path, detail: "Reserved path is occupied; ownership cannot be proven, manual recovery required" }); continue; }
+          } else { reports.push({ id, status: "changed", path: prior.path, detail: "Reserved path is occupied; ownership cannot be proven. Close editors, move the note to another path, then retry and reconcile the preserved note" }); continue; }
           delete prior.pending;
           try { await save(state); } catch (error) { prior.pending = true; throw error; }
           reports.push({ id, status: "recovered", path: prior.path }); continue;
@@ -244,13 +245,14 @@ return async function sync({ database, folder, vault, vaultId, state, save, stud
       const name = safe(row.data.name);
       const makePath = suffix => [directory, withSuffix(name, suffix, ".md")].filter(Boolean).join("/");
       let path = makePath(""), n = 1;
-      while (reservedPaths.has(collisionKey(path)) || await vault.exists(path)) { if (n === 1) reports.push({ id, status: "collision", path }); if (++n > 10000) throw Error("Too many path collisions"); path = makePath(` (${n})`); }
+      while (reservedPaths.has(keyForPath(path)) || await vault.exists(path)) { if (n === 1) reports.push({ id, status: "collision", path }); if (++n > 10000) throw Error("Too many path collisions"); path = makePath(` (${n})`); }
       const fresh = await readRecord(library, row);
       if (!fresh || JSON.stringify(fresh) !== JSON.stringify(row)) { reports.push({ id, status: "changed-during-sync", path }); continue; }
       if (!await safeToMutate(path)) { reports.push({ id, status: "changed", path, detail: "Editor state unavailable; close editors before retrying" }); continue; }
+      if (legacyMarker) throw new Error("Legacy import marker cannot prove record identity; manual recovery required");
       entries[id] = { path, baseline: content, studioContent: row.data.content, pending: true };
       try { await save(state); } catch (error) { delete entries[id]; throw error; }
-      reservedPaths.add(collisionKey(path));
+      reservedPaths.add(keyForPath(path));
       await reserveMarker(id);
       await vault.create(path, content);
       delete entries[id].pending;

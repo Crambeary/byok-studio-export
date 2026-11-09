@@ -154,8 +154,11 @@ is corrupt, restore the matching files from a backup before retrying. Do not del
 markers to bypass a refusal. Loss of both the marker and state cannot be detected.
 
 A first import saves a reservation before creating a note. After an interrupted save,
-retry with the same plugin data: an unchanged reserved note is recovered, while a
-note that differs is left untouched for manual inspection. Restore a matching backup
+retry with the same plugin data. An unoccupied reserved path is recreated. Any
+occupied reserved path is left untouched because matching content alone cannot prove
+ownership. To recover, close editors, move the occupied note to a different path,
+then retry the import; compare and reconcile the preserved note with the recreated
+note yourself. Never delete an occupied note merely to clear the reservation. Restore a matching backup
 if the reservation itself was lost. Existing imports made before markers were added
 are protected once run with this version; state already lost before that cannot be
 identified automatically. Note creation still saves state per record to preserve

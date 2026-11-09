@@ -65,6 +65,23 @@ c.commit(); print('ready',flush=True); sys.stdin.readline(); c.close()`;
   assert.ok((await recoveryRun(structuredClone(durable), async () => {})).some(r => r.id === 'file:a' && r.status === 'changed'));
   assert.deepEqual(isolated, snapshot);
   recoveryVault.safeToMutate = async () => true; recoveryVault.read = priorRead;
+  // Moving the ambiguous note preserves it and makes the reservation recoverable.
+  const moved = reservation.path + '.preserved';
+  isolated.set(moved, isolated.get(reservation.path)); isolated.delete(reservation.path);
+  const manual = await recoveryRun(structuredClone(durable), async value => { durable = structuredClone(value); });
+  assert.ok(manual.some(r => r.id === 'file:a' && r.status === 'recovered'));
+  assert.equal(isolated.get(moved), reservation.baseline);
+  assert.equal(isolated.get(reservation.path), reservation.baseline);
+  // A legacy marker refuses a new reservation without changing durable state.
+  const legacyMarkerPath = [...isolated.keys()].find(p => p.includes('.byok-sync-'));
+  const markerData = JSON.parse(isolated.get(legacyMarkerPath)); delete markerData.ids;
+  isolated.set(legacyMarkerPath, JSON.stringify(markerData));
+  const legacyState = structuredClone(durable);
+  delete legacyState.scopes[JSON.stringify([db, tmp, 'Recovery'])]['file:a'];
+  const legacyBefore = structuredClone(legacyState); let legacySaves = 0;
+  const legacyReport = await recoveryRun(legacyState, async () => { legacySaves++; });
+  assert.ok(legacyReport.some(r => r.id === 'file:a' && /Legacy import marker/.test(r.detail || '')));
+  assert.deepEqual(legacyState, legacyBefore); assert.equal(legacySaves, 0);
   const report = await run();
   assert.equal(report.filter(r => r.status === 'imported').length, 3);
   assert.ok(report.some(r => r.status === 'collision'));
