@@ -16,6 +16,7 @@ test('guarded sync on a disposable WAL library', async t => {
   const schema = await fs.readFile(path.join(__dirname, '../experiments/studio_writeback/evidence/schema.sql'), 'utf8');
   const sql = (statement) => execFileSync('sqlite3', [db, statement], { encoding: 'utf8' });
   sql(`PRAGMA journal_mode=WAL; ${schema}
+    INSERT INTO metadata(key,value) VALUES('schema_version','3'),('telemetry.lastVersion','1.1.3'),('currentUserId','local');
     INSERT INTO projects(id,data,mirrored_at) VALUES('p','{"name":"Project"}',0);
     INSERT INTO files(id,project_id,type,data,mirrored_at) VALUES('a','p','text','{"id":"a","name":"File","content":"<p>Hello</p>"}',0);`);
   const notes = new Map(), state = { version: 1, scopes: {} };
@@ -86,4 +87,60 @@ test('compatibility fails closed for unsupported environments', async () => {
     [{ statfs: async () => ({ type: 1 }) }, /Unsupported filesystem/],
     [{ execFileSync: () => '3.1.0' }, /Untested sqlite3 version/]
   ]) await assert.rejects(compatible('/fixture/db.sqlite', 'synthetic', { ...good, ...override }), expected);
+});
+
+test('transaction refuses incompatible synthetic libraries without changing rows', async t => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'byok-compat-'));
+  t.after(() => fs.rm(dir, { recursive: true, force: true }));
+  const schema = await fs.readFile(path.join(__dirname, '../experiments/studio_writeback/evidence/schema.sql'), 'utf8');
+  const rawData = JSON.stringify({ id: 'a', name: 'File', content: '<p>Original</p>' });
+  const row = { id: 'a', project_id: 'p', folder_id: null, rawData, data: JSON.parse(rawData) };
+  const cases = [
+    ['missing marker', "DELETE FROM metadata WHERE key='schema_version'"],
+    ...['2', '0', '', '3abc', '4', '3.0', ' 3'].map(value => [`marker ${JSON.stringify(value)}`, `UPDATE metadata SET value='${value}' WHERE key='schema_version'`]),
+    ['null marker', "UPDATE metadata SET value=NULL WHERE key='schema_version'"],
+    ['missing launch', "DELETE FROM metadata WHERE key='telemetry.lastVersion'"],
+    ['other launch', "UPDATE metadata SET value='1.1.2' WHERE key='telemetry.lastVersion'"],
+    ['missing owner', "DELETE FROM metadata WHERE key='currentUserId'"],
+    ['account owner', "UPDATE metadata SET value='account' WHERE key='currentUserId'"],
+    ['synced mode', "INSERT INTO metadata VALUES('mode','synced')"],
+    ['unknown mode', "INSERT INTO metadata VALUES('mode',NULL)"],
+    ['auth row', "INSERT INTO metadata VALUES('authToken',NULL)"],
+    ['user version', 'PRAGMA user_version=1'],
+    ['application id', 'PRAGMA application_id=1'],
+    ['extra table', 'CREATE TABLE unexpected(x)'],
+    ['evading trigger', 'CREATE TRIGGER sqliteXtrigger AFTER UPDATE ON files BEGIN SELECT 1; END'],
+  ];
+  for (const [name, mutation] of cases) await t.test(name, async () => {
+    const db = path.join(dir, `${cases.findIndex(c => c[0] === name)}.sqlite`);
+    const sql = statement => execFileSync('sqlite3', [db, statement], { encoding: 'utf8' });
+    sql(`PRAGMA journal_mode=WAL; ${schema}
+      INSERT INTO metadata VALUES('schema_version','3'),('telemetry.lastVersion','1.1.3'),('currentUserId','local');
+      INSERT INTO projects(id,data,mirrored_at) VALUES('p','{}',0);
+      INSERT INTO files(id,project_id,type,data,mirrored_at) VALUES('a','p','text','${rawData}',0);
+      ${mutation};`);
+    const snapshot = () => sql("SELECT json_group_array(json_array(id,project_id,data,mirrored_at)) FROM files; SELECT json_group_array(json_array(id,data,mirrored_at)) FROM projects; SELECT count(*) FROM local_versions; SELECT count(*) FROM outbox;");
+    const before = snapshot();
+    await assert.rejects(createGuardedWrite(async () => {})(db, row, '<p>Changed</p>', 'synthetic'));
+    assert.equal(snapshot(), before);
+  });
+});
+
+test('compatibility is checked after acquiring the transaction', async t => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'byok-transaction-'));
+  t.after(() => fs.rm(dir, { recursive: true, force: true }));
+  const db = path.join(dir, 'db.sqlite');
+  const schema = await fs.readFile(path.join(__dirname, '../experiments/studio_writeback/evidence/schema.sql'), 'utf8');
+  const sql = statement => execFileSync('sqlite3', [db, statement], { encoding: 'utf8' });
+  const rawData = '{"id":"a","name":"File","content":"Original"}';
+  sql(`PRAGMA journal_mode=WAL; ${schema}
+    INSERT INTO metadata VALUES('schema_version','3'),('telemetry.lastVersion','1.1.3'),('currentUserId','local'),('mode','local');
+    INSERT INTO projects(id,data,mirrored_at) VALUES('p','{}',0);
+    INSERT INTO files(id,project_id,type,data,mirrored_at) VALUES('a','p','text','${rawData}',0);`);
+  const row = { id: 'a', project_id: 'p', folder_id: null, rawData, data: JSON.parse(rawData) };
+  const write = createGuardedWrite(async () => {}, (database, script) => runSql(database, script.replace('BEGIN EXCLUSIVE;', "BEGIN EXCLUSIVE; UPDATE metadata SET value='2' WHERE key='schema_version';")));
+  await assert.rejects(write(db, row, 'Changed', 'synthetic'));
+  assert.equal(sql("SELECT value FROM metadata WHERE key='schema_version'; SELECT data FROM files WHERE id='a'; SELECT count(*) FROM local_versions;").trim(), `3\n${rawData}\n0`);
+  await createGuardedWrite(async () => {})(db, row, 'Changed', 'synthetic');
+  assert.equal(sql("SELECT json_extract(data,'$.content') FROM files WHERE id='a'").trim(), 'Changed');
 });
