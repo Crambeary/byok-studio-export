@@ -3,4 +3,4 @@ __pycache__/
 state.json
 
 node_modules/
-main.js
+/main.js
