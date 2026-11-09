@@ -1,0 +1,562 @@
+{
+ "checks": {
+  "final_integrity_ok": true,
+  "final_no_foreign_key_violations": true,
+  "history_restore_returns_pre_image": true,
+  "jail_only_loopback": true,
+  "later_ui_edit_keeps_writeback": true,
+  "mode_is_not_synced": true,
+  "no_auth_token_in_disposable_library": true,
+  "project_query_uses_index": true,
+  "python_fingerprint_matches_studio": true,
+  "reopen_created_at_preserved": true,
+  "reopen_editor_shows_writeback": true,
+  "reopen_history_lists_pre_image": true,
+  "reopen_history_lists_studio_snapshot": true,
+  "reopen_indexed_columns_match_blob": true,
+  "reopen_integrity_ok": true,
+  "reopen_mirror_returns_writeback": true,
+  "reopen_no_foreign_key_violations": true,
+  "reopen_pre_image_content_correct": true,
+  "reopen_timestamps_preserved": true,
+  "restore_recorded_pre_restore_backup": true,
+  "writeback_added_no_outbox_rows": true,
+  "writeback_changed_only_expected_blob_keys": true,
+  "writeback_left_indexed_columns_alone": true
+ },
+ "edit_restore": {
+  "consistency": {
+   "foreign_key_violations": 0,
+   "integrity_check": "ok",
+   "metadata_keys": [
+    "currentUserId",
+    "schema_version",
+    "spelling.languages",
+    "telemetry.firstVersion",
+    "telemetry.installId",
+    "telemetry.installedAt",
+    "telemetry.lastHeartbeatDate",
+    "telemetry.lastVersion",
+    "telemetry.launchCount",
+    "telemetry.noticeSeen",
+    "theme"
+   ],
+   "metadata_mode": null,
+   "project_query_plan": "SEARCH files USING INDEX idx_files_project (project_id=? AND is_trashed=?)"
+  },
+  "file_after_restore": {
+   "autoLinkedDeviceIds": [],
+   "cardColor": null,
+   "content": "<p class=\"editor-paragraph\">Original synthetic body typed through the Studio UI. Second synthetic sentence typed through the Studio UI.</p>",
+   "contentUpdatedAt": "2026-11-09T15:37:27.954Z",
+   "createdAt": "2026-11-09T15:36:16.203Z",
+   "description": "",
+   "file": null,
+   "folder": null,
+   "gridLayout": null,
+   "id": "f2abf19a-ff72-4167-b90a-27c6134e2137",
+   "isFavorited": false,
+   "isTrashed": false,
+   "name": "Untitled Text",
+   "plainSyncWarningAcked": false,
+   "position": 0,
+   "project": "cde6d2dc-3268-4b22-8b93-4b7febbe9a0d",
+   "tags": [],
+   "type": "text",
+   "updatedAt": "2026-11-09T15:37:27.954Z"
+  },
+  "file_after_ui_edit": {
+   "autoLinkedDeviceIds": [],
+   "cardColor": null,
+   "content": "<p class=\"editor-paragraph\">Obsidian write-back marker 7f3a: café &amp; “quotes”.</p><h2 id=\"heading-synthetic-heading\">Synthetic heading</h2><p class=\"editor-paragraph\"><strong>Bold</strong> synthetic line. Edit typed in Studio after the write-back.</p>",
+   "contentUpdatedAt": "2026-11-09T15:37:24.452Z",
+   "createdAt": "2026-11-09T15:36:16.203Z",
+   "description": "",
+   "file": null,
+   "folder": null,
+   "gridLayout": null,
+   "id": "f2abf19a-ff72-4167-b90a-27c6134e2137",
+   "isFavorited": false,
+   "isTrashed": false,
+   "name": "Untitled Text",
+   "plainSyncWarningAcked": false,
+   "position": 0,
+   "project": "cde6d2dc-3268-4b22-8b93-4b7febbe9a0d",
+   "tags": [],
+   "type": "text",
+   "updatedAt": "2026-11-09T15:37:24.452Z"
+  },
+  "outbox_final": [
+   {
+    "attempts": 0,
+    "body_has_pre_writeback_text": false,
+    "body_has_writeback_marker": false,
+    "body_sha256": "8cea7cbea3feea4732f4b77b4d97c33e05aee5e90b5770a2589824da4bd83985",
+    "entity_id": "cde6d2dc-3268-4b22-8b93-4b7febbe9a0d",
+    "entity_type": "project",
+    "id": 1,
+    "kind": "project.create",
+    "method": "POST",
+    "status": "pending",
+    "url": "/projects/"
+   },
+   {
+    "attempts": 0,
+    "body_has_pre_writeback_text": false,
+    "body_has_writeback_marker": false,
+    "body_sha256": "5dfc656a7b96098d13fc259734b69a2819385979d5e1773fb6dd16b22cd9871e",
+    "entity_id": "f2abf19a-ff72-4167-b90a-27c6134e2137",
+    "entity_type": "file",
+    "id": 2,
+    "kind": "file.create",
+    "method": "POST",
+    "status": "pending",
+    "url": "/projects/cde6d2dc-3268-4b22-8b93-4b7febbe9a0d/files/"
+   },
+   {
+    "attempts": 0,
+    "body_has_pre_writeback_text": false,
+    "body_has_writeback_marker": true,
+    "body_sha256": "4252bdb87f3fc00aa0d96d5353c59d81579d311f77108692805624ca230484f7",
+    "entity_id": "f2abf19a-ff72-4167-b90a-27c6134e2137",
+    "entity_type": "file",
+    "id": 3,
+    "kind": "file.update",
+    "method": "PUT",
+    "status": "pending",
+    "url": "/files/f2abf19a-ff72-4167-b90a-27c6134e2137/"
+   }
+  ],
+  "restore_result": {
+   "file": {
+    "autoLinkedDeviceIds": [],
+    "cardColor": null,
+    "content": "<p class=\"editor-paragraph\">Original synthetic body typed through the Studio UI. Second synthetic sentence typed through the Studio UI.</p>",
+    "contentUpdatedAt": "2026-11-09T15:37:27.954Z",
+    "createdAt": "2026-11-09T15:36:16.203Z",
+    "description": "",
+    "file": null,
+    "folder": null,
+    "gridLayout": null,
+    "id": "f2abf19a-ff72-4167-b90a-27c6134e2137",
+    "isFavorited": false,
+    "isTrashed": false,
+    "name": "Untitled Text",
+    "plainSyncWarningAcked": false,
+    "position": 0,
+    "project": "cde6d2dc-3268-4b22-8b93-4b7febbe9a0d",
+    "tags": [],
+    "type": "text",
+    "updatedAt": "2026-11-09T15:37:27.954Z"
+   },
+   "ok": true
+  },
+  "row_final": {
+   "created_at": "2026-11-09T15:36:16.203Z",
+   "data": "{\"id\":\"f2abf19a-ff72-4167-b90a-27c6134e2137\",\"project\":\"cde6d2dc-3268-4b22-8b93-4b7febbe9a0d\",\"folder\":null,\"name\":\"Untitled Text\",\"type\":\"text\",\"content\":\"<p class=\\\"editor-paragraph\\\">Original synthetic body typed through the Studio UI. Second synthetic sentence typed through the Studio UI.</p>\",\"file\":null,\"createdAt\":\"2026-11-09T15:36:16.203Z\",\"updatedAt\":\"2026-11-09T15:37:27.954Z\",\"contentUpdatedAt\":\"2026-11-09T15:37:27.954Z\",\"isTrashed\":false,\"position\":0,\"gridLayout\":null,\"cardColor\":null,\"tags\":[],\"isFavorited\":false,\"description\":\"\",\"plainSyncWarningAcked\":false,\"autoLinkedDeviceIds\":[]}",
+   "folder_id": null,
+   "id": "f2abf19a-ff72-4167-b90a-27c6134e2137",
+   "is_trashed": 0,
+   "mirrored_at": 1794238647954,
+   "position": 0,
+   "project_id": "cde6d2dc-3268-4b22-8b93-4b7febbe9a0d",
+   "type": "text",
+   "user_id": "local"
+  },
+  "studio_exit": {
+   "code": 0,
+   "signal": null
+  },
+  "versions_after_restore": [
+   {
+    "contentSize": 262,
+    "createdAt": "2026-11-09T15:37:27.954Z",
+    "extras": null,
+    "file": "f2abf19a-ff72-4167-b90a-27c6134e2137",
+    "fileName": "Untitled Text",
+    "id": "76fd5ae9-375f-4038-b806-1fb39d742ea3",
+    "reason": "pre_restore",
+    "reasonDisplay": "Pre-Restore Backup"
+   },
+   {
+    "contentSize": 143,
+    "createdAt": "2026-11-09T15:36:36.747Z",
+    "extras": null,
+    "file": "f2abf19a-ff72-4167-b90a-27c6134e2137",
+    "fileName": "Untitled Text",
+    "id": "2d319582-8128-4565-9ac7-fd9abfcc1f81",
+    "reason": "manual",
+    "reasonDisplay": "Manual Snapshot"
+   },
+   {
+    "contentSize": 88,
+    "createdAt": "2026-11-09T15:36:27.225Z",
+    "extras": null,
+    "file": "f2abf19a-ff72-4167-b90a-27c6134e2137",
+    "fileName": "Untitled Text",
+    "id": "628901fa-8cf5-47eb-a1a0-e99cd820c935",
+    "reason": "manual",
+    "reasonDisplay": "Manual Snapshot"
+   }
+  ]
+ },
+ "environment": {
+  "app_asar_sha256": "25e93b78fb4753f7b47236a91f8907e674c341aab19af271d93c7dd1e04dbcfa",
+  "desktop_mode": "local",
+  "electron": "44.4.5",
+  "sqlite_library_used_for_writeback": "3.53.4",
+  "studio_app_version": "1.1.3",
+  "studio_binary_sha256": "ee9faf5bb9fe78a750cc5099863c85c4459e7f04c387fd1f111c83e4e8c57c97",
+  "xvfb_sha256": "ffe89f25f4aa76a7c97d72bd4fa8b74d8304a1b4811a70a2614b0c953c241396"
+ },
+ "reopen": {
+  "activity": {
+   "projects": [
+    {
+     "file": {
+      "folder": null,
+      "id": "f2abf19a-ff72-4167-b90a-27c6134e2137",
+      "name": "Untitled Text",
+      "project": "cde6d2dc-3268-4b22-8b93-4b7febbe9a0d",
+      "type": "text"
+     },
+     "lastEditedAt": "2026-11-09T15:36:36.747Z",
+     "project": "cde6d2dc-3268-4b22-8b93-4b7febbe9a0d"
+    }
+   ],
+   "serverTime": null
+  },
+  "cache": {
+   "indexed_db": [],
+   "local_storage_keys": [
+    "sp_quickaccess_view",
+    "studio.commandCatalog",
+    "drawerViewMode",
+    "colorTheme",
+    "sp_button_left_pct",
+    "drawerSortConfig",
+    "desktop.localNoteShown",
+    "editor_scroll_pos_f2abf19a-ff72-4167-b90a-27c6134e2137",
+    "userPreferences",
+    "fileZoomLevels",
+    "editor_caret_pos_f2abf19a-ff72-4167-b90a-27c6134e2137"
+   ],
+   "local_storage_mentions_pre_writeback_text": false
+  },
+  "consistency": {
+   "foreign_key_violations": 0,
+   "integrity_check": "ok",
+   "metadata_keys": [
+    "currentUserId",
+    "schema_version",
+    "spelling.languages",
+    "telemetry.firstVersion",
+    "telemetry.installId",
+    "telemetry.installedAt",
+    "telemetry.lastHeartbeatDate",
+    "telemetry.lastVersion",
+    "telemetry.launchCount",
+    "telemetry.noticeSeen",
+    "theme"
+   ],
+   "metadata_mode": null,
+   "project_query_plan": "SEARCH files USING INDEX idx_files_project (project_id=? AND is_trashed=?)"
+  },
+  "editor_html": "<p class=\"editor-paragraph\">Obsidian write-back marker 7f3a: café &amp; “quotes”.</p><h2 id=\"heading-synthetic-heading\">Synthetic heading</h2><p class=\"editor-paragraph\"><strong>Bold</strong> synthetic line.</p>",
+  "editor_html_after_idle": "<p class=\"editor-paragraph\">Obsidian write-back marker 7f3a: café &amp; “quotes”.</p><h2 id=\"heading-synthetic-heading\">Synthetic heading</h2><p class=\"editor-paragraph\"><strong>Bold</strong> synthetic line.</p>",
+  "mirror_after_idle": {
+   "autoLinkedDeviceIds": [],
+   "cardColor": null,
+   "content": "<p>Obsidian write-back marker 7f3a: café &amp; “quotes”.</p><h2>Synthetic heading</h2><p><strong>Bold</strong> synthetic line.</p>",
+   "contentUpdatedAt": "2026-11-09T15:36:36.747Z",
+   "createdAt": "2026-11-09T15:36:16.203Z",
+   "description": "",
+   "file": null,
+   "folder": null,
+   "gridLayout": null,
+   "id": "f2abf19a-ff72-4167-b90a-27c6134e2137",
+   "isFavorited": false,
+   "isTrashed": false,
+   "name": "Untitled Text",
+   "plainSyncWarningAcked": false,
+   "position": 0,
+   "project": "cde6d2dc-3268-4b22-8b93-4b7febbe9a0d",
+   "tags": [],
+   "type": "text",
+   "updatedAt": "2026-11-09T15:36:36.747Z"
+  },
+  "mirror_at_boot": {
+   "autoLinkedDeviceIds": [],
+   "cardColor": null,
+   "content": "<p>Obsidian write-back marker 7f3a: café &amp; “quotes”.</p><h2>Synthetic heading</h2><p><strong>Bold</strong> synthetic line.</p>",
+   "contentUpdatedAt": "2026-11-09T15:36:36.747Z",
+   "createdAt": "2026-11-09T15:36:16.203Z",
+   "description": "",
+   "file": null,
+   "folder": null,
+   "gridLayout": null,
+   "id": "f2abf19a-ff72-4167-b90a-27c6134e2137",
+   "isFavorited": false,
+   "isTrashed": false,
+   "name": "Untitled Text",
+   "plainSyncWarningAcked": false,
+   "position": 0,
+   "project": "cde6d2dc-3268-4b22-8b93-4b7febbe9a0d",
+   "tags": [],
+   "type": "text",
+   "updatedAt": "2026-11-09T15:36:36.747Z"
+  },
+  "outbox_after_reopen": [
+   {
+    "attempts": 0,
+    "body_has_pre_writeback_text": false,
+    "body_has_writeback_marker": false,
+    "body_sha256": "8cea7cbea3feea4732f4b77b4d97c33e05aee5e90b5770a2589824da4bd83985",
+    "entity_id": "cde6d2dc-3268-4b22-8b93-4b7febbe9a0d",
+    "entity_type": "project",
+    "id": 1,
+    "kind": "project.create",
+    "method": "POST",
+    "status": "pending",
+    "url": "/projects/"
+   },
+   {
+    "attempts": 0,
+    "body_has_pre_writeback_text": false,
+    "body_has_writeback_marker": false,
+    "body_sha256": "5dfc656a7b96098d13fc259734b69a2819385979d5e1773fb6dd16b22cd9871e",
+    "entity_id": "f2abf19a-ff72-4167-b90a-27c6134e2137",
+    "entity_type": "file",
+    "id": 2,
+    "kind": "file.create",
+    "method": "POST",
+    "status": "pending",
+    "url": "/projects/cde6d2dc-3268-4b22-8b93-4b7febbe9a0d/files/"
+   },
+   {
+    "attempts": 0,
+    "body_has_pre_writeback_text": true,
+    "body_has_writeback_marker": false,
+    "body_sha256": "47658bed8e98724ae31a9f36ed479b21f3e6561e2fdb6c25efdcb681a4fc0699",
+    "entity_id": "f2abf19a-ff72-4167-b90a-27c6134e2137",
+    "entity_type": "file",
+    "id": 3,
+    "kind": "file.update",
+    "method": "PUT",
+    "status": "pending",
+    "url": "/files/f2abf19a-ff72-4167-b90a-27c6134e2137/"
+   }
+  ],
+  "outbox_changed_by_reopen": false,
+  "pre_image": {
+   "content": "<p class=\"editor-paragraph\">Original synthetic body typed through the Studio UI. Second synthetic sentence typed through the Studio UI.</p>",
+   "contentSize": 143,
+   "createdAt": "2026-11-09T15:36:36.747Z",
+   "extras": null,
+   "file": "f2abf19a-ff72-4167-b90a-27c6134e2137",
+   "fileName": "Untitled Text",
+   "id": "2d319582-8128-4565-9ac7-fd9abfcc1f81",
+   "reason": "manual",
+   "reasonDisplay": "Manual Snapshot"
+  },
+  "projects": [
+   {
+    "backgroundImage": null,
+    "borderColor": "var(--tile-background)",
+    "color": "#f0f0f0",
+    "createdAt": "2026-11-09T15:36:08.345Z",
+    "id": "cde6d2dc-3268-4b22-8b93-4b7febbe9a0d",
+    "isTutorial": false,
+    "name": "Synthetic Write-back Project",
+    "overlayOpacity": "0.20",
+    "pinned": false,
+    "pinnedAt": null,
+    "tags": [],
+    "titleColor": "#4A4A4A",
+    "type": "book",
+    "updatedAt": "2026-11-09T15:36:08.345Z",
+    "user": null
+   }
+  ],
+  "row_after_reopen": {
+   "created_at": "2026-11-09T15:36:16.203Z",
+   "data": "{\"id\":\"f2abf19a-ff72-4167-b90a-27c6134e2137\",\"project\":\"cde6d2dc-3268-4b22-8b93-4b7febbe9a0d\",\"folder\":null,\"name\":\"Untitled Text\",\"type\":\"text\",\"content\":\"<p>Obsidian write-back marker 7f3a: café &amp; “quotes”.</p><h2>Synthetic heading</h2><p><strong>Bold</strong> synthetic line.</p>\",\"file\":null,\"createdAt\":\"2026-11-09T15:36:16.203Z\",\"updatedAt\":\"2026-11-09T15:36:36.747Z\",\"contentUpdatedAt\":\"2026-11-09T15:36:36.747Z\",\"isTrashed\":false,\"position\":0,\"gridLayout\":null,\"cardColor\":null,\"tags\":[],\"isFavorited\":false,\"description\":\"\",\"plainSyncWarningAcked\":false,\"autoLinkedDeviceIds\":[]}",
+   "folder_id": null,
+   "id": "f2abf19a-ff72-4167-b90a-27c6134e2137",
+   "is_trashed": 0,
+   "mirrored_at": 1794238596747,
+   "position": 0,
+   "project_id": "cde6d2dc-3268-4b22-8b93-4b7febbe9a0d",
+   "type": "text",
+   "user_id": "local"
+  },
+  "row_changed_by_reopen": false,
+  "stats_after_idle": {
+   "failedOps": 0,
+   "files": 1,
+   "folders": 0,
+   "lastMirroredAt": 1794238568345,
+   "manuscriptFiles": 0,
+   "pendingOps": 3,
+   "projects": 1,
+   "scratchpadEntries": 0,
+   "userId": "local"
+  },
+  "stats_at_boot": {
+   "failedOps": 0,
+   "files": 1,
+   "folders": 0,
+   "lastMirroredAt": 1794238568345,
+   "manuscriptFiles": 0,
+   "pendingOps": 3,
+   "projects": 1,
+   "scratchpadEntries": 0,
+   "userId": "local"
+  },
+  "studio_exit": {
+   "code": 0,
+   "signal": null
+  },
+  "tree": [
+   {
+    "autoLinkedDeviceIds": [],
+    "cardColor": null,
+    "content": "<p>Obsidian write-back marker 7f3a: café &amp; “quotes”.</p><h2>Synthetic heading</h2><p><strong>Bold</strong> synthetic line.</p>",
+    "contentUpdatedAt": "2026-11-09T15:36:36.747Z",
+    "createdAt": "2026-11-09T15:36:16.203Z",
+    "description": "",
+    "file": null,
+    "folder": null,
+    "gridLayout": null,
+    "id": "f2abf19a-ff72-4167-b90a-27c6134e2137",
+    "isFavorited": false,
+    "isTrashed": false,
+    "name": "Untitled Text",
+    "plainSyncWarningAcked": false,
+    "position": 0,
+    "project": "cde6d2dc-3268-4b22-8b93-4b7febbe9a0d",
+    "tags": [],
+    "type": "text",
+    "updatedAt": "2026-11-09T15:36:36.747Z"
+   }
+  ],
+  "versions": [
+   {
+    "contentSize": 143,
+    "createdAt": "2026-11-09T15:36:36.747Z",
+    "extras": null,
+    "file": "f2abf19a-ff72-4167-b90a-27c6134e2137",
+    "fileName": "Untitled Text",
+    "id": "2d319582-8128-4565-9ac7-fd9abfcc1f81",
+    "reason": "manual",
+    "reasonDisplay": "Manual Snapshot"
+   },
+   {
+    "contentSize": 88,
+    "createdAt": "2026-11-09T15:36:27.225Z",
+    "extras": null,
+    "file": "f2abf19a-ff72-4167-b90a-27c6134e2137",
+    "fileName": "Untitled Text",
+    "id": "628901fa-8cf5-47eb-a1a0-e99cd820c935",
+    "reason": "manual",
+    "reasonDisplay": "Manual Snapshot"
+   }
+  ]
+ },
+ "seed": {
+  "outbox": [
+   {
+    "attempts": 0,
+    "body_has_pre_writeback_text": false,
+    "body_has_writeback_marker": false,
+    "body_sha256": "8cea7cbea3feea4732f4b77b4d97c33e05aee5e90b5770a2589824da4bd83985",
+    "entity_id": "cde6d2dc-3268-4b22-8b93-4b7febbe9a0d",
+    "entity_type": "project",
+    "id": 1,
+    "kind": "project.create",
+    "method": "POST",
+    "status": "pending",
+    "url": "/projects/"
+   },
+   {
+    "attempts": 0,
+    "body_has_pre_writeback_text": false,
+    "body_has_writeback_marker": false,
+    "body_sha256": "5dfc656a7b96098d13fc259734b69a2819385979d5e1773fb6dd16b22cd9871e",
+    "entity_id": "f2abf19a-ff72-4167-b90a-27c6134e2137",
+    "entity_type": "file",
+    "id": 2,
+    "kind": "file.create",
+    "method": "POST",
+    "status": "pending",
+    "url": "/projects/cde6d2dc-3268-4b22-8b93-4b7febbe9a0d/files/"
+   },
+   {
+    "attempts": 0,
+    "body_has_pre_writeback_text": true,
+    "body_has_writeback_marker": false,
+    "body_sha256": "47658bed8e98724ae31a9f36ed479b21f3e6561e2fdb6c25efdcb681a4fc0699",
+    "entity_id": "f2abf19a-ff72-4167-b90a-27c6134e2137",
+    "entity_type": "file",
+    "id": 3,
+    "kind": "file.update",
+    "method": "PUT",
+    "status": "pending",
+    "url": "/files/f2abf19a-ff72-4167-b90a-27c6134e2137/"
+   }
+  ],
+  "row_before_writeback": {
+   "created_at": "2026-11-09T15:36:16.203Z",
+   "data": "{\"id\":\"f2abf19a-ff72-4167-b90a-27c6134e2137\",\"project\":\"cde6d2dc-3268-4b22-8b93-4b7febbe9a0d\",\"folder\":null,\"name\":\"Untitled Text\",\"type\":\"text\",\"content\":\"<p class=\\\"editor-paragraph\\\">Original synthetic body typed through the Studio UI. Second synthetic sentence typed through the Studio UI.</p>\",\"file\":null,\"createdAt\":\"2026-11-09T15:36:16.203Z\",\"updatedAt\":\"2026-11-09T15:36:29.735Z\",\"contentUpdatedAt\":\"2026-11-09T15:36:29.735Z\",\"isTrashed\":false,\"position\":0,\"gridLayout\":null,\"cardColor\":null,\"tags\":[],\"isFavorited\":false,\"description\":\"\",\"plainSyncWarningAcked\":false,\"autoLinkedDeviceIds\":[]}",
+   "folder_id": null,
+   "id": "f2abf19a-ff72-4167-b90a-27c6134e2137",
+   "is_trashed": 0,
+   "mirrored_at": 1794238589735,
+   "position": 0,
+   "project_id": "cde6d2dc-3268-4b22-8b93-4b7febbe9a0d",
+   "type": "text",
+   "user_id": "local"
+  },
+  "studio_exit": {
+   "code": 0,
+   "signal": null
+  },
+  "studio_snapshot": {
+   "content": "<p class=\"editor-paragraph\">Original synthetic body typed through the Studio UI.</p>",
+   "contentSize": 88,
+   "createdAt": "2026-11-09T15:36:27.225Z",
+   "extras": null,
+   "file": "f2abf19a-ff72-4167-b90a-27c6134e2137",
+   "fileName": "Untitled Text",
+   "id": "628901fa-8cf5-47eb-a1a0-e99cd820c935",
+   "reason": "manual",
+   "reasonDisplay": "Manual Snapshot"
+  },
+  "studio_snapshot_fingerprint": "0028044b2a25e1a1d32d2635e7b10dd1e4fa1b09e803b0f732dcec41b685449e"
+ },
+ "writeback": {
+  "blob_keys_changed": [
+   "content",
+   "contentUpdatedAt",
+   "updatedAt"
+  ],
+  "outbox_unchanged": true,
+  "result": {
+   "file_id": "f2abf19a-ff72-4167-b90a-27c6134e2137",
+   "pre_image_version_id": "2d319582-8128-4565-9ac7-fd9abfcc1f81",
+   "timestamp": "2026-11-09T15:36:36.747Z"
+  },
+  "row_after_writeback": {
+   "created_at": "2026-11-09T15:36:16.203Z",
+   "data": "{\"id\":\"f2abf19a-ff72-4167-b90a-27c6134e2137\",\"project\":\"cde6d2dc-3268-4b22-8b93-4b7febbe9a0d\",\"folder\":null,\"name\":\"Untitled Text\",\"type\":\"text\",\"content\":\"<p>Obsidian write-back marker 7f3a: café &amp; “quotes”.</p><h2>Synthetic heading</h2><p><strong>Bold</strong> synthetic line.</p>\",\"file\":null,\"createdAt\":\"2026-11-09T15:36:16.203Z\",\"updatedAt\":\"2026-11-09T15:36:36.747Z\",\"contentUpdatedAt\":\"2026-11-09T15:36:36.747Z\",\"isTrashed\":false,\"position\":0,\"gridLayout\":null,\"cardColor\":null,\"tags\":[],\"isFavorited\":false,\"description\":\"\",\"plainSyncWarningAcked\":false,\"autoLinkedDeviceIds\":[]}",
+   "folder_id": null,
+   "id": "f2abf19a-ff72-4167-b90a-27c6134e2137",
+   "is_trashed": 0,
+   "mirrored_at": 1794238596747,
+   "position": 0,
+   "project_id": "cde6d2dc-3268-4b22-8b93-4b7febbe9a0d",
+   "type": "text",
+   "user_id": "local"
+  }
+ }
+}
