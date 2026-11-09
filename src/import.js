@@ -21,7 +21,7 @@ async function readRecord(path, row) {
   const id = Buffer.from(String(row.id)).toString("hex");
   const columns = row.kind === "file" ? "type" : "'manuscript' AS type";
   const sql = `SELECT '${row.kind}' AS kind, id, project_id, folder_id, ${columns}, is_trashed, data FROM ${table} WHERE id=CAST(X'${id}' AS TEXT);`;
-  const { stdout } = await exec("sqlite3", ["-readonly", "-json", path, sql]);
+  const { stdout } = await exec("sqlite3", ["-readonly", "-json", path, sql], { maxBuffer: 128 * 1024 * 1024 });
   const found = JSON.parse(stdout || "[]")[0];
   return found && { ...found, rawData: found.data, data: JSON.parse(found.data) };
 }
@@ -72,18 +72,36 @@ return async function sync({ database, folder, vault, vaultId, state, save, stud
   if (!hasScope && await vault.exists(marker)) throw new Error("Import state missing for this scope; restore plugin data from backup before retrying");
   const entries = hasScope ? state.scopes[key] : {};
   if (!object(entries)) throw new Error("Invalid import scope");
+  const reservedPaths = new Set();
   for (const entry of Object.values(entries)) {
     if (!object(entry) || typeof entry.path !== "string" || !entry.path || typeof entry.baseline !== "string" || (Object.hasOwn(entry, "studioContent") && typeof entry.studioContent !== "string") || (Object.hasOwn(entry, "pending") && entry.pending !== true)) throw new Error("Invalid record baseline");
+    const parts = entry.path.split("/");
+    if (entry.path.includes("\\") || parts.some(p => !p || p === "." || p === ".." || safe(p) !== p) || (root && !entry.path.startsWith(root + "/")) || reservedPaths.has(entry.path.toLowerCase())) throw new Error("Invalid or duplicate record path");
+    reservedPaths.add(entry.path.toLowerCase());
   }
   if (!hasScope) {
     state.scopes[key] = entries;
     try { await save(state); } catch (error) { delete state.scopes[key]; throw error; }
   }
-  if (!await vault.exists(marker)) await vault.create(marker, JSON.stringify({ version: 1, scope: key }));
-  else {
-    let savedMarker;
-    try { savedMarker = JSON.parse(await vault.read(marker)); } catch { throw new Error("Invalid import marker; restore it from backup"); }
-    if (!savedMarker || savedMarker.version !== 1 || savedMarker.scope !== key) throw new Error("Invalid import marker; restore it from backup");
+  let markerText, savedMarker;
+  if (!await vault.exists(marker)) {
+    if (hasScope && Object.keys(entries).length) throw new Error("Import marker missing; restore it from backup");
+    savedMarker = { version: 1, scope: key, ids: [] };
+    markerText = JSON.stringify(savedMarker);
+    await vault.create(marker, markerText);
+  } else {
+    try { markerText = await vault.read(marker); savedMarker = JSON.parse(markerText); } catch { throw new Error("Invalid import marker; restore it from backup"); }
+    if (!savedMarker || savedMarker.version !== 1 || savedMarker.scope !== key || (savedMarker.ids !== undefined && (!Array.isArray(savedMarker.ids) || savedMarker.ids.some(id => typeof id !== "string") || new Set(savedMarker.ids).size !== savedMarker.ids.length))) throw new Error("Invalid import marker; restore it from backup");
+  }
+  if (savedMarker.ids && savedMarker.ids.some(id => !Object.hasOwn(entries, id))) throw new Error("Import state missing records; restore plugin data from backup");
+  const legacyMarker = !savedMarker.ids;
+  async function reserveMarker(id) {
+    if (legacyMarker) throw new Error("Legacy import marker cannot prove record identity; manual recovery required");
+    if (savedMarker.ids.includes(id)) return;
+    const next = { ...savedMarker, ids: [...savedMarker.ids, id] };
+    const nextText = JSON.stringify(next);
+    if (typeof vault.compareAndWrite !== "function" || !await vault.compareAndWrite(marker, markerText, nextText)) throw new Error("Import marker changed or cannot be safely updated");
+    savedMarker = next; markerText = nextText;
   }
   const safeToMutate = async path => typeof vault.safeToMutate === "function" && await vault.safeToMutate(path);
 
@@ -182,13 +200,15 @@ return async function sync({ database, folder, vault, vaultId, state, save, stud
           if (!await safeToMutate(prior.path) || typeof vault.compareAndWrite !== "function" || await vault.read(prior.path) !== current) {
             reports.push({ id, status: "changed-during-sync", path: prior.path }); continue;
           }
-          const stamp = await write(library, row, edited, studioAsar);
+          const normalized = markdownToHtml(current.slice(prefix.length), row.data.content);
+          if (normalized === null) throw new Error("Unsupported paragraph form; manual recovery required");
+          const stamp = await write(library, row, normalized, studioAsar);
           const applied = metadata(row.id, stamp) + current.slice(prefix.length);
           if (!await safeToMutate(prior.path) || !await vault.compareAndWrite(prior.path, current, applied)) {
             reports.push({ id, status: "failed", path: prior.path, detail: "Studio updated, but vault changed; manual recovery required" }); continue;
           }
           const oldBaseline = prior.baseline, oldStudioContent = prior.studioContent;
-          prior.baseline = applied; prior.studioContent = edited;
+          prior.baseline = applied; prior.studioContent = normalized;
           try { await save(state); } catch (error) { prior.baseline = oldBaseline; prior.studioContent = oldStudioContent; throw error; }
           reports.push({ id, status: "written-back", path: prior.path }); continue;
         }
@@ -207,11 +227,13 @@ return async function sync({ database, folder, vault, vaultId, state, save, stud
       }
       const base = [root, ...hierarchy(row), safe(row.data.name)].filter(Boolean).join("/");
       let path = `${base}.md`, n = 1;
-      while (await vault.exists(path)) { if (n === 1) reports.push({ id, status: "collision", path }); path = `${base} (${++n}).md`; }
+      while (reservedPaths.has(path.toLowerCase()) || await vault.exists(path)) { if (n === 1) reports.push({ id, status: "collision", path }); path = `${base} (${++n}).md`; }
       const fresh = await readRecord(library, row);
       if (!fresh || JSON.stringify(fresh) !== JSON.stringify(row)) { reports.push({ id, status: "changed-during-sync", path }); continue; }
       if (!await safeToMutate(path)) { reports.push({ id, status: "changed", path, detail: "Editor state unavailable; close editors before retrying" }); continue; }
+      await reserveMarker(id);
       entries[id] = { path, baseline: content, studioContent: row.data.content, pending: true };
+      reservedPaths.add(path.toLowerCase());
       try { await save(state); } catch (error) { delete entries[id]; throw error; }
       await vault.create(path, content);
       delete entries[id].pending;

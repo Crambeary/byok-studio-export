@@ -123,8 +123,36 @@ c=sqlite3.connect(sys.argv[1]); d=json.loads(c.execute("select data from files w
   state.scopes[scopeKey] = null;
   await assert.rejects(run(), /Invalid import scope/);
   state.scopes[scopeKey] = scope;
+  // Missing entries, including pending reservations, must never be remapped.
+  const partial = structuredClone(state); delete partial.scopes[scopeKey]['file:a'];
+  const notesBefore = new Map(notes);
+  await assert.rejects(sync({ database: db, folder: 'Target', vault, vaultId: tmp, state: partial, save: async () => {} }), /state missing records/);
+  assert.deepEqual(notes, notesBefore);
+  for (const badPath of ['../outside.md', '/outside.md', 'Target/../outside.md', 'Other/note.md', 'Target\\outside.md']) {
+    const bad = structuredClone(state); bad.scopes[scopeKey]['file:a'].path = badPath;
+    await assert.rejects(sync({ database: db, folder: 'Target', vault, vaultId: tmp, state: bad, save: async () => {} }), /record path/);
+    assert.deepEqual(notes, notesBefore);
+  }
+  // A reserved but not yet created name must remain unavailable to its peer.
+  const pendingState = { version: 1, scopes: {} }, pendingNotes = new Map();
+  let failCreate = true;
+  const pendingVault = { safeToMutate: async () => true, exists: async p => pendingNotes.has(p), read: async p => pendingNotes.get(p) ?? null,
+    create: async (p,c) => { if (p.endsWith('/Same.md') && failCreate) { failCreate = false; throw Error('creation failed'); } pendingNotes.set(p,c); },
+    compareAndWrite: async (p,a,b) => { if (pendingNotes.get(p) !== a) return false; pendingNotes.set(p,b); return true; } };
+  const pendingRun = () => sync({ database: db, folder: 'Pending', vault: pendingVault, vaultId: tmp, state: pendingState, save: async () => {} });
+  const pendingReport = await pendingRun();
+  assert.ok(pendingReport.some(r => r.id === 'file:a' && r.status === 'failed'));
+  assert.ok(pendingReport.some(r => r.id === 'file:b' && r.status === 'imported' && r.path.endsWith('Same (2).md')));
+  assert.ok((await pendingRun()).some(r => r.id === 'file:a' && r.status === 'recovered'));
+  assert.match(pendingNotes.get('Pending/Project/Folder/Same.md'), /byok-id: "a"/);
+  assert.match(pendingNotes.get('Pending/Project/Folder/Same (2).md'), /byok-id: "b"/);
+  // Re-reading a source record larger than execFile's default buffer succeeds.
+  execFileSync('python3', ['-c', `import sqlite3,json,sys
+c=sqlite3.connect(sys.argv[1]); d=json.loads(c.execute("select data from files where id='a'").fetchone()[0]); d['content']='<p>'+'x'*1100000+'</p>'; c.execute("update files set data=? where id='a'",(json.dumps(d),)); c.commit()`, db]);
+  const largeReport = await run();
+  assert.ok(largeReport.some(r => r.id === 'file:a' && r.status === 'updated'), JSON.stringify(largeReport));
   const otherVault = new Map();
-  const vault2 = { safeToMutate: async () => true, exists: async p => otherVault.has(p), read: async p => otherVault.get(p) ?? null, create: async (p, c) => otherVault.set(p, c) };
+  const vault2 = { safeToMutate: async () => true, exists: async p => otherVault.has(p), read: async p => otherVault.get(p) ?? null, create: async (p, c) => otherVault.set(p, c), compareAndWrite: async (p, a, b) => { if (otherVault.get(p) !== a) return false; otherVault.set(p, b); return true; } };
   assert.ok((await sync({ database: db, folder: 'Target', vault: vault2, vaultId: tmp + '-other', state, save: async () => {} })).some(r => r.id === 'file:a' && r.status === 'imported'));
   assert.equal(execFileSync('sqlite3', [db, 'select count(*) from outbox'], { encoding: 'utf8' }).trim(), '0');
 });

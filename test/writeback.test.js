@@ -285,3 +285,22 @@ test('normalized paragraph writes preserve source form, unknown JSON and pre-ima
   assert.equal(JSON.parse(f.sql("SELECT content FROM local_versions WHERE file_id='file-a'")), original.content);
   assert.equal(f.sql('SELECT count(*) FROM outbox').trim(), '0');
 });
+
+
+test('consecutive writes retain the actual normalized Studio baseline', async t => {
+  const f = await fixture(t, { id: 'file-a', name: 'File', content: '<p class="editor-paragraph">Original</p>' });
+  const notes = new Map(), state = { version: 1, scopes: {} };
+  const vault = { safeToMutate: async () => true, exists: async p => notes.has(p), read: async p => notes.get(p) ?? null,
+    create: async (p,c) => notes.set(p,c), compareAndWrite: async (p,a,b) => { if (notes.get(p) !== a) return false; notes.set(p,b); return true; } };
+  const run = () => createSync(createGuardedWrite(async () => {}))({ database: f.db, folder: 'Target', vault, vaultId: 'synthetic', state, studioAsar: 'synthetic', save: async () => {} });
+  const file = (await run()).find(r => r.status === 'imported').path;
+  notes.set(file, notes.get(file).replace('Original', 'First'));
+  assert.ok((await run()).some(r => r.status === 'written-back'));
+  const entry = Object.values(state.scopes)[0]['file:file-a'];
+  assert.equal(entry.studioContent, '<p class="editor-paragraph">First</p>');
+  notes.set(file, notes.get(file).replace('First', 'Second'));
+  assert.ok((await run()).some(r => r.status === 'written-back'));
+  assert.equal(JSON.parse(f.sql("SELECT data FROM files WHERE id='file-a'")).content, '<p class="editor-paragraph">Second</p>');
+  assert.equal(entry.studioContent, '<p class="editor-paragraph">Second</p>');
+  assert.equal(f.sql('SELECT count(*) FROM outbox').trim(), '0');
+});
