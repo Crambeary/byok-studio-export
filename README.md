@@ -1,5 +1,39 @@
 # byok-studio-export
 
+## Experimental Obsidian desktop import
+
+This repository also contains an early, manual, **import-only** Obsidian desktop
+plugin. It requires Node.js and npm to build, and the `sqlite3` command-line
+program (with JSON output support) available on Obsidian's PATH at runtime.
+On systems that launch Obsidian with a restricted PATH, arrange for `sqlite3`
+to be available to that process. No Studio account or network access is used.
+
+1. Run `npm ci` and `npm run build`.
+2. Copy `manifest.json` and the generated `main.js` to
+   `<vault>/.obsidian/plugins/byok-studio-import/`, then enable the plugin in
+   Obsidian's community plugin settings.
+3. In the plugin settings, enter the absolute path to the local Studio
+   `db.sqlite` and a destination folder within the vault. Run **Import local
+   Studio Library** from the command palette. The developer console contains
+   the detailed report (including collisions, unsupported and lossy records).
+
+Use disposable libraries while evaluating this prototype. The SQLite CLI reads
+one consistent snapshot including committed WAL data; an incompatible schema,
+missing CLI, or inaccessible database fails the import. Only text records are
+imported. HTML conversion is incomplete and every converted record is reported
+as potentially lossy; other record types are reported without import. Original
+Studio data is never written. Existing notes are not overwritten: collisions
+receive a distinct name, and later changes on either side are reported for
+manual handling. Renames and deletions are not propagated. Plugin state keeps
+the imported content and record paths per database path and destination in the
+vault's plugin data; moving a database or removing that state starts a separate
+import and can create additional notes. Do not edit or delete that state if you
+want to retain the mapping. This foundation does not implement reconciliation
+or write-back.
+
+Run `npm test` for the disposable SQLite/WAL sync-boundary tests. The original
+Python exporter described below remains separate from the plugin.
+
 One-way export of your [BYOK Studio](https://byok.io/studio) desktop library to
 plain Markdown files, so you can read, edit and sync your writing (Obsidian,
 git, Syncthing, ...) without Studio's paid sync.
