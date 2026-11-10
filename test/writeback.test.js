@@ -421,3 +421,43 @@ test("resolution snapshot mutation during write retains recovery and colliding n
   assert.ok((await run()).some(r => r.status === "recovery-required"));
   assert.equal(writes, 1); assert.equal(notes.get(occupied), "existing note");
 });
+
+test('recovery remains visible after restart when the source disappears or changes', async t => {
+  for (const [label, change, status] of [
+    ['trashed', "UPDATE files SET is_trashed=1 WHERE id='file-a'", 'trashed'],
+    ['malformed', "UPDATE files SET data='broken' WHERE id='file-a'", 'failed'],
+    ['unsupported', "UPDATE files SET type='grid' WHERE id='file-a'", 'unsupported'],
+    ['deleted', "DELETE FROM files WHERE id='file-a'", 'deleted'],
+  ]) await t.test(label, async t => {
+    const f = await fixture(t, { id: 'file-a', name: 'File', content: '<p>Original</p>' });
+    const notes = new Map(); let state = { version: 1, scopes: {} }, persisted;
+    const vault = { safeToMutate: async () => true, exists: async p => notes.has(p), read: async p => notes.get(p) ?? null,
+      create: async (p,c) => notes.set(p,c), compareAndWrite: async () => false };
+    const run = () => createSync()({ database: f.db, folder: 'Target', vault, vaultId: 'synthetic', state, save: async () => { persisted = structuredClone(state); } });
+    await run();
+    Object.values(state.scopes)[0]['file:file-a'].recovery = { vault: 'saved vault', studio: 'saved Studio', intended: 'intended' };
+    persisted = structuredClone(state); f.sql(change); state = structuredClone(persisted);
+    const reports = await run();
+    assert.ok(reports.some(r => r.id === 'file:file-a' && r.status === 'recovery-required'));
+    assert.ok(reports.some(r => r.id === 'file:file-a' && r.status === status));
+  });
+});
+
+test('failed final state save retains the persisted recovery after restart', async t => {
+  const f = await fixture(t, { id: 'file-a', name: 'File', content: '<p>Original</p>' });
+  const notes = new Map(); let state = { version: 1, scopes: {} }, persisted, failFinal = false;
+  const vault = { safeToMutate: async () => true, exists: async p => notes.has(p), read: async p => notes.get(p) ?? null,
+    create: async (p,c) => notes.set(p,c), compareAndWrite: async (p,a,b) => { if (notes.get(p) !== a) return false; notes.set(p,b); return true; } };
+  const run = () => createSync(createGuardedWrite(async () => {}))({ database: f.db, folder: 'Target', vault, vaultId: 'synthetic', state, studioAsar: 'synthetic', save: async () => {
+    const entry = Object.values(state.scopes)[0]?.['file:file-a'];
+    if (failFinal && entry && !entry.recovery) throw Error('final save failed');
+    persisted = structuredClone(state);
+  } });
+  const file = (await run()).find(r => r.status === 'imported').path;
+  notes.set(file, notes.get(file).replace('Original', 'Vault edit')); failFinal = true;
+  assert.ok((await run()).some(r => r.status === 'failed'));
+  assert.match(f.sql("SELECT data FROM files WHERE id='file-a'"), /Vault edit/);
+  state = structuredClone(persisted); failFinal = false;
+  assert.ok(Object.values(state.scopes)[0]['file:file-a'].recovery);
+  assert.ok((await run()).some(r => r.status === 'recovery-required'));
+});

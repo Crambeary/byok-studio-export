@@ -168,13 +168,16 @@ return async function sync({ database, folder, vault, vaultId, state, save, stud
   }
   const records = rows.filter(r => r.kind === "file" || r.kind === "manuscript");
   const seen = new Set();
+  const reportRecovery = id => reports.push({ id, status: "recovery-required", path: entries[id].path, detail: "A Studio write may have been interrupted. Preserve both notes and the saved recovery snapshots; reconcile manually before clearing recovery state." });
   for (const row of records) {
     const id = `${row.kind}:${row.id}`; seen.add(id);
+    if (entries[id]?.recovery) reportRecovery(id);
     if (row.is_trashed) { reports.push({ id, status: "trashed" }); continue; }
     if (!row.data) { reports.push({ id, status: "failed", detail: "Malformed record JSON; source preserved" }); continue; }
     if (row.kind !== "file" || row.type !== "text" || typeof row.data.content !== "string") {
       reports.push({ id, status: "unsupported", detail: String(row.type || "unknown") }); continue;
     }
+    if (entries[id]?.recovery) continue;
     try {
       const { body, issues } = render(row.data.content);
       reports.push({ id, status: "lossy", detail: issues.join(", ") });
@@ -193,9 +196,6 @@ return async function sync({ database, folder, vault, vaultId, state, save, stud
           delete prior.pending;
           try { await save(state); } catch (error) { prior.pending = true; throw error; }
           reports.push({ id, status: "recovered", path: prior.path }); continue;
-        }
-        if (prior.recovery) {
-          reports.push({ id, status: "recovery-required", path: prior.path, detail: "A Studio write may have been interrupted. Preserve both notes and the saved recovery snapshots; reconcile manually before clearing recovery state." }); continue;
         }
         const current = await vault.read(prior.path);
         if (current === null) { reports.push({ id, status: "missing", path: prior.path }); continue; }
@@ -350,7 +350,10 @@ return async function sync({ database, folder, vault, vaultId, state, save, stud
       reports.push({ id, status: "imported", path });
     } catch (e) { reports.push({ id, status: "failed", detail: String(e.message || e) }); }
   }
-  for (const id of Object.keys(entries)) if (!seen.has(id)) reports.push({ id, status: "deleted", path: entries[id].path });
+  for (const id of Object.keys(entries)) if (!seen.has(id)) {
+    if (entries[id].recovery) reportRecovery(id);
+    reports.push({ id, status: "deleted", path: entries[id].path });
+  }
   return reports;
 }
 }
