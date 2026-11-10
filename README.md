@@ -27,7 +27,12 @@ references remain separate. These views are read-only: editing one preserves it
 and requires manual reconciliation. Missing references, malformed or unfamiliar
 structures are reported without replacing an existing view. The observed shapes
 and their limits are documented in [the Studio capture](experiments/structured_import/README.md).
-HTML conversion is incomplete and converted text is reported as potentially
+The observed plain-text cardstack and grid shapes are also projected as literal
+JSON code blocks, retaining IDs, array order, and tile coordinates. Only medium
+sections, uncolored cards and uncolored non-header version-2 tiles with empty
+connections, groups and labels are accepted; unfamiliar fields, formatting and
+structures are reported as unsupported. See the [synthetic capture](experiments/cardstack_grid/README.md)
+for the evidence and its limits. HTML conversion is incomplete and converted text is reported as potentially
 lossy; other record types are reported without import. Structured records are
 never written back to Studio. Existing notes are preserved on import: collisions receive a distinct name.
 A later Studio-only change refreshes an unchanged imported note after checking
