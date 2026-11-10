@@ -176,8 +176,11 @@ return async function sync({ database, folder, vault, vaultId, state, save, stud
     if (entries[id]?.recovery) reportRecovery(id);
     if (row.is_trashed) { reports.push({ id, status: "trashed" }); continue; }
     if (!row.data) { reports.push({ id, status: "failed", detail: "Malformed record JSON; source preserved" }); continue; }
-    if ((row.kind === "file" && row.type === "outline") || row.kind === "manuscript") {
-      if (entries[id]?.recovery) continue;
+    if ((row.kind === "file" && ["outline", "cardstack", "grid"].includes(row.type)) || row.kind === "manuscript") {
+      if (entries[id]?.recovery) {
+        if (row.kind === 'file' && ['cardstack', 'grid'].includes(row.type)) reports.push({ id, status: 'unsupported', detail: 'Structured record requires recovery before projection' });
+        continue;
+      }
       try {
         const { content, issues } = structuredView(row, rows, html => render(html, true));
         if (issues.length) reports.push({ id, status: "lossy", detail: issues.join(", ") });
@@ -232,7 +235,7 @@ return async function sync({ database, folder, vault, vaultId, state, save, stud
         delete entries[id].pending;
         try { await save(state); } catch (error) { entries[id].pending = true; throw error; }
         reports.push({ id, status: "imported", path });
-      } catch (e) { reports.push({ id, status: "failed", detail: String(e.message || e) }); }
+      } catch (e) { reports.push({ id, status: row.kind === 'file' && ['cardstack', 'grid'].includes(row.type) && /source preserved/.test(String(e.message)) ? 'unsupported' : 'failed', detail: String(e.message || e) }); }
       continue;
     }
     if (row.kind !== "file" || row.type !== "text" || typeof row.data.content !== "string") {

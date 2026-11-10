@@ -4,7 +4,37 @@ function structuredView(row, rows, render) {
   const obj = x => x && typeof x === 'object' && !Array.isArray(x);
   const escape = text => text.replace(/[\r\n\t]+/g, ' ').replace(/[!"#$%&'()*+,\-./:;<=>?@[\]\\^_`{|}~]/g, '\\$&');
   const ident = x => typeof x === 'string' && x.length > 0;
-  const header = `---\nbyok-id: ${JSON.stringify(String(row.id))}\nbyok-type: ${row.kind === 'manuscript' ? 'manuscript' : 'outline'}\n---\n\n`;
+  const header = `---\nbyok-id: ${JSON.stringify(String(row.id))}\nbyok-type: ${row.kind === 'manuscript' ? 'manuscript' : row.type || 'outline'}\n---\n\n`;
+  if (row.kind === 'file' && ['cardstack', 'grid'].includes(row.type)) {
+    const keys = (value, expected) => obj(value) && Object.keys(value).length === expected.length && expected.every(k => Object.hasOwn(value, k));
+    const plain = value => typeof value === 'string' && !/<\/?[a-zA-Z][^>]*>/.test(value);
+    const empty = value => Array.isArray(value) && value.length === 0;
+    const ids = new Set();
+    const unique = id => { const key = JSON.stringify(id); if (ids.has(key)) fail('Repeated structured ID'); ids.add(key); };
+    const content = row.data.content;
+    if (row.type === 'cardstack') {
+      if (!Array.isArray(content)) fail('Malformed cardstack');
+      for (const section of content) {
+        if (!keys(section, ['title', 'cardSize', 'cards']) || !plain(section.title) || section.cardSize !== 'medium' || !Array.isArray(section.cards)) fail('Unrecognized cardstack section');
+        for (const card of section.cards) {
+          if (!keys(card, ['id', 'title', 'content', 'color']) || !(ident(card.id) || (Number.isSafeInteger(card.id) && card.id >= 0)) || !plain(card.title) || !plain(card.content) || card.color !== null) fail('Unrecognized card');
+          unique(card.id);
+        }
+      }
+    } else {
+      if (!keys(content, ['tiles', 'connections', 'groups', 'labels', 'v2']) || !['tiles', 'connections', 'groups', 'labels'].every(k => empty(content[k]))) fail('Unrecognized grid structure');
+      const v = content.v2;
+      if (!keys(v, ['version', 'unit', 'tiles', 'connections', 'groups', 'labels']) || v.version !== 2 || v.unit !== 25 || !Array.isArray(v.tiles) || !['connections', 'groups', 'labels'].every(k => empty(v[k]))) fail('Unrecognized grid version or structure');
+      for (const tile of v.tiles) {
+        if (!keys(tile, ['id', 'x', 'y', 'w', 'h', 'content', 'color', 'isHeader']) || !ident(tile.id) || !['x', 'y', 'w', 'h'].every(k => Number.isSafeInteger(tile[k])) || tile.w <= 0 || tile.h <= 0 || !plain(tile.content) || tile.color !== null || tile.isHeader !== false) fail('Unrecognized grid tile');
+        unique(tile.id);
+      }
+    }
+    const json = JSON.stringify(content, null, 2);
+    const longest = Math.max(2, ...Array.from(json.matchAll(/`+/g), match => match[0].length));
+    const fence = '`'.repeat(longest + 1);
+    return { content: header + fence + 'json\n' + json + '\n' + fence + '\n', issues: [] };
+  }
   const issues = [];
   if (row.kind === 'file') {
     if (!Array.isArray(row.data.content)) fail('Outline content is not an array');
