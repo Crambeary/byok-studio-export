@@ -185,3 +185,9 @@ remote data. This setting does not make Studio Sync safe. Do not use it on real
 libraries, or transition an experimental library to an account or Studio Sync.
 Keep separate backups and preserve the vault and previous baseline if a sync
 reports a conflict or partial application.
+
+### Experimental concurrent text edits
+
+This dependent prototype builds on PR #39 and issue #5, which remains incomplete. All existing disposable-library, local-only, Studio closure and write-back safeguards still apply. Only the verified literal paragraph subset can be reconciled. Changes to distinct existing paragraphs may merge; reordered, repeated, inserted, deleted, overlapping or otherwise ambiguous paragraphs may require manual recovery or a conflict. Unsupported formats remain protected.
+
+For a reported conflict, the original vault note remains in place and a separately named `Studio conflict` note holds the Studio version. The record stays paused. To resolve it, edit the original note to the desired reversible text, leave its metadata intact, and append a separate `RESOLVED` line to the unchanged conflict note. Close editors and run sync. The Studio snapshot is retained. If the Studio record changed, the conflict note is missing or altered, or a partial write occurred, automatic resolution refuses; preserve both copies and recover manually. Conflict state also retains the original vault text.

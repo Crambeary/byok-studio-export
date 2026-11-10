@@ -92,6 +92,11 @@ return async function sync({ database, folder, vault, vaultId, state, save, stud
     const parts = entry.path.split("/");
     if (entry.path.includes("\\") || parts.some(p => !p || p === "." || p === ".." || safe(p) !== p) || (root && !entry.path.startsWith(root + "/")) || reservedPaths.has(keyForPath(entry.path))) throw new Error("Invalid or duplicate record path");
     reservedPaths.add(keyForPath(entry.path));
+    if (Object.hasOwn(entry, "conflict")) {
+      const c = entry.conflict;
+      if (!object(c) || typeof c.path !== "string" || !c.path || typeof c.note !== "string" || typeof c.snapshot !== "string" || typeof c.vaultOriginal !== "string" || c.path.includes("\\") || c.path.split("/").some(p => !p || p === "." || p === ".." || safe(p) !== p) || (root && !c.path.startsWith(root + "/")) || reservedPaths.has(keyForPath(c.path))) throw new Error("Invalid conflict state");
+      reservedPaths.add(keyForPath(c.path));
+    }
   }
   if (!hasScope) {
     state.scopes[key] = entries;
@@ -175,6 +180,30 @@ return async function sync({ database, folder, vault, vaultId, state, save, stud
         }
         const current = await vault.read(prior.path);
         if (current === null) { reports.push({ id, status: "missing", path: prior.path }); continue; }
+        if (prior.conflict) {
+          const c = prior.conflict;
+          const conflictNote = await vault.read(c.path);
+          if (conflictNote !== c.note + "\nRESOLVED\n") {
+            reports.push({ id, status: "conflict", path: prior.path, detail: `Paused. Studio snapshot: ${c.path}. Edit the original note, then append RESOLVED on its own line to the conflict note and sync.` }); continue;
+          }
+          const baseBody = htmlToMarkdown(prior.studioContent);
+          const prefix = baseBody && prior.baseline.endsWith(baseBody) ? prior.baseline.slice(0, -baseBody.length) : null;
+          let validPrefix = false;
+          try { const match = prefix && prefix.match(/\nbyok-updated: (.*)\n---\n\n$/); validPrefix = !!match && prefix === metadata(row.id, JSON.parse(match[1])); } catch {}
+          const resolved = validPrefix && current.startsWith(prefix) ? markdownToHtml(current.slice(prefix.length), row.data.content) : null;
+          if (JSON.stringify(row) !== c.snapshot || resolved === null || !studioAsar || !await safeToMutate(prior.path) || !await safeToMutate(c.path) || await vault.read(prior.path) !== current || await vault.read(c.path) !== conflictNote) {
+            reports.push({ id, status: "conflict", path: prior.path, detail: "Resolution refused: source, editor, or reversible text cannot be verified; preserve both notes and recover manually" }); continue;
+          }
+          const stamp = await write(library, row, resolved, studioAsar, localExperiment === true, writebackRiskAccepted === true);
+          const applied = metadata(row.id, stamp) + current.slice(prefix.length);
+          if (!await safeToMutate(prior.path) || !await vault.compareAndWrite(prior.path, current, applied)) {
+            reports.push({ id, status: "conflict", path: prior.path, detail: "Studio updated but note changed; manual recovery required" }); continue;
+          }
+          const previous = { ...prior };
+          prior.baseline = applied; prior.studioContent = resolved; delete prior.conflict;
+          try { await save(state); } catch (error) { Object.assign(prior, previous); throw error; }
+          reports.push({ id, status: "resolved", path: prior.path, detail: `Studio snapshot retained at ${c.path}` }); continue;
+        }
         const hasStudioBaseline = typeof prior.studioContent === "string";
         if (current === content && current === prior.baseline) {
           reports.push({ id, status: hasStudioBaseline ? "unchanged" : "changed", path: prior.path, ...(!hasStudioBaseline ? { detail: "Studio baseline missing; manual recovery required" } : {}) }); continue;
@@ -202,6 +231,45 @@ return async function sync({ database, folder, vault, vaultId, state, save, stud
           reports.push({ id, status: "recovered", path: prior.path }); continue;
         }
         if (!hasStudioBaseline) { reports.push({ id, status: "changed", path: prior.path, detail: "Studio baseline missing; manual recovery required" }); continue; }
+        if (current !== prior.baseline && row.data.content !== prior.studioContent) {
+          const base = oldMarkdown;
+          const vaultBody = oldPrefix !== null && current.startsWith(oldPrefix) ? current.slice(oldPrefix.length) : null;
+          const valid = base !== null && newMarkdown !== null && vaultBody !== null && markdownToHtml(vaultBody, prior.studioContent) !== null && prior.baseline === oldPrefix + base;
+          const b = valid ? base.trimEnd().split("\n\n") : [], v = valid ? vaultBody.trimEnd().split("\n\n") : [], st = valid ? newMarkdown.trimEnd().split("\n\n") : [];
+          const compatible = valid && b.length === v.length && b.length === st.length && new Set(b).size === b.length && b.every((x, i) => (v[i] === x || !b.includes(v[i])) && (st[i] === x || !b.includes(st[i])) && (v[i] === x || st[i] === x || v[i] === st[i]));
+          if (compatible && studioAsar) {
+            const merged = b.map((x, i) => v[i] === x ? st[i] : v[i]).join("\n\n") + "\n";
+            const normalized = markdownToHtml(merged, row.data.content);
+            if (normalized !== null && await safeToMutate(prior.path) && await vault.read(prior.path) === current && typeof vault.compareAndWrite === "function") {
+              const stamp = await write(library, row, normalized, studioAsar, localExperiment === true, writebackRiskAccepted === true);
+              const applied = metadata(row.id, stamp) + merged;
+              if (!await safeToMutate(prior.path) || !await vault.compareAndWrite(prior.path, current, applied)) { reports.push({ id, status: "failed", path: prior.path, detail: "Studio updated, but vault changed; manual recovery required" }); continue; }
+              const oldBaseline = prior.baseline, oldStudioContent = prior.studioContent;
+              prior.baseline = applied; prior.studioContent = normalized;
+              try { await save(state); } catch (error) { prior.baseline = oldBaseline; prior.studioContent = oldStudioContent; throw error; }
+              reports.push({ id, status: "merged", path: prior.path }); continue;
+            }
+            reports.push({ id, status: "changed-during-sync", path: prior.path }); continue;
+          }
+          // Only create a conflict snapshot for reversible text. Other formats and
+          // unverifiable metadata remain untouched for manual recovery.
+          if (valid && !compatible) {
+            const fresh = await readRecord(library, row);
+            if (!fresh || JSON.stringify(fresh) !== JSON.stringify(row) || !await safeToMutate(prior.path) || await vault.read(prior.path) !== current) { reports.push({ id, status: "changed-during-sync", path: prior.path }); continue; }
+            const slash = prior.path.lastIndexOf("/");
+            const dir = slash < 0 ? "" : prior.path.slice(0, slash + 1);
+            const name = prior.path.slice(slash + 1, -3);
+            let n = 1, conflictPath;
+            do { conflictPath = dir + withSuffix(name, ` (Studio conflict${n === 1 ? "" : " " + n})`, ".md"); n++; if (n > 10002) throw Error("Too many conflict collisions"); } while (reservedPaths.has(keyForPath(conflictPath)) || await vault.exists(conflictPath));
+            if (!await safeToMutate(conflictPath)) { reports.push({ id, status: "changed-during-sync", path: prior.path }); continue; }
+            const note = content;
+            prior.conflict = { path: conflictPath, note, snapshot: JSON.stringify(row), vaultOriginal: current };
+            try { await save(state); } catch (error) { delete prior.conflict; throw error; }
+            reservedPaths.add(keyForPath(conflictPath));
+            await vault.create(conflictPath, note);
+            reports.push({ id, status: "conflict", path: prior.path, detail: `Paused; Studio snapshot: ${conflictPath}. Edit the original note, then append RESOLVED on its own line to the conflict note and sync.` }); continue;
+          }
+        }
         if (current !== prior.baseline) {
           // Classify a narrow reversible subset without enabling database writes.
           const prefix = metadata(row.id, row.data.updatedAt);
