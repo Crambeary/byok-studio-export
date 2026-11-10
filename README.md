@@ -42,11 +42,13 @@ original Studio content is retained. Renames and deletions are not propagated. P
 the imported content and record paths per database path, vault path, destination and Record in the vault's plugin
 data; moving a database or vault, upgrading from the previous import-only
 state, or removing state starts a separate import and can create additional
-notes. Do not edit or delete that state if you
+notes. Older imports without saved ancestor identities reserve their existing
+folders; new notes may be placed in separate suffixed folders and the report
+flags this. Do not edit or delete that state if you
 want to retain the mapping. The plugin opens the Studio database read-only and
 never writes vault edits back. Historical write-back experiments are research,
 not plugin features. A failed state save after a note refresh retains the old
-baseline; a retry can recover when the note exactly matches the current source.
+baseline; a retry can recover a refresh when its saved intent matches the note.
 
 Run `npm test` for the disposable SQLite/WAL sync-boundary tests. The original
 Python exporter described below remains separate from the plugin.
