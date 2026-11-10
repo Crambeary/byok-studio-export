@@ -90,6 +90,7 @@ async function sync({ database, folder, vault, vaultId, state, save, normalizePa
     const parts = entry.path.split("/");
     if (entry.path.includes("\\") || parts.some(p => !p || p === "." || p === ".." || safe(p) !== p) || (root && !entry.path.startsWith(root + "/")) || reservedPaths.has(keyForPath(entry.path))) throw new Error("Invalid or duplicate record path");
     reservedPaths.add(keyForPath(entry.path));
+    if (Object.hasOwn(entry, "ancestors") && (!Array.isArray(entry.ancestors) || entry.ancestors.length !== entry.path.split("/").length - (root ? root.split("/").length : 0) - 1 || entry.ancestors.some((id, i) => typeof id !== "string" || !id.startsWith(i === 0 ? "project:" : "folder:")))) throw new Error("Invalid ancestor state");
     if (Object.hasOwn(entry, "textRefresh") && (!object(entry.textRefresh) || typeof entry.textRefresh.from !== "string" || typeof entry.textRefresh.to !== "string" || typeof entry.textRefresh.studio !== "string" || entry.textRefresh.from !== entry.baseline)) throw new Error("Invalid text refresh state");
     if (Object.hasOwn(entry, "structuredRefresh") && (!object(entry.structuredRefresh) || typeof entry.structuredRefresh.from !== "string" || typeof entry.structuredRefresh.to !== "string" || entry.structuredRefresh.from !== entry.baseline)) throw new Error("Invalid structured refresh state");
     if (Object.hasOwn(entry, "recovery")) {
@@ -141,9 +142,9 @@ async function sync({ database, folder, vault, vaultId, state, save, normalizePa
     return result;
   }
   const records = rows.filter(r => r.kind === "file" || r.kind === "manuscript");
-  // Existing record paths are durable evidence of hierarchy names. Seed all of
-  // them before allocating names for newly discovered siblings.
-  const names = new Map(), owners = new Map(), ambiguous = new Set();
+  // Only persisted ancestor identities can associate old paths with source nodes.
+  // Legacy directories are reserved by path, without guessing their owners.
+  const names = new Map(), owners = new Map(), ambiguous = new Set(), occupied = new Set();
   function chainFor(row) {
     const project = projects.get(String(row.project_id));
     if (!project || !project.data) throw new Error(`Missing or malformed project ${row.project_id}`);
@@ -157,27 +158,27 @@ async function sync({ database, folder, vault, vaultId, state, save, normalizePa
     if ((names.has(nameKey) && names.get(nameKey) !== name) || (owners.has(ownerKey) && owners.get(ownerKey) !== id)) ambiguous.add(parent);
     else { names.set(nameKey, name); owners.set(ownerKey, id); }
   }
-  for (const row of records) {
-    const entry = entries[`${row.kind}:${row.id}`]; if (!entry) continue;
-    try {
-      const chain = chainFor(row), parts = entry.path.split('/').slice(root ? root.split('/').length : 0, -1);
-      if (parts.length !== chain.length) continue;
-      let parent = '';
-      chain.forEach((item, i) => { const id = identity(item, i); remember(parent, id, parts[i]); parent = JSON.stringify([parent, id]); });
-    } catch { /* Invalid source hierarchy is reported per record. */ }
+  for (const entry of Object.values(entries)) {
+    const parts = entry.path.split('/').slice(root ? root.split('/').length : 0, -1);
+    let parent = '', physical = '';
+    parts.forEach((name, i) => {
+      physical = [physical, name].filter(Boolean).join('/'); occupied.add(keyForPath(physical));
+      if (entry.ancestors) { const id = entry.ancestors[i]; remember(parent, id, name); parent = JSON.stringify([parent, id]); }
+    });
   }
   function hierarchy(row) {
-    let parent = '';
+    let parent = '', physical = '';
     return chainFor(row).map((item, i) => {
       if (ambiguous.has(parent)) throw new Error('Ambiguous existing hierarchy mapping; manual reconciliation required');
       const id = identity(item, i), nameKey = JSON.stringify([parent, id]);
       let name = names.get(nameKey);
       if (!name) {
         const base = safe(item.data?.name); name = base;
-        const taken = candidate => owners.has(JSON.stringify([parent, keyForPath(candidate)]));
+        const taken = candidate => owners.has(JSON.stringify([parent, keyForPath(candidate)])) || occupied.has(keyForPath([physical, candidate].filter(Boolean).join("/")));
         if (taken(name)) { const suffix = createHash('sha256').update(id).digest('hex'); let n = 16; do { name = withSuffix(base, ` (${suffix.slice(0, n)})`); n += 4; } while (taken(name) && n <= 68); if (taken(name)) throw new Error('Hierarchy name collision'); }
         remember(parent, id, name);
       }
+      physical = [physical, name].filter(Boolean).join("/"); occupied.add(keyForPath(physical));
       parent = JSON.stringify([parent, id]); return name;
     });
   }
@@ -249,7 +250,7 @@ async function sync({ database, folder, vault, vaultId, state, save, normalizePa
         if (!await sourceUnchanged()) { reports.push({ id, status: "changed-during-sync", path }); continue; }
         if (!await safeToMutate(path)) { reports.push({ id, status: "changed", path, detail: "Close editors before retrying" }); continue; }
         if (legacyMarker) throw new Error("Legacy import marker cannot prove record identity; manual recovery required");
-        entries[id] = { path, baseline: content, pending: true };
+        entries[id] = { path, baseline: content, ancestors: chainFor(row).map(identity), pending: true };
         try { await save(state); } catch (error) { delete entries[id]; throw error; }
         reservedPaths.add(keyForPath(path)); await reserveMarker(id); await vault.create(path, content);
         delete entries[id].pending;
@@ -296,9 +297,6 @@ async function sync({ database, folder, vault, vaultId, state, save, normalizePa
         if (typeof prior.studioContent !== "string") {
           reports.push({ id, status: "changed", path: prior.path, detail: "Studio baseline missing; manual recovery required" }); continue;
         }
-        if (current === prior.baseline && current === content) {
-          reports.push({ id, status: "unchanged", path: prior.path }); continue;
-        }
         if (prior.textRefresh) {
           const intent = prior.textRefresh;
           if (current === intent.to) {
@@ -313,6 +311,9 @@ async function sync({ database, folder, vault, vaultId, state, save, normalizePa
             delete prior.textRefresh;
             try { await save(state); } catch (error) { prior.textRefresh = intent; throw error; }
           } else { reports.push({ id, status: "changed", path: prior.path, detail: "Interrupted refresh requires manual reconciliation" }); continue; }
+        }
+        if (current === prior.baseline && current === content) {
+          reports.push({ id, status: "unchanged", path: prior.path }); continue;
         }
         if (current !== prior.baseline) {
           reports.push({ id, status: "changed", path: prior.path, detail: "Vault edit preserved; reconcile manually before refreshing" }); continue;
@@ -343,7 +344,7 @@ async function sync({ database, folder, vault, vaultId, state, save, normalizePa
       if (!fresh || JSON.stringify(fresh) !== JSON.stringify(row)) { reports.push({ id, status: "changed-during-sync", path }); continue; }
       if (!await safeToMutate(path)) { reports.push({ id, status: "changed", path, detail: "Editor state unavailable; close editors before retrying" }); continue; }
       if (legacyMarker) throw new Error("Legacy import marker cannot prove record identity; manual recovery required");
-      entries[id] = { path, baseline: content, studioContent: row.data.content, pending: true };
+      entries[id] = { path, baseline: content, studioContent: row.data.content, ancestors: chainFor(row).map(identity), pending: true };
       try { await save(state); } catch (error) { delete entries[id]; throw error; }
       reservedPaths.add(keyForPath(path));
       await reserveMarker(id);
