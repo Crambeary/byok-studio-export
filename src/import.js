@@ -72,7 +72,7 @@ function destination(value) {
   return parts.join("/");
 }
 function createSync(write = guardedWrite) {
-return async function sync({ database, folder, vault, vaultId, state, save, studioAsar, normalizePath }) {
+return async function sync({ database, folder, vault, vaultId, state, save, studioAsar, normalizePath, localExperiment }) {
   const keyForPath = path => collisionKey(path, normalizePath);
   const root = destination(folder);
   const library = await realpath(database);
@@ -218,7 +218,7 @@ return async function sync({ database, folder, vault, vaultId, state, save, stud
           }
           const normalized = markdownToHtml(current.slice(prefix.length), row.data.content);
           if (normalized === null) throw new Error("Unsupported paragraph form; manual recovery required");
-          const stamp = await write(library, row, normalized, studioAsar);
+          const stamp = await write(library, row, normalized, studioAsar, localExperiment === true);
           const applied = metadata(row.id, stamp) + current.slice(prefix.length);
           if (!await safeToMutate(prior.path) || !await vault.compareAndWrite(prior.path, current, applied)) {
             reports.push({ id, status: "failed", path: prior.path, detail: "Studio updated, but vault changed; manual recovery required" }); continue;
