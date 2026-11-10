@@ -174,3 +174,18 @@ Studio 1.1.3 has been observed creating local projects with JSON `user: null`
 that experiment did not prove that accepting null preserves the account ownership
 guard. Write-back therefore continues to refuse it; disposable-only and outbox
 checks remain in force.
+
+
+### Disposable local-only experiment
+
+The **Disposable local-only experiment** setting is off by default. With it enabled,
+write-back may accept JSON null local ownership and existing queued references, but
+only for a marked disposable synthetic library that passes all other write-back
+checks. Studio must be closed. It never changes the outbox. The pinned build,
+local metadata, schema, ownership, and live-library restrictions still apply.
+
+**Future Studio Sync can overwrite these edits** using older queued operations or
+remote data. This setting does not make Studio Sync safe. Do not use it on real
+libraries, or transition an experimental library to an account or Studio Sync.
+Keep separate backups and preserve the vault and previous baseline if a sync
+reports a conflict or partial application.

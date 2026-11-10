@@ -47,7 +47,7 @@ function runSql(database, sql) {
 }
 
 function createGuardedWrite(checkCompatibility = compatible, execute = runSql) {
-return async function guardedWrite(database, row, newHtml, asar) {
+return async function guardedWrite(database, row, newHtml, asar, localExperiment = false) {
   await checkCompatibility(database, asar);
   // JSON.parse/stringify can discard duplicate keys, round numbers, or turn
   // non-finite values into null. Permit only a demonstrably stable JSON snapshot.
@@ -67,6 +67,7 @@ return async function guardedWrite(database, row, newHtml, asar) {
   const encoded = JSON.stringify(row.data.content);
   const fingerprint = createHash('sha256').update(JSON.stringify({ c: row.data.content, e: null })).digest('hex');
   const q = literal, id = q(row.id);
+  const experimental = localExperiment === true;
   // Each assertion aborts the CLI, closing its connection and rolling back.
   const sql = `.bail on
 PRAGMA busy_timeout=0;
@@ -87,7 +88,7 @@ INSERT INTO guard SELECT NOT EXISTS(SELECT 1 FROM metadata WHERE key='authToken'
 .print 'GUARD: Record changed, moved, trashed, or is no longer text. Preserve the vault edit and re-import the synthetic record before retrying.'
 INSERT INTO guard SELECT count(*)=1 FROM files WHERE id=${id} AND type='text' AND is_trashed=0 AND data=${q(row.rawData)} AND project_id IS ${q(row.project_id)} AND folder_id IS ${row.folder_id == null ? 'NULL' : q(row.folder_id)};
 .print 'GUARD: Outbox references this file regardless of status, or an encoded URL prevents ruling out a reference. Preserve the vault edit; use a clean synthetic fixture without queued work. Do not delete or rewrite outbox rows.'
-INSERT INTO guard SELECT NOT EXISTS(SELECT 1 FROM outbox WHERE (instr(coalesce(url,''),'%')>0 OR entity_id=${id} OR instr(coalesce(temp_ids,''),${id})>0 OR instr(coalesce(url,''),${id})>0 OR instr(coalesce(body,''),${id})>0 OR EXISTS(SELECT 1 FROM json_tree(CASE WHEN json_valid(temp_ids) THEN temp_ids ELSE 'null' END) WHERE instr(CAST(value AS TEXT),${id})>0) OR EXISTS(SELECT 1 FROM json_tree(CASE WHEN json_valid(body) THEN body ELSE 'null' END) WHERE instr(CAST(value AS TEXT),${id})>0)));
+INSERT INTO guard SELECT ${experimental ? '1 OR ' : ''}NOT EXISTS(SELECT 1 FROM outbox WHERE (instr(coalesce(url,''),'%')>0 OR entity_id=${id} OR instr(coalesce(temp_ids,''),${id})>0 OR instr(coalesce(url,''),${id})>0 OR instr(coalesce(body,''),${id})>0 OR EXISTS(SELECT 1 FROM json_tree(CASE WHEN json_valid(temp_ids) THEN temp_ids ELSE 'null' END) WHERE instr(CAST(value AS TEXT),${id})>0) OR EXISTS(SELECT 1 FROM json_tree(CASE WHEN json_valid(body) THEN body ELSE 'null' END) WHERE instr(CAST(value AS TEXT),${id})>0)));
 .print 'GUARD: JSON identity or location disagrees with indexed columns. Preserve the vault edit and repair the synthetic record before retrying.'
 INSERT INTO guard SELECT (json_type(data,'$.id') IS NULL OR json_extract(data,'$.id') IS id) AND (json_type(data,'$.project') IS NULL OR json_extract(data,'$.project') IS project_id) AND (json_type(data,'$.folder') IS NULL OR json_extract(data,'$.folder') IS folder_id) AND (json_type(data,'$.type') IS NULL OR json_extract(data,'$.type') IS type) FROM files WHERE id=${id};
 .print 'GUARD: Comments or device links reference this record or project. Preserve the vault edit and use an unlinked, uncommented synthetic record.'
@@ -96,14 +97,14 @@ INSERT INTO guard SELECT NOT EXISTS(SELECT 1 FROM device_files WHERE studio_file
 INSERT INTO guard SELECT NOT EXISTS(SELECT 1 FROM device_projects WHERE studio_project_id=${q(row.project_id)});
 INSERT INTO guard SELECT coalesce(json_type(data,'$.autoLinkedDeviceIds') IS NULL OR (json_type(data,'$.autoLinkedDeviceIds')='array' AND json_array_length(data,'$.autoLinkedDeviceIds')=0),0) AND (json_type(data,'$.file') IS NULL OR json_type(data,'$.file')='null') FROM files WHERE id=${id};
 .print 'GUARD: Foreign ownership or trashed JSON record. Preserve the vault edit and use a local, active synthetic record.'
-INSERT INTO guard SELECT (user_id IS NULL OR user_id='local') AND (json_type(data,'$.user') IS NULL OR json_extract(data,'$.user')='local') AND (json_type(data,'$.userId') IS NULL OR json_extract(data,'$.userId')='local') AND (json_type(data,'$.isTrashed') IS NULL OR json_type(data,'$.isTrashed')='false') FROM files WHERE id=${id};
+INSERT INTO guard SELECT (user_id IS NULL OR user_id='local') AND (json_type(data,'$.user') IS NULL OR ${experimental ? "json_type(data,'$.user')='null' OR " : ''}json_extract(data,'$.user')='local') AND (json_type(data,'$.userId') IS NULL OR ${experimental ? "json_type(data,'$.userId')='null' OR " : ''}json_extract(data,'$.userId')='local') AND (json_type(data,'$.isTrashed') IS NULL OR json_type(data,'$.isTrashed')='false') FROM files WHERE id=${id};
 .print 'GUARD: Missing, foreign-owned, trashed, or inconsistent project/folder ancestor. Preserve the vault edit and repair the synthetic hierarchy before retrying.'
-INSERT INTO guard SELECT count(*)=1 FROM projects WHERE id=${q(row.project_id)} AND (user_id IS NULL OR user_id='local') AND json_valid(data) AND json_type(data)='object' AND NOT EXISTS(SELECT 1 FROM json_tree(projects.data) GROUP BY fullkey HAVING count(*)>1) AND (json_type(data,'$.isTrashed') IS NULL OR json_type(data,'$.isTrashed')='false') AND (json_type(data,'$.user') IS NULL OR json_extract(data,'$.user')='local') AND (json_type(data,'$.userId') IS NULL OR json_extract(data,'$.userId')='local');
+INSERT INTO guard SELECT count(*)=1 FROM projects WHERE id=${q(row.project_id)} AND (user_id IS NULL OR user_id='local') AND json_valid(data) AND json_type(data)='object' AND NOT EXISTS(SELECT 1 FROM json_tree(projects.data) GROUP BY fullkey HAVING count(*)>1) AND (json_type(data,'$.isTrashed') IS NULL OR json_type(data,'$.isTrashed')='false') AND (json_type(data,'$.user') IS NULL OR ${experimental ? "json_type(data,'$.user')='null' OR " : ''}json_extract(data,'$.user')='local') AND (json_type(data,'$.userId') IS NULL OR ${experimental ? "json_type(data,'$.userId')='null' OR " : ''}json_extract(data,'$.userId')='local');
 WITH RECURSIVE chain(id) AS (
  SELECT folder_id FROM files WHERE id=${id} AND folder_id IS NOT NULL
  UNION SELECT parent_folder_id FROM folders JOIN chain ON folders.id=chain.id WHERE parent_folder_id IS NOT NULL
 )
-INSERT INTO guard SELECT NOT EXISTS(SELECT 1 FROM chain LEFT JOIN folders ON folders.id=chain.id WHERE folders.id IS NULL OR folders.project_id<>${q(row.project_id)} OR folders.is_trashed<>0 OR (folders.user_id IS NOT NULL AND folders.user_id<>'local') OR NOT json_valid(folders.data) OR json_type(folders.data)<>'object' OR EXISTS(SELECT 1 FROM json_tree(folders.data) GROUP BY fullkey HAVING count(*)>1) OR (json_type(folders.data,'$.isTrashed') IS NOT NULL AND json_type(folders.data,'$.isTrashed')<>'false') OR (json_type(folders.data,'$.user') IS NOT NULL AND json_extract(folders.data,'$.user') IS NOT 'local') OR (json_type(folders.data,'$.userId') IS NOT NULL AND json_extract(folders.data,'$.userId') IS NOT 'local')) AND (NOT EXISTS(SELECT 1 FROM chain) OR EXISTS(SELECT 1 FROM chain JOIN folders ON folders.id=chain.id WHERE parent_folder_id IS NULL));
+INSERT INTO guard SELECT NOT EXISTS(SELECT 1 FROM chain LEFT JOIN folders ON folders.id=chain.id WHERE folders.id IS NULL OR folders.project_id<>${q(row.project_id)} OR folders.is_trashed<>0 OR (folders.user_id IS NOT NULL AND folders.user_id<>'local') OR NOT json_valid(folders.data) OR json_type(folders.data)<>'object' OR EXISTS(SELECT 1 FROM json_tree(folders.data) GROUP BY fullkey HAVING count(*)>1) OR (json_type(folders.data,'$.isTrashed') IS NOT NULL AND json_type(folders.data,'$.isTrashed')<>'false') OR (json_type(folders.data,'$.user') IS NOT NULL AND ${experimental ? "json_type(folders.data,'$.user')<>'null' AND " : ''}json_extract(folders.data,'$.user') IS NOT 'local') OR (json_type(folders.data,'$.userId') IS NOT NULL AND ${experimental ? "json_type(folders.data,'$.userId')<>'null' AND " : ''}json_extract(folders.data,'$.userId') IS NOT 'local')) AND (NOT EXISTS(SELECT 1 FROM chain) OR EXISTS(SELECT 1 FROM chain JOIN folders ON folders.id=chain.id WHERE parent_folder_id IS NULL));
 .print 'GUARD: Version snapshot or update failed. Preserve the vault edit; inspect the disposable fixture before retrying.'
 INSERT INTO local_versions(id,file_id,content,extras,fingerprint,reason,file_name,content_size,created_at)
  SELECT ${q(randomUUID())},${id},${q(encoded)},NULL,${q(fingerprint)},'manual',${q(row.data.name || '')},${encoded.length},${q(stamp)}
