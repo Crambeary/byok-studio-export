@@ -1,0 +1,30 @@
+[12:1110/013724.195371:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+2026-11-10 01:37:24 Loaded main app package /usr/lib/obsidian/obsidian.asar
+
+DevTools listening on ws://127.0.0.1:45365/devtools/browser/4fb2eb5f-95de-4168-af68-294d183e7c41
+Ignored: Error: ENOENT: no such file or directory, open '/work/cfg/obsidian/disposable00000a.json'
+2026-11-10 01:37:24 Checking for update using Github
+2026-11-10 01:37:25 Failed to check for update using Github (net::ERR_INTERNET_DISCONNECTED)
+Error: net::ERR_INTERNET_DISCONNECTED
+    at SimpleURLLoaderWrapper.<anonymous> (node:electron/js2c/browser_init:2:139478)
+    at SimpleURLLoaderWrapper.emit (node:events:514:28)
+2026-11-10 01:37:25 Checking for update using obsidian.md
+2026-11-10 01:37:25 Failed to check for update using obsidian.md (net::ERR_INTERNET_DISCONNECTED)
+Error: net::ERR_INTERNET_DISCONNECTED
+    at SimpleURLLoaderWrapper.<anonymous> (node:electron/js2c/browser_init:2:139478)
+    at SimpleURLLoaderWrapper.emit (node:events:514:28)
+[123:1110/013728.423517:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+2026-11-10 01:37:28 Loaded main app package /usr/lib/obsidian/obsidian.asar
+
+DevTools listening on ws://127.0.0.1:42891/devtools/browser/fa3bd3fa-0698-4a74-9102-249a71f4d47a
+Ignored: Error: ENOENT: no such file or directory, open '/work/cfg/obsidian/disposable00000a.json'
+2026-11-10 01:37:28 Checking for update using Github
+2026-11-10 01:37:28 Failed to check for update using Github (net::ERR_INTERNET_DISCONNECTED)
+Error: net::ERR_INTERNET_DISCONNECTED
+    at SimpleURLLoaderWrapper.<anonymous> (node:electron/js2c/browser_init:2:139478)
+    at SimpleURLLoaderWrapper.emit (node:events:514:28)
+2026-11-10 01:37:28 Checking for update using obsidian.md
+2026-11-10 01:37:28 Failed to check for update using obsidian.md (net::ERR_INTERNET_DISCONNECTED)
+Error: net::ERR_INTERNET_DISCONNECTED
+    at SimpleURLLoaderWrapper.<anonymous> (node:electron/js2c/browser_init:2:139478)
+    at SimpleURLLoaderWrapper.emit (node:events:514:28)
