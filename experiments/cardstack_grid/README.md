@@ -16,4 +16,12 @@ On Linux with bubblewrap, Python 3, the pinned Studio port and Xvfb:
 python3 experiments/cardstack_grid/lab.py --studio-dir /path/to/studio/electron --xvfb /path/to/Xvfb
 ```
 
-The executable, archive and Xvfb hashes appear in the evidence; this run used Studio 1.1.3 and Electron 44.4.5. The script replaces only the specified evidence output. It exits nonzero if the UI, persistence, isolation or identity assertions fail. Fresh synthetic IDs and timestamp numbering may differ between runs.
+The executable, archive and Xvfb hashes appear in the evidence; this run used Studio 1.1.3 and Electron 44.4.5. The current script writes `populated-evidence.json` by default; `--output` selects another destination. The original `evidence.json` is retained as the earlier capture. The script exits nonzero if the UI, persistence, isolation or identity assertions fail. Fresh synthetic IDs and timestamp numbering may differ between runs.
+
+## Populated records and reopen
+
+[populated-evidence.json](populated-evidence.json) is a separate synthetic run. Two cards were given titles and plain-text bodies, then the first was moved to the second section using Studio's move control. Two grid tiles were created and given distinct text. The driver waits after edits and the move, closes Studio, reopens the disposable library, opens both files, and checks the visible text and saved record content. The card IDs and order are compared across the move and reopen; the grid's saved tile IDs and positions are preserved on reopen. The driver enforces the recorded Studio executable and archive hashes and checks both launches use local mode and loopback only.
+
+In this run the mirror snapshot taken after typing but before moving still showed empty card fields even after a wait. The snapshot after the move and the persisted and reopened records contain the populated strings. This observation does not establish which interaction committed the pending edits or that an idle wait alone saves them. The first card retained its ID when moved; the second remained in the original section. The two tiles have distinct IDs and coordinates; their `v2` array order survives reopen.
+
+This run does not capture formatted card bodies, grid links, connections, groups, labels, manual placement, or tile reorder. It does not establish general identity or ordering rules. These shapes remain unsupported for projection, and structured write-back remains disabled. Identifiers and timestamps are consistently replaced in the fixture; IDs are synthetic and numeric card IDs become strings.

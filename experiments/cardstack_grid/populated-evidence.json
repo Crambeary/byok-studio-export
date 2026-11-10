@@ -1,0 +1,671 @@
+{
+  "environment": {
+    "studio_version": "1.1.3",
+    "electron": "44.4.5",
+    "studio_binary_sha256": "ee9faf5bb9fe78a750cc5099863c85c4459e7f04c387fd1f111c83e4e8c57c97",
+    "app_asar_sha256": "25e93b78fb4753f7b47236a91f8907e674c341aab19af271d93c7dd1e04dbcfa",
+    "xvfb_sha256": "ffe89f25f4aa76a7c97d72bd4fa8b74d8304a1b4811a70a2614b0c953c241396"
+  },
+  "checks": {
+    "loopback_only": true,
+    "local_mode": true,
+    "no_auth_token_key": true,
+    "clean_exits": true,
+    "integrity": true,
+    "populated_cards": true,
+    "card_move": true,
+    "multiple_tiles": true,
+    "tile_identity_across_edit": true,
+    "saved_before_reopen": true,
+    "reopen_matches_disk": true,
+    "ui_reopened": true
+  },
+  "captures": {
+    "tree_card": [
+      {
+        "id": "<id-1>",
+        "project": "<id-2>",
+        "folder": null,
+        "name": "Untitled Cardstack",
+        "type": "cardstack",
+        "content": [
+          {
+            "title": "Section 1",
+            "cardSize": "medium",
+            "cards": []
+          }
+        ],
+        "file": null,
+        "createdAt": "<time-1>",
+        "updatedAt": "<time-1>",
+        "contentUpdatedAt": "<time-1>",
+        "isTrashed": false,
+        "position": 0,
+        "gridLayout": null,
+        "cardColor": null,
+        "tags": [],
+        "isFavorited": false,
+        "description": "",
+        "plainSyncWarningAcked": false,
+        "autoLinkedDeviceIds": []
+      }
+    ],
+    "tree_added": [
+      {
+        "id": "<id-1>",
+        "project": "<id-2>",
+        "folder": null,
+        "name": "Untitled Cardstack",
+        "type": "cardstack",
+        "content": [
+          {
+            "title": "Section 1",
+            "cardSize": "medium",
+            "cards": [
+              {
+                "id": "<card-1>",
+                "title": "",
+                "content": "",
+                "color": null
+              }
+            ]
+          }
+        ],
+        "file": null,
+        "createdAt": "<time-1>",
+        "updatedAt": "<time-2>",
+        "contentUpdatedAt": "<time-2>",
+        "isTrashed": false,
+        "position": 0,
+        "gridLayout": null,
+        "cardColor": null,
+        "tags": [],
+        "isFavorited": false,
+        "description": "",
+        "plainSyncWarningAcked": false,
+        "autoLinkedDeviceIds": []
+      }
+    ],
+    "tree_sections": [
+      {
+        "id": "<id-1>",
+        "project": "<id-2>",
+        "folder": null,
+        "name": "Untitled Cardstack",
+        "type": "cardstack",
+        "content": [
+          {
+            "title": "Section 1",
+            "cardSize": "medium",
+            "cards": [
+              {
+                "id": "<card-1>",
+                "title": "",
+                "content": "",
+                "color": null
+              },
+              {
+                "id": "<card-2>",
+                "title": "",
+                "content": "",
+                "color": null
+              }
+            ]
+          },
+          {
+            "title": "Untitled Section",
+            "cardSize": "medium",
+            "cards": []
+          }
+        ],
+        "file": null,
+        "createdAt": "<time-1>",
+        "updatedAt": "<time-3>",
+        "contentUpdatedAt": "<time-3>",
+        "isTrashed": false,
+        "position": 0,
+        "gridLayout": null,
+        "cardColor": null,
+        "tags": [],
+        "isFavorited": false,
+        "description": "",
+        "plainSyncWarningAcked": false,
+        "autoLinkedDeviceIds": []
+      }
+    ],
+    "tree_reordered": [
+      {
+        "id": "<id-1>",
+        "project": "<id-2>",
+        "folder": null,
+        "name": "Untitled Cardstack",
+        "type": "cardstack",
+        "content": [
+          {
+            "title": "Section 1",
+            "cardSize": "medium",
+            "cards": [
+              {
+                "id": "<card-2>",
+                "title": "Synthetic beta",
+                "content": "Second body on another card.",
+                "color": null
+              }
+            ]
+          },
+          {
+            "title": "Untitled Section",
+            "cardSize": "medium",
+            "cards": [
+              {
+                "id": "<card-1>",
+                "title": "Synthetic alpha",
+                "content": "First body with café & punctuation.",
+                "color": null
+              }
+            ]
+          }
+        ],
+        "file": null,
+        "createdAt": "<time-1>",
+        "updatedAt": "<time-4>",
+        "contentUpdatedAt": "<time-4>",
+        "isTrashed": false,
+        "position": 0,
+        "gridLayout": null,
+        "cardColor": null,
+        "tags": [],
+        "isFavorited": false,
+        "description": "",
+        "plainSyncWarningAcked": false,
+        "autoLinkedDeviceIds": []
+      }
+    ],
+    "tree_grid": [
+      {
+        "id": "<id-3>",
+        "project": "<id-2>",
+        "folder": null,
+        "name": "Untitled Grid",
+        "type": "grid",
+        "content": {
+          "tiles": [],
+          "connections": [],
+          "groups": [],
+          "labels": [],
+          "v2": {
+            "version": 2,
+            "unit": 25,
+            "tiles": [],
+            "connections": [],
+            "groups": [],
+            "labels": []
+          }
+        },
+        "file": null,
+        "createdAt": "<time-5>",
+        "updatedAt": "<time-5>",
+        "contentUpdatedAt": "<time-5>",
+        "isTrashed": false,
+        "position": 0,
+        "gridLayout": null,
+        "cardColor": null,
+        "tags": [],
+        "isFavorited": false,
+        "description": "",
+        "plainSyncWarningAcked": false,
+        "autoLinkedDeviceIds": []
+      },
+      {
+        "id": "<id-1>",
+        "project": "<id-2>",
+        "folder": null,
+        "name": "Untitled Cardstack",
+        "type": "cardstack",
+        "content": [
+          {
+            "title": "Section 1",
+            "cardSize": "medium",
+            "cards": [
+              {
+                "id": "<card-2>",
+                "title": "Synthetic beta",
+                "content": "Second body on another card.",
+                "color": null
+              }
+            ]
+          },
+          {
+            "title": "Untitled Section",
+            "cardSize": "medium",
+            "cards": [
+              {
+                "id": "<card-1>",
+                "title": "Synthetic alpha",
+                "content": "First body with café & punctuation.",
+                "color": null
+              }
+            ]
+          }
+        ],
+        "file": null,
+        "createdAt": "<time-1>",
+        "updatedAt": "<time-4>",
+        "contentUpdatedAt": "<time-4>",
+        "isTrashed": false,
+        "position": 0,
+        "gridLayout": null,
+        "cardColor": null,
+        "tags": [],
+        "isFavorited": false,
+        "description": "",
+        "plainSyncWarningAcked": false,
+        "autoLinkedDeviceIds": []
+      }
+    ],
+    "tree_tile": [
+      {
+        "id": "<id-3>",
+        "project": "<id-2>",
+        "folder": null,
+        "name": "Untitled Grid",
+        "type": "grid",
+        "content": {
+          "tiles": [],
+          "connections": [],
+          "groups": [],
+          "labels": [],
+          "v2": {
+            "version": 2,
+            "unit": 25,
+            "tiles": [
+              {
+                "id": "<tile-1>",
+                "x": 17,
+                "y": 12,
+                "w": 8,
+                "h": 3,
+                "content": "",
+                "color": null,
+                "isHeader": false
+              }
+            ],
+            "connections": [],
+            "groups": [],
+            "labels": []
+          }
+        },
+        "file": null,
+        "createdAt": "<time-5>",
+        "updatedAt": "<time-6>",
+        "contentUpdatedAt": "<time-6>",
+        "isTrashed": false,
+        "position": 0,
+        "gridLayout": null,
+        "cardColor": null,
+        "tags": [],
+        "isFavorited": false,
+        "description": "",
+        "plainSyncWarningAcked": false,
+        "autoLinkedDeviceIds": []
+      },
+      {
+        "id": "<id-1>",
+        "project": "<id-2>",
+        "folder": null,
+        "name": "Untitled Cardstack",
+        "type": "cardstack",
+        "content": [
+          {
+            "title": "Section 1",
+            "cardSize": "medium",
+            "cards": [
+              {
+                "id": "<card-2>",
+                "title": "Synthetic beta",
+                "content": "Second body on another card.",
+                "color": null
+              }
+            ]
+          },
+          {
+            "title": "Untitled Section",
+            "cardSize": "medium",
+            "cards": [
+              {
+                "id": "<card-1>",
+                "title": "Synthetic alpha",
+                "content": "First body with café & punctuation.",
+                "color": null
+              }
+            ]
+          }
+        ],
+        "file": null,
+        "createdAt": "<time-1>",
+        "updatedAt": "<time-4>",
+        "contentUpdatedAt": "<time-4>",
+        "isTrashed": false,
+        "position": 0,
+        "gridLayout": null,
+        "cardColor": null,
+        "tags": [],
+        "isFavorited": false,
+        "description": "",
+        "plainSyncWarningAcked": false,
+        "autoLinkedDeviceIds": []
+      }
+    ],
+    "tree_tile_edited": [
+      {
+        "id": "<id-3>",
+        "project": "<id-2>",
+        "folder": null,
+        "name": "Untitled Grid",
+        "type": "grid",
+        "content": {
+          "tiles": [],
+          "connections": [],
+          "groups": [],
+          "labels": [],
+          "v2": {
+            "version": 2,
+            "unit": 25,
+            "tiles": [
+              {
+                "id": "<tile-1>",
+                "x": 17,
+                "y": 12,
+                "w": 8,
+                "h": 3,
+                "content": "Synthetic grid tile",
+                "color": null,
+                "isHeader": false
+              },
+              {
+                "id": "<tile-2>",
+                "x": 17,
+                "y": 15,
+                "w": 8,
+                "h": 3,
+                "content": "Synthetic second tile",
+                "color": null,
+                "isHeader": false
+              }
+            ],
+            "connections": [],
+            "groups": [],
+            "labels": []
+          }
+        },
+        "file": null,
+        "createdAt": "<time-5>",
+        "updatedAt": "<time-7>",
+        "contentUpdatedAt": "<time-7>",
+        "isTrashed": false,
+        "position": 0,
+        "gridLayout": null,
+        "cardColor": null,
+        "tags": [],
+        "isFavorited": false,
+        "description": "",
+        "plainSyncWarningAcked": false,
+        "autoLinkedDeviceIds": []
+      },
+      {
+        "id": "<id-1>",
+        "project": "<id-2>",
+        "folder": null,
+        "name": "Untitled Cardstack",
+        "type": "cardstack",
+        "content": [
+          {
+            "title": "Section 1",
+            "cardSize": "medium",
+            "cards": [
+              {
+                "id": "<card-2>",
+                "title": "Synthetic beta",
+                "content": "Second body on another card.",
+                "color": null
+              }
+            ]
+          },
+          {
+            "title": "Untitled Section",
+            "cardSize": "medium",
+            "cards": [
+              {
+                "id": "<card-1>",
+                "title": "Synthetic alpha",
+                "content": "First body with café & punctuation.",
+                "color": null
+              }
+            ]
+          }
+        ],
+        "file": null,
+        "createdAt": "<time-1>",
+        "updatedAt": "<time-4>",
+        "contentUpdatedAt": "<time-4>",
+        "isTrashed": false,
+        "position": 0,
+        "gridLayout": null,
+        "cardColor": null,
+        "tags": [],
+        "isFavorited": false,
+        "description": "",
+        "plainSyncWarningAcked": false,
+        "autoLinkedDeviceIds": []
+      }
+    ],
+    "disk_final": [
+      {
+        "id": "<id-1>",
+        "project": "<id-2>",
+        "folder": null,
+        "name": "Untitled Cardstack",
+        "type": "cardstack",
+        "content": [
+          {
+            "title": "Section 1",
+            "cardSize": "medium",
+            "cards": [
+              {
+                "id": "<card-2>",
+                "title": "Synthetic beta",
+                "content": "Second body on another card.",
+                "color": null
+              }
+            ]
+          },
+          {
+            "title": "Untitled Section",
+            "cardSize": "medium",
+            "cards": [
+              {
+                "id": "<card-1>",
+                "title": "Synthetic alpha",
+                "content": "First body with café & punctuation.",
+                "color": null
+              }
+            ]
+          }
+        ],
+        "file": null,
+        "createdAt": "<time-1>",
+        "updatedAt": "<time-4>",
+        "contentUpdatedAt": "<time-4>",
+        "isTrashed": false,
+        "position": 0,
+        "gridLayout": null,
+        "cardColor": null,
+        "tags": [],
+        "isFavorited": false,
+        "description": "",
+        "plainSyncWarningAcked": false,
+        "autoLinkedDeviceIds": []
+      },
+      {
+        "id": "<id-3>",
+        "project": "<id-2>",
+        "folder": null,
+        "name": "Untitled Grid",
+        "type": "grid",
+        "content": {
+          "tiles": [],
+          "connections": [],
+          "groups": [],
+          "labels": [],
+          "v2": {
+            "version": 2,
+            "unit": 25,
+            "tiles": [
+              {
+                "id": "<tile-1>",
+                "x": 17,
+                "y": 12,
+                "w": 8,
+                "h": 3,
+                "content": "Synthetic grid tile",
+                "color": null,
+                "isHeader": false
+              },
+              {
+                "id": "<tile-2>",
+                "x": 17,
+                "y": 15,
+                "w": 8,
+                "h": 3,
+                "content": "Synthetic second tile",
+                "color": null,
+                "isHeader": false
+              }
+            ],
+            "connections": [],
+            "groups": [],
+            "labels": []
+          }
+        },
+        "file": null,
+        "createdAt": "<time-5>",
+        "updatedAt": "<time-7>",
+        "contentUpdatedAt": "<time-7>",
+        "isTrashed": false,
+        "position": 0,
+        "gridLayout": null,
+        "cardColor": null,
+        "tags": [],
+        "isFavorited": false,
+        "description": "",
+        "plainSyncWarningAcked": false,
+        "autoLinkedDeviceIds": []
+      }
+    ],
+    "tree_reopened": [
+      {
+        "id": "<id-3>",
+        "project": "<id-2>",
+        "folder": null,
+        "name": "Untitled Grid",
+        "type": "grid",
+        "content": {
+          "tiles": [],
+          "connections": [],
+          "groups": [],
+          "labels": [],
+          "v2": {
+            "version": 2,
+            "unit": 25,
+            "tiles": [
+              {
+                "id": "<tile-1>",
+                "x": 17,
+                "y": 12,
+                "w": 8,
+                "h": 3,
+                "content": "Synthetic grid tile",
+                "color": null,
+                "isHeader": false
+              },
+              {
+                "id": "<tile-2>",
+                "x": 17,
+                "y": 15,
+                "w": 8,
+                "h": 3,
+                "content": "Synthetic second tile",
+                "color": null,
+                "isHeader": false
+              }
+            ],
+            "connections": [],
+            "groups": [],
+            "labels": []
+          }
+        },
+        "file": null,
+        "createdAt": "<time-5>",
+        "updatedAt": "<time-7>",
+        "contentUpdatedAt": "<time-7>",
+        "isTrashed": false,
+        "position": 0,
+        "gridLayout": null,
+        "cardColor": null,
+        "tags": [],
+        "isFavorited": false,
+        "description": "",
+        "plainSyncWarningAcked": false,
+        "autoLinkedDeviceIds": []
+      },
+      {
+        "id": "<id-1>",
+        "project": "<id-2>",
+        "folder": null,
+        "name": "Untitled Cardstack",
+        "type": "cardstack",
+        "content": [
+          {
+            "title": "Section 1",
+            "cardSize": "medium",
+            "cards": [
+              {
+                "id": "<card-2>",
+                "title": "Synthetic beta",
+                "content": "Second body on another card.",
+                "color": null
+              }
+            ]
+          },
+          {
+            "title": "Untitled Section",
+            "cardSize": "medium",
+            "cards": [
+              {
+                "id": "<card-1>",
+                "title": "Synthetic alpha",
+                "content": "First body with café & punctuation.",
+                "color": null
+              }
+            ]
+          }
+        ],
+        "file": null,
+        "createdAt": "<time-1>",
+        "updatedAt": "<time-4>",
+        "contentUpdatedAt": "<time-4>",
+        "isTrashed": false,
+        "position": 0,
+        "gridLayout": null,
+        "cardColor": null,
+        "tags": [],
+        "isFavorited": false,
+        "description": "",
+        "plainSyncWarningAcked": false,
+        "autoLinkedDeviceIds": []
+      }
+    ],
+    "ui_card_reopened": "Section 1\nSynthetic beta\nSecond body on another card.\nUntitled Section\nSynthetic alpha\nFirst body with café & punctuation.",
+    "ui_grid_reopened": "Grids made with the new grid can't be edited on the mobile app yet. An update is coming soon. You can keep working here.\nSynthetic grid tile\nSynthetic second tile"
+  }
+}
