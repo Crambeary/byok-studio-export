@@ -117,5 +117,10 @@ SELECT 'COMMITTED';
   return stamp;
 }
 }
-const guardedWrite = createGuardedWrite();
+// No available observation proves that Studio remains closed through commit.
+// Keep the transaction implementation for disposable research, but do not wire it
+// to production until a launch-exclusion mechanism is established.
+async function guardedWrite() {
+  throw Error('Write-back disabled: Studio closed state cannot be established safely. The vault edit has been preserved.');
+}
 module.exports = { guardedWrite, createGuardedWrite, compatible, runSql };
