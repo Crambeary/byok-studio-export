@@ -1,5 +1,10 @@
 # Library migration provenance (issue #5)
 
+**Historical experiment:** the one-way importer no longer contains the guarded
+writer this lab invokes, so the reproduction command below requires the earlier
+repository revision that produced the checked-in evidence. It does not run at
+the current revision.
+
 Research only. Nothing here is wired to the plugin, and `src/` is unchanged. Every
 library is synthetic: Studio 1.1.3 creates it inside a bubblewrap jail with only
 a loopback interface and an empty home. No real library, credential or BYOK

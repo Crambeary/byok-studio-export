@@ -42,9 +42,8 @@ function insertFile(id, folder, type, trashed, data) {
 }
 function createLibrary() {
   fs.mkdirSync(path.dirname(DB), { recursive: true });
-  const schema = JSON.parse(fs.readFileSync("/work/tested-schema.json", "utf8"));
-  const ordered = [...schema.filter(s => s[0] === "table"), ...schema.filter(s => s[0] !== "table")];
-  let sql = "PRAGMA journal_mode=WAL;\nBEGIN;\n" + ordered.map(s => `${s[2]};`).join("\n") + "\n";
+  const schema = fs.readFileSync("/work/schema.sql", "utf8");
+  let sql = "PRAGMA journal_mode=WAL;\nBEGIN;\n" + schema + "\n";
   sql += `INSERT INTO projects(id,user_id,created_at,data,mirrored_at) VALUES('p1',NULL,'2026-01-01',${lit(JSON.stringify({ name: "Synthetic Project" }))},1);\n`;
   sql += `INSERT INTO folders(id,user_id,project_id,parent_folder_id,is_trashed,position,data,mirrored_at) VALUES('f1',NULL,'p1',NULL,0,0,${lit(JSON.stringify({ name: "Chapters" }))},1);\n`;
   sql += insertFile("alpha", null, "text", 0, textData("Alpha", "<p>Alpha original.</p>"));
