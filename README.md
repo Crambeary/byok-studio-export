@@ -145,9 +145,14 @@ MIT
 
 ### Import recovery and editor safety
 
-Close all Markdown editors before importing. The plugin refuses note mutations while
-any Markdown view is open because unsaved editor buffers cannot be reliably compared
-with vault files. Do not open an editor during an import. A per-destination hidden
+Close all Markdown views, Canvas views and hover popovers before importing. The plugin
+blocks imports while any of these surfaces is open, even if it is not editing a note,
+and checks again before mutations. Unsaved buffers cannot be reliably compared with
+vault files. Do not open an editor during an import. Canvas detection uses workspace
+leaf types; hover detection relies on Obsidian’s internal `.hover-popover` class and
+may break in other versions. Third-party views, other embedded editors and popovers
+are not reliably detectable; close them too. There is no atomic lock against an
+editor opening after the final check. A per-destination hidden
 `.byok-sync-*.json` marker detects a missing scope in plugin data; keep it with the
 vault and back up both the vault and the plugin's `data.json`. If state or the marker
 is corrupt, restore the matching files from a backup before retrying. Do not delete

@@ -392,8 +392,8 @@ async function unsavedEditorProtection() {
   check("typed text was genuinely unsaved when import started", started.buffer.includes(sentinel) && !started.disk.includes(sentinel), started);
   check("note on disk matched its pre-edit bytes when import started", started.disk === onDiskBefore);
   const { failed, error, notices } = await runImport("import with unsaved editor", async () => {});
-  check("import refused", failed && /Close all Markdown editors/.test(error), error);
-  check("user sees the refusal notice", notices.some(n => n.includes("Close all Markdown editors")), notices);
+  check("import refused", failed && /Close all Markdown editors, Canvas views and hover popovers/.test(error), error);
+  check("user sees the refusal notice", notices.some(n => n.includes("Close all Markdown editors, Canvas views and hover popovers")), notices);
   await session.screenshot("04-unsaved-editor-refused");
   check("editor buffer retained the unsaved text", (await buffer()).includes(sentinel));
   check("Studio text did not reach the editor", !(await buffer()).includes("revised in Studio"));
@@ -496,6 +496,7 @@ async function unsavedCanvasEmbed() {
   const finalBuffer = await session.evaluate(`${child}?.editor?.getValue?.() ?? null`);
   const entry = pluginData().state.scopes[scopeKey]["file:gamma"];
   report.observations.unsavedCanvasEmbed = { failed: run.failed, error: run.error, gamma: run.report?.filter(r => r.id === "file:gamma"), diskRightAfterImport, finalDisk, finalBuffer, baselineMatchesDisk: entry.baseline === finalDisk };
+  check("Canvas editor blocks import before the Studio revision is written", run.failed && /Close all Markdown editors, Canvas views and hover popovers/i.test(run.error) && diskRightAfterImport === onDisk, report.observations.unsavedCanvasEmbed);
   check("unsaved Canvas edit survives the import", finalDisk.includes(sentinel.trim()) || finalBuffer?.includes(sentinel.trim()), report.observations.unsavedCanvasEmbed);
   await session.evaluate(`app.workspace.getLeavesOfType("canvas").forEach(l=>l.detach()); 0`);
   await sleep(500);

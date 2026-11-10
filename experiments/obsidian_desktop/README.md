@@ -57,26 +57,15 @@ Not exercised:
 `saved-vault-edit`, `unsaved-editor`, `editor-opened-mid-import` (300 records),
 `marker-and-state-guards`, and `unsaved-canvas-embed`. See `driver.js`.
 
-## Findings
+## Canvas regression
 
-Checks assert the plugin's stated guarantees. Findings record observed behaviour that
-needs a decision, and do not fail the run. Both appear in `evidence/report.json`.
-
-### A note open in a Canvas editor is not protected
-
-The guard in `src/main.js` counts only `markdown` leaves. A note being edited inside a
-Canvas belongs to a `canvas` leaf, so the import is not refused. Observed in each of
-three runs with this scenario, with text typed but not yet saved:
-
-1. The import writes the Studio revision to disk and reports the note `updated`.
-2. Within the next five seconds, the open Canvas editor saves its buffer over that
-   revision. The typed text survives, and the Studio revision is gone from the vault.
-3. The next import reports the note `changed` ("Vault edit preserved") and leaves it
-   alone, so nothing further is overwritten. The Studio revision stays in Studio, but
-   does not reach this note until the conflict is resolved.
-
-The check "unsaved Canvas edit survives the import" passes because of that ordering. It
-is not evidence that the plugin protects Canvas editors.
+The checked-in original evidence recorded the race: an unsaved Canvas editor had no
+Markdown leaf, the import reported the Studio revision updated, and the Canvas buffer
+then saved over that revision. The scenario now fails if import is not refused before
+writing, and checks the unsaved edit survives. Closing the Canvas and retrying leaves
+the saved vault edit as a conflict. The plugin blocks all Canvas views and detected
+hover popovers; hover popovers and third-party editor surfaces have not been exercised
+in this real-app harness. See the main README for detection and race limitations.
 
 ### Smaller observations
 
