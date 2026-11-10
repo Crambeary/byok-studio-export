@@ -19,10 +19,17 @@ to be available to that process. No Studio account or network access is used.
 
 Use disposable libraries while evaluating this prototype. The SQLite CLI reads
 one consistent snapshot including committed WAL data; an incompatible schema,
-missing CLI, or inaccessible database fails the import. Only text records are
-imported. HTML conversion is incomplete and every converted record is reported
-as potentially lossy; other record types are reported without import. Original
-Studio data is never written. Existing notes are preserved on import: collisions receive a distinct name.
+missing CLI, or inaccessible database fails the import. Text, observed outline
+and manuscript shapes are imported. Outlines become nested bullets with node IDs;
+manuscripts show ordered sections with entry and file IDs, reading text from the
+current file rows rather than the possibly stale embedded copies. Duplicate file
+references remain separate. These views are read-only: editing one preserves it
+and requires manual reconciliation. Missing references, malformed or unfamiliar
+structures are reported without replacing an existing view. The observed shapes
+and their limits are documented in [the Studio capture](experiments/structured_import/README.md).
+HTML conversion is incomplete and converted text is reported as potentially
+lossy; other record types are reported without import. Structured records are
+never written back to Studio. Existing notes are preserved on import: collisions receive a distinct name.
 A later Studio-only change refreshes an unchanged imported note after checking
 the source again and atomically checking the note. Vault edits are preserved
 and reported for manual handling. Conversion remains potentially lossy; the
