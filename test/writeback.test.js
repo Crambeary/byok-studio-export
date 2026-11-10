@@ -337,7 +337,7 @@ test('opt-in experiment crosses sync boundary with null local ownership and queu
   const prior = entry.baseline;
   notes.set(file, notes.get(file).replace('Studio edit', 'Vault race'));
   f.sql("UPDATE files SET data=json_set(data,'$.content','<p>Studio race</p>') WHERE id='file-a'");
-  assert.ok((await run({ localExperiment: true })).some(r => r.status === 'changed'));
+  assert.ok((await run({ localExperiment: true })).some(r => r.status === 'conflict'));
   assert.equal(entry.baseline, prior);
   assert.match(notes.get(file), /Vault race/);
   assert.match(f.sql("SELECT data FROM files WHERE id='file-a'"), /Studio race/);
@@ -355,4 +355,53 @@ test('experiment retains compatibility, ownership, and locking guards', async t 
   await once(holder.stdout, 'data');
   try { await assert.rejects(createGuardedWrite(async () => {})(f.db, f.row, '<p>Edited</p>', 'synthetic', true), /Library is in use/); }
   finally { holder.stdin.end('done\n'); await once(holder, 'exit'); }
+});
+
+
+test('sync merges independent paragraphs and pauses overlapping edits until explicit resolution', async t => {
+  const f = await fixture(t, { id: 'file-a', name: 'File', content: '<p>One</p><p>Two</p>' });
+  const notes = new Map(), state = { version: 1, scopes: {} };
+  const vault = { safeToMutate: async () => true, exists: async p => notes.has(p), read: async p => notes.get(p) ?? null,
+    create: async (p,c) => { if (notes.has(p)) throw Error('collision'); notes.set(p,c); }, compareAndWrite: async (p,a,b) => { if (notes.get(p) !== a) return false; notes.set(p,b); return true; } };
+  const run = () => createSync(createGuardedWrite(async () => {}))({ database: f.db, folder: 'Target', vault, vaultId: 'synthetic', state, studioAsar: 'synthetic', save: async () => {} });
+  const file = (await run()).find(r => r.status === 'imported').path;
+  notes.set(file, notes.get(file).replace('One', 'Vault one'));
+  f.sql("UPDATE files SET data=json_set(data,'$.content','<p>One</p><p>Studio two</p>') WHERE id='file-a'");
+  assert.ok((await run()).some(r => r.status === 'merged'));
+  assert.match(notes.get(file), /Vault one\n\nStudio two/);
+  assert.equal(JSON.parse(f.sql("SELECT data FROM files WHERE id='file-a'")).content, '<p>Vault one</p><p>Studio two</p>');
+  assert.ok((await run()).some(r => r.status === 'unchanged'));
+  notes.set(file, notes.get(file).replace('Vault one', 'Vault conflict'));
+  f.sql("UPDATE files SET data=json_set(data,'$.content','<p>Studio conflict</p><p>Studio two</p>') WHERE id='file-a'");
+  const original = notes.get(file);
+  assert.ok((await run()).some(r => r.status === 'conflict'));
+  const entry = Object.values(state.scopes)[0]['file:file-a'], c = entry.conflict;
+  assert.match(c.path, /Studio conflict/);
+  assert.match(notes.get(c.path), /Studio conflict/);
+  assert.equal(notes.get(file), original);
+  assert.ok((await run()).some(r => r.status === 'conflict'));
+  assert.equal(notes.get(file), original);
+  notes.set(file, original.replace('Vault conflict', 'Chosen resolution'));
+  notes.set(c.path, notes.get(c.path) + '\nRESOLVED\n');
+  assert.ok((await run()).some(r => r.status === 'resolved'));
+  assert.match(f.sql("SELECT data FROM files WHERE id='file-a'"), /Chosen resolution/);
+  assert.match(notes.get(c.path), /Studio conflict/);
+  assert.ok((await run()).some(r => r.status === 'unchanged'));
+  assert.equal(f.sql('SELECT count(*) FROM outbox').trim(), '0');
+});
+
+test('failed conflict snapshot creation remains paused and preserves both sides', async t => {
+  const f = await fixture(t, { id: 'file-a', name: 'File', content: '<p>Original</p>' });
+  const notes = new Map(), state = { version: 1, scopes: {} }; let fail = false;
+  const vault = { safeToMutate: async () => true, exists: async p => notes.has(p), read: async p => notes.get(p) ?? null,
+    create: async (p,c) => { if (fail) throw Error('disk full'); notes.set(p,c); }, compareAndWrite: async (p,a,b) => { if (notes.get(p) !== a) return false; notes.set(p,b); return true; } };
+  const run = () => createSync(createGuardedWrite(async () => {}))({ database: f.db, folder: 'Target', vault, vaultId: 'synthetic', state, studioAsar: 'synthetic', save: async () => {} });
+  const file = (await run()).find(r => r.status === 'imported').path;
+  notes.set(file, notes.get(file).replace('Original', 'Vault'));
+  f.sql("UPDATE files SET data=json_set(data,'$.content','<p>Studio</p>') WHERE id='file-a'");
+  fail = true;
+  assert.ok((await run()).some(r => r.status === 'failed'));
+  assert.ok((await run()).some(r => r.status === 'conflict'));
+  assert.match(notes.get(file), /Vault/);
+  assert.match(f.sql("SELECT data FROM files WHERE id='file-a'"), /Studio/);
 });
