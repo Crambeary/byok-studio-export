@@ -130,7 +130,21 @@ async function checkStudioClosed(asar, env = { platform: process.platform, readd
     const pids = (await env.readdir('/proc')).filter(name => /^\d+$/.test(name));
     if (!pids.length) throw Error('empty proc');
     for (const pid of pids) {
-      const target = await env.readlink(`/proc/${pid}/exe`);
+      let target;
+      try { target = await env.readlink(`/proc/${pid}/exe`); }
+      catch (error) {
+        if (error.code !== 'ENOENT') throw error;
+        // A vanished process, zombie, or kernel thread has no executable. Do not
+        // ignore an unreadable or malformed stat for any other live process.
+        let stat;
+        try { stat = await env.readFile(`/proc/${pid}/stat`, 'utf8'); }
+        catch (statError) { if (statError.code === 'ENOENT') continue; throw statError; }
+        const end = stat.lastIndexOf(')');
+        const fields = end < 0 ? [] : stat.slice(end + 1).trim().split(/\s+/);
+        if (fields.length < 7 || !/^[A-Za-z]$/.test(fields[0]) || !/^\d+$/.test(fields[6])) throw Error('invalid process stat');
+        if (['Z', 'X', 'x'].includes(fields[0]) || (Number(fields[6]) & 0x00200000) !== 0) continue;
+        throw error;
+      }
       // Match the configured executable and plausible renamed Studio binaries.
       if (target.replace(/ \(deleted\)$/, '') === executable || /studio/i.test(path.basename(target))) {
         throw Error('Studio appears to be running. Close it before write-back.');
