@@ -45,6 +45,10 @@ for r in json.loads(sys.argv[2]): c.execute('insert into files values (?,?,?,?,?
   assert.match(notes.get(gridPath), /"future": \{/); assert.match(notes.get(gridPath), /"opaque"/);
   grid.future.value = 43; update(grid); const priorFields = notes.get(gridPath);
   assert.ok((await run()).some(r=>r.id==='file:grid' && r.status==='updated')); assert.notEqual(notes.get(gridPath), priorFields);
+  // The view must retain numeric tokens that JavaScript cannot represent exactly.
+  sql("c.execute(\"update files set data=json_set(data,'$.future.large',json('9007199254740993')) where id='grid'\")");
+  assert.ok((await run()).some(r=>r.id==='file:grid' && r.status==='updated'));
+  assert.match(notes.get(gridPath), /9007199254740993/);
 
   // A completed note write is recovered even when Studio advances again.
   grid.future.value = 44; update(grid); fail = true;
