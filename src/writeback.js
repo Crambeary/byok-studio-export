@@ -1,6 +1,6 @@
 const { spawn, execFileSync } = require('node:child_process');
 const { createHash, randomUUID } = require('node:crypto');
-const { readFile, statfs, access, realpath } = require('node:fs/promises');
+const { readFile, statfs, access, realpath, readdir, readlink } = require('node:fs/promises');
 
 const path = require('node:path');
 const { htmlToMarkdown, markdownToHtml } = require('./text-codec');
@@ -117,10 +117,37 @@ SELECT 'COMMITTED';
   return stamp;
 }
 }
-// No available observation proves that Studio remains closed through commit.
-// Keep the transaction implementation for disposable research, but do not wire it
-// to production until a launch-exclusion mechanism is established.
-async function guardedWrite() {
-  throw Error('Write-back disabled: Studio closed state cannot be established safely. The vault edit has been preserved.');
+// This is a best-effort snapshot, not launch exclusion. Never inspect command
+// lines or environments: they can contain credentials.
+async function checkStudioClosed(asar, env = { platform: process.platform, readdir, readlink, realpath, readFile }) {
+  if (env.platform !== 'linux') throw Error('Studio process inspection unavailable on this platform.');
+  try {
+    // A filtered proc mount can omit processes without returning an error.
+    const mounts = await env.readFile('/proc/mounts', 'utf8');
+    const proc = mounts.split('\n').map(line => line.split(' ')).find(parts => parts[1] === '/proc' && parts[2] === 'proc');
+    if (!proc || /(?:^|,)hidepid=(?!0(?:,|$))/.test(proc[3]) || /(?:^|,)subset=pid(?:,|$)/.test(proc[3])) throw Error('filtered proc');
+    const executable = await env.realpath(path.join(path.dirname(path.dirname(asar)), 'studio'));
+    const pids = (await env.readdir('/proc')).filter(name => /^\d+$/.test(name));
+    if (!pids.length) throw Error('empty proc');
+    for (const pid of pids) {
+      const target = await env.readlink(`/proc/${pid}/exe`);
+      // Match the configured executable and plausible renamed Studio binaries.
+      if (target.replace(/ \(deleted\)$/, '') === executable || /studio/i.test(path.basename(target))) {
+        throw Error('Studio appears to be running. Close it before write-back.');
+      }
+    }
+  } catch (error) {
+    if (error.message === 'Studio appears to be running. Close it before write-back.') throw error;
+    throw Error('Studio process inspection unavailable or uncertain. Write-back refused; preserve the vault edit.');
+  }
 }
-module.exports = { guardedWrite, createGuardedWrite, compatible, runSql };
+
+function createProductionWrite(check = checkStudioClosed, write = createGuardedWrite()) {
+  return async (database, row, html, asar, localExperiment, riskAccepted = false) => {
+    if (riskAccepted !== true) throw Error('Write-back disabled. Enable the explicit disposable write-back risk opt-in to proceed.');
+    await check(asar);
+    return write(database, row, html, asar, localExperiment);
+  };
+}
+const guardedWrite = createProductionWrite();
+module.exports = { guardedWrite, createGuardedWrite, createProductionWrite, checkStudioClosed, compatible, runSql };

@@ -72,7 +72,7 @@ function destination(value) {
   return parts.join("/");
 }
 function createSync(write = guardedWrite) {
-return async function sync({ database, folder, vault, vaultId, state, save, studioAsar, normalizePath, localExperiment }) {
+return async function sync({ database, folder, vault, vaultId, state, save, studioAsar, normalizePath, localExperiment, writebackRiskAccepted }) {
   const keyForPath = path => collisionKey(path, normalizePath);
   const root = destination(folder);
   const library = await realpath(database);
@@ -210,7 +210,7 @@ return async function sync({ database, folder, vault, vaultId, state, save, stud
           const reversible = row.data.content === prior.studioContent && original !== null && prefix + original === prior.baseline && edited !== null;
           if (!reversible || !studioAsar) {
             reports.push({ id, status: "changed", path: prior.path, detail: reversible
-              ? "Vault edit preserved; reversible text, but closed-Studio write guard is unavailable"
+              ? "Vault edit preserved; reversible text, but configure the Studio app.asar path and opt in to the write-back risks"
               : "Vault edit preserved; conversion is unsupported or lossy and Studio write-back is unavailable" }); continue;
           }
           if (!await safeToMutate(prior.path) || typeof vault.compareAndWrite !== "function" || await vault.read(prior.path) !== current) {
@@ -218,7 +218,7 @@ return async function sync({ database, folder, vault, vaultId, state, save, stud
           }
           const normalized = markdownToHtml(current.slice(prefix.length), row.data.content);
           if (normalized === null) throw new Error("Unsupported paragraph form; manual recovery required");
-          const stamp = await write(library, row, normalized, studioAsar, localExperiment === true);
+          const stamp = await write(library, row, normalized, studioAsar, localExperiment === true, writebackRiskAccepted === true);
           const applied = metadata(row.id, stamp) + current.slice(prefix.length);
           if (!await safeToMutate(prior.path) || !await vault.compareAndWrite(prior.path, current, applied)) {
             reports.push({ id, status: "failed", path: prior.path, detail: "Studio updated, but vault changed; manual recovery required" }); continue;

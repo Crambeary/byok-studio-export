@@ -178,7 +178,7 @@ references. The disposable-only restriction also remains in force.
 
 ### Disposable local-only experiment
 
-The **Disposable local-only experiment** setting is off by default. Write-back remains disabled even when enabled. The research transaction can accept JSON null local ownership and existing queued references only for marked disposable synthetic libraries; it never changes the outbox. The pinned build, local metadata, schema, ownership, and live-library restrictions remain in the research transaction.
+Write-back is off by default. The separate **Enable disposable write-back and accept risks** setting opts in to writes only to marked disposable synthetic libraries on the tested Linux build. Close Studio first: the process check is a best-effort snapshot and the SQLite lock cannot prevent Studio from starting between that check and the write. Process inspection may miss instances in other PID or mount namespaces, or renamed executables; an unavailable or uncertain inspection refuses the write. Later Studio Sync may overwrite these edits. The **Disposable local-only experiment** setting is also off by default and separately opts into its outbox and local ownership exceptions. The research transaction can accept JSON null local ownership and existing queued references only for marked disposable synthetic libraries; it never changes the outbox. The pinned build, local metadata, schema, ownership, and live-library restrictions remain in the research transaction.
 
 **Future Studio Sync can overwrite these edits** using older queued operations or
 remote data. This setting does not make Studio Sync safe. Do not use it on real
