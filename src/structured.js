@@ -30,8 +30,10 @@ function structuredView(row, rows, render) {
         unique(tile.id);
       }
     }
-    // Keep record-level fields too, including fields whose semantics are unknown.
-    const json = JSON.stringify(row.data, null, 2);
+    // Keep the original JSON tokens: parsing and reserializing would round large
+    // integers or change other numeric representations in unknown fields.
+    if (typeof row.rawData !== 'string') fail('Original structured JSON unavailable');
+    const json = row.rawData;
     let longest = 2;
     for (const match of json.matchAll(/`+/g)) longest = Math.max(longest, match[0].length);
     const fence = '`'.repeat(longest + 1);
