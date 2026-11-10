@@ -1,0 +1,26 @@
+{
+  "asar_sha256": "25e93b78fb4753f7b47236a91f8907e674c341aab19af271d93c7dd1e04dbcfa",
+  "sqlite_version": "3.53.4",
+  "callback_result": {
+    "file.create": "old Studio text",
+    "file.update": "old Studio text"
+  },
+  "ownership": {
+    "absent": {
+      "file_project_pass": true,
+      "folder_rejected": false
+    },
+    "json_null": {
+      "file_project_pass": false,
+      "folder_rejected": true
+    },
+    "local": {
+      "file_project_pass": true,
+      "folder_rejected": false
+    },
+    "foreign": {
+      "file_project_pass": false,
+      "folder_rejected": true
+    }
+  }
+}
