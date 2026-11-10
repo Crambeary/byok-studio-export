@@ -100,8 +100,17 @@ c=sqlite3.connect(sys.argv[1]); d=json.loads(c.execute("select data from files w
   assert.match(notes.get(a), /Studio edit/);
   const baseline = state.scopes[JSON.stringify([db, tmp, 'Target'])]['file:a'].baseline;
   assert.equal(baseline, notes.get(a));
+  const databaseSnapshot = () => execFileSync('sqlite3', ['-readonly', db, '.dump'], { encoding: 'utf8' });
   notes.set(a, baseline.replace('Studio edit', 'Vault edit'));
-  assert.ok((await run()).some(r => r.id === 'file:a' && r.status === 'changed' && r.detail.includes('reversible text')));
+  // Obsolete opt-ins cannot authorize a Studio write, including when both sides change.
+  update('<p>Concurrent Studio edit</p>');
+  const sourceBefore = databaseSnapshot(), vaultBefore = notes.get(a);
+  const oldOptionsReport = await sync({ database: db, folder: 'Target', vault, vaultId: tmp, state, studioAsar: 'synthetic', localExperiment: true, writebackRiskAccepted: true, save: async () => {} });
+  assert.ok(oldOptionsReport.some(r => r.id === 'file:a' && r.status === 'changed'));
+  assert.equal(databaseSnapshot(), sourceBefore);
+  assert.equal(notes.get(a), vaultBefore);
+  update('<p>Studio edit</p>');
+  assert.ok((await run()).some(r => r.id === 'file:a' && r.status === 'changed' && r.detail.includes('Vault edit preserved')));
   assert.equal(state.scopes[JSON.stringify([db, tmp, 'Target'])]['file:a'].baseline, baseline);
   notes.set(a, 'my edit');
   assert.ok((await run()).some(r => r.id === 'file:a' && r.status === 'changed'));
@@ -151,6 +160,16 @@ c=sqlite3.connect(sys.argv[1]); d=json.loads(c.execute("select data from files w
   state.scopes[scopeKey] = null;
   await assert.rejects(run(), /Invalid import scope/);
   state.scopes[scopeKey] = scope;
+  // Legacy interrupted writes and conflicts remain paused, even with old opt-ins.
+  const protectedNote = notes.get(a), protectedDb = databaseSnapshot();
+  entry.recovery = { vault: 'saved vault', studio: 'saved source', intended: 'saved intent' };
+  assert.ok((await run()).some(r => r.id === 'file:a' && r.status === 'recovery-required'));
+  assert.equal(notes.get(a), protectedNote); assert.equal(databaseSnapshot(), protectedDb);
+  delete entry.recovery;
+  entry.conflict = { path: 'Target/Project/Folder/Old conflict.md', note: 'snapshot', snapshot: '{}', vaultOriginal: 'original' };
+  assert.ok((await run()).some(r => r.id === 'file:a' && r.status === 'conflict'));
+  assert.equal(notes.get(a), protectedNote); assert.equal(databaseSnapshot(), protectedDb);
+  delete entry.conflict;
   // Missing entries, including pending reservations, must never be remapped.
   const partial = structuredClone(state); delete partial.scopes[scopeKey]['file:a'];
   const notesBefore = new Map(notes);

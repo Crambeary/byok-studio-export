@@ -4,7 +4,7 @@ const fs = require('node:fs/promises');
 const os = require('node:os');
 const path = require('node:path');
 const { execFileSync } = require('node:child_process');
-const { createSync } = require('../src/import');
+const { sync } = require('../src/import');
 const evidence = require('../experiments/cardstack_grid/populated-evidence.json');
 
 test('observed cardstacks and grids are literal, read-only, and recover safely', async t => {
@@ -20,14 +20,14 @@ for r in json.loads(sys.argv[2]): c.execute('insert into files values (?,?,?,?,?
   const notes = new Map([['Target/Project/Untitled Grid.md','user note']]);
   let failCreate = false;
   const vault = {safeToMutate:async()=>true, exists:async p=>notes.has(p), read:async p=>notes.get(p) ?? null, create:async(p,v)=>{assert.ok(!notes.has(p));if(failCreate && p.endsWith('.md')) { failCreate=false; throw Error('interrupted create'); } notes.set(p,v)}, compareAndWrite:async(p,a,b)=>{if(notes.get(p)!==a)return false;notes.set(p,b);return true}};
-  let durable = {version:1,scopes:{}}, fail = false, writes = 0;
-  const run = () => { const state = structuredClone(durable); return createSync(async()=>{writes++; throw Error('unexpected write')})({database:db,folder:'Target',vault,vaultId:dir,state,studioAsar:'synthetic',save:async v=>{const e=v.scopes[JSON.stringify([db,dir,'Target'])]?.['file:grid']; if(fail && e && !e.structuredRefresh){fail=false;throw Error('interrupted')} durable=structuredClone(v)}}); };
+  let durable = {version:1,scopes:{}}, fail = false;
+  const run = () => { const state = structuredClone(durable); return sync({database:db,folder:'Target',vault,vaultId:dir,state,save:async v=>{const e=v.scopes[JSON.stringify([db,dir,'Target'])]?.['file:grid']; if(fail && e && !e.structuredRefresh){fail=false;throw Error('interrupted')} durable=structuredClone(v)}}); };
   const before = snapshot(), first = await run();
   const gridPath = first.find(r=>r.id==='file:grid' && r.status==='imported').path;
   const cardPath = first.find(r=>r.id==='file:cardstack' && r.status==='imported').path;
   assert.ok(first.some(r=>r.id==='file:grid' && r.status==='collision')); assert.equal(notes.get('Target/Project/Untitled Grid.md'),'user note');
   assert.match(notes.get(gridPath), /"x": 17/); assert.ok(notes.get(cardPath).indexOf('Synthetic beta') < notes.get(cardPath).indexOf('Synthetic alpha'));
-  assert.equal(snapshot(),before); assert.equal(writes,0);
+  assert.equal(snapshot(),before);
   const grid = records.find(r=>r.type==='grid'); grid.content.v2.tiles[0].content = '```\n![x](https://example.invalid)\n````'; update(grid);
   fail=true; assert.ok((await run()).some(r=>r.id==='file:grid' && r.status==='failed')); assert.ok((await run()).some(r=>r.id==='file:grid' && r.status==='recovered'));
   assert.match(notes.get(gridPath), /`````json/);
@@ -37,7 +37,7 @@ for r in json.loads(sys.argv[2]): c.execute('insert into files values (?,?,?,?,?
     const bad=structuredClone(grid); mutate(bad); update(bad); const note=notes.get(gridPath); assert.ok((await run()).some(r=>r.id==='file:grid' && r.status==='unsupported')); assert.equal(notes.get(gridPath),note);
   }
   const cards=records.find(r=>r.type==='cardstack'); cards.content[0].cards[0].content='<strong>formatted</strong>'; update(cards);
-  const note=notes.get(cardPath); assert.ok((await run()).some(r=>r.id==='file:cardstack' && r.status==='unsupported')); assert.equal(notes.get(cardPath),note); assert.equal(writes,0);
+  const note=notes.get(cardPath); assert.ok((await run()).some(r=>r.id==='file:cardstack' && r.status==='unsupported')); assert.equal(notes.get(cardPath),note);
 
   // Unknown record-level values are retained verbatim, including malformed-looking values.
   grid.gridLayout = { unexpected: [null, { nested: true }] }; grid.file = ['opaque']; grid.future = { value: 42 }; update(grid);
@@ -71,7 +71,7 @@ for r in json.loads(sys.argv[2]): c.execute('insert into files values (?,?,?,?,?
     create:async(p,v)=>{if(failCreate && p.endsWith('.md')) {failCreate=false; throw Error('interrupted create');} pendingNotes.set(p,v)},
     compareAndWrite:async(p,a,b)=>{if(pendingNotes.get(p)!==a)return false;pendingNotes.set(p,b);return true}};
   let changeDuringSave = null;
-  const pendingRun = () => createSync(async()=>{throw Error('unexpected write')})({database:db,folder:'Pending',vault:pendingVault,vaultId:dir,state:structuredClone(pendingState),save:async s=>{pendingState=structuredClone(s); if(changeDuringSave) { const change=changeDuringSave; changeDuringSave=null; change(); }}});
+  const pendingRun = () => sync({database:db,folder:'Pending',vault:pendingVault,vaultId:dir,state:structuredClone(pendingState),save:async s=>{pendingState=structuredClone(s); if(changeDuringSave) { const change=changeDuringSave; changeDuringSave=null; change(); }}});
   failCreate=true; assert.ok((await pendingRun()).some(r=>r.status==='failed'));
   const pendingEntry = Object.entries(pendingState.scopes[JSON.stringify([db,dir,'Pending'])]).find(([,e])=>e.pending);
   const pendingRecord = records.find(r=>`file:${r.type}`===pendingEntry[0]); pendingRecord.extraAfterRestart = 'new source'; update(pendingRecord);
@@ -80,5 +80,5 @@ for r in json.loads(sys.argv[2]): c.execute('insert into files values (?,?,?,?,?
   assert.equal(pendingNotes.has(pendingEntry[1].path), false);
   assert.ok((await pendingRun()).some(r=>r.id===pendingEntry[0] && r.status==='recovered'));
   assert.match(pendingNotes.get(pendingEntry[1].path), /"extraAfterRestart": "changed during recovery"/);
-  assert.equal(writes,0);
+ 
 });
