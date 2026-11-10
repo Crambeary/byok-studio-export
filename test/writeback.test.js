@@ -313,11 +313,14 @@ test('opt-in experiment crosses sync boundary with null local ownership and queu
   const stateFile = path.join(path.dirname(f.db), 'state.json');
   const vault = { safeToMutate: async () => true, exists: async p => notes.has(p), read: async p => notes.get(p) ?? null,
     create: async (p,c) => notes.set(p,c), compareAndWrite: async (p,a,b) => { if (notes.get(p) !== a) return false; notes.set(p,b); return true; } };
-  // SELECT-only stand-in for a queued reference; the physical outbox remains untouched.
-  const write = createGuardedWrite(async () => {}, (db, script) => runSql(db, script.replace('FROM outbox WHERE', "FROM (SELECT 'file-a' entity_id, NULL temp_ids, NULL url, NULL body) WHERE")));
+  // Seed a synthetic queue before invoking the plugin; compare every stored column.
+  f.sql("INSERT INTO outbox(user_id,kind,entity_type,entity_id,method,url,body,temp_ids,status,attempts,last_error,created_at,updated_at) VALUES('local','update','file','file-a','PATCH','/files/file-a','{\"content\":\"old\"}',NULL,'pending',2,'retry',123,456)");
+  const outbox = () => f.sql("SELECT json_group_array(json_object('id',id,'user_id',user_id,'kind',kind,'entity_type',entity_type,'entity_id',entity_id,'method',method,'url',url,'body',body,'temp_ids',temp_ids,'status',status,'attempts',attempts,'last_error',last_error,'created_at',created_at,'updated_at',updated_at)) FROM (SELECT * FROM outbox ORDER BY id)");
+  const write = createGuardedWrite(async () => {});
   const run = (extra = {}) => createSync(write)({ database: f.db, folder: 'Target', vault, vaultId: 'vault', state, studioAsar: 'synthetic', save: async () => fs.writeFile(stateFile, JSON.stringify(state)), ...extra });
   const file = (await run()).find(r => r.status === 'imported').path;
-  const beforeOutbox = f.sql('SELECT quote(CAST(json_group_array(json_array(id,user_id,kind,entity_type,entity_id,method,url,body,status,temp_ids)) AS BLOB)) FROM outbox');
+  const beforeOutbox = outbox();
+  assert.equal(JSON.parse(beforeOutbox).length, 1);
   notes.set(file, notes.get(file).replace('Original', 'Vault edit'));
   assert.ok((await run()).some(r => r.status === 'failed' && /Outbox/.test(r.detail)));
   assert.ok((await run({ localExperiment: true })).some(r => r.status === 'written-back'));
@@ -327,7 +330,7 @@ test('opt-in experiment crosses sync boundary with null local ownership and queu
   f.sql("UPDATE files SET data=json_set(data,'$.content','<p>Studio edit</p>') WHERE id='file-a'");
   assert.ok((await run({ localExperiment: true })).some(r => r.status === 'updated'));
   assert.match(notes.get(file), /Studio edit/);
-  assert.equal(f.sql('SELECT quote(CAST(json_group_array(json_array(id,user_id,kind,entity_type,entity_id,method,url,body,status,temp_ids)) AS BLOB)) FROM outbox'), beforeOutbox);
+  assert.equal(outbox(), beforeOutbox);
   const entry = Object.values(state.scopes)[0]['file:file-a'];
   assert.equal(entry.studioContent, '<p>Studio edit</p>');
   assert.deepEqual(JSON.parse(await fs.readFile(stateFile, 'utf8')), state);
