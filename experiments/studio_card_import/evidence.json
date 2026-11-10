@@ -1,0 +1,702 @@
+{
+  "seed": {
+    "phase": "seed",
+    "jail_network_interfaces": [
+      "lo"
+    ],
+    "electron": "44.4.5",
+    "studio_app_version": "1.1.3",
+    "desktop_mode": "local",
+    "project_id": "83d372cf-d170-405d-b3db-f7fcdbbce619",
+    "file_id": "e3c81840-bff6-4e1f-898f-9955b033ff5a",
+    "studio_snapshot": {
+      "ok": true,
+      "version": {
+        "id": "1cbba29d-873f-4488-bd52-8dadcecfae04",
+        "file": "e3c81840-bff6-4e1f-898f-9955b033ff5a",
+        "content": "<p class=\"editor-paragraph\">Original synthetic body typed through the Studio UI.</p>",
+        "extras": null,
+        "createdAt": "2026-11-10T02:26:07.368Z",
+        "reason": "manual",
+        "reasonDisplay": "Manual Snapshot",
+        "fileName": "Untitled Text",
+        "contentSize": 88
+      }
+    },
+    "file_after_typing": {
+      "id": "e3c81840-bff6-4e1f-898f-9955b033ff5a",
+      "project": "83d372cf-d170-405d-b3db-f7fcdbbce619",
+      "folder": null,
+      "name": "Untitled Text",
+      "type": "text",
+      "content": "<p class=\"editor-paragraph\">Original synthetic body typed through the Studio UI. Second synthetic sentence typed through the Studio UI.</p>",
+      "file": null,
+      "createdAt": "2026-11-10T02:25:56.347Z",
+      "updatedAt": "2026-11-10T02:26:09.884Z",
+      "contentUpdatedAt": "2026-11-10T02:26:09.884Z",
+      "isTrashed": false,
+      "position": 0,
+      "gridLayout": null,
+      "cardColor": null,
+      "tags": [],
+      "isFavorited": false,
+      "description": "",
+      "plainSyncWarningAcked": false,
+      "autoLinkedDeviceIds": []
+    },
+    "editor_html": "<p class=\"editor-paragraph\">Original synthetic body typed through the Studio UI. Second synthetic sentence typed through the Studio UI.</p>",
+    "seed_bridge_results": [
+      {
+        "ok": true
+      },
+      {
+        "ok": true
+      }
+    ],
+    "seed_tree": [
+      {
+        "id": "e3c81840-bff6-4e1f-898f-9955b033ff5a",
+        "project": "83d372cf-d170-405d-b3db-f7fcdbbce619",
+        "folder": null,
+        "name": "Untitled Text",
+        "type": "text",
+        "content": "<p class=\"editor-paragraph\">Original synthetic body typed through the Studio UI. Second synthetic sentence typed through the Studio UI.</p>",
+        "file": null,
+        "createdAt": "2026-11-10T02:25:56.347Z",
+        "updatedAt": "2026-11-10T02:26:09.884Z",
+        "contentUpdatedAt": "2026-11-10T02:26:09.884Z",
+        "isTrashed": false,
+        "position": 0,
+        "gridLayout": null,
+        "cardColor": null,
+        "tags": [],
+        "isFavorited": false,
+        "description": "",
+        "plainSyncWarningAcked": false,
+        "autoLinkedDeviceIds": []
+      },
+      {
+        "id": "synthetic-duplicate",
+        "project": "83d372cf-d170-405d-b3db-f7fcdbbce619",
+        "folder": null,
+        "name": "Untitled Text",
+        "type": "text",
+        "content": "<p>duplicate untouched sentinel</p>",
+        "file": null,
+        "createdAt": "2026-11-10T02:25:56.347Z",
+        "updatedAt": "2026-11-10T02:26:09.884Z",
+        "contentUpdatedAt": "2026-11-10T02:26:09.884Z",
+        "isTrashed": false,
+        "position": 1,
+        "gridLayout": null,
+        "cardColor": null,
+        "tags": [],
+        "isFavorited": false,
+        "description": "",
+        "plainSyncWarningAcked": false,
+        "autoLinkedDeviceIds": []
+      },
+      {
+        "id": "synthetic-unrelated",
+        "project": "83d372cf-d170-405d-b3db-f7fcdbbce619",
+        "folder": null,
+        "name": "Unrelated",
+        "type": "text",
+        "content": "<p>unrelated untouched sentinel</p>",
+        "file": null,
+        "createdAt": "2026-11-10T02:25:56.347Z",
+        "updatedAt": "2026-11-10T02:26:09.884Z",
+        "contentUpdatedAt": "2026-11-10T02:26:09.884Z",
+        "isTrashed": false,
+        "position": 2,
+        "gridLayout": null,
+        "cardColor": null,
+        "tags": [],
+        "isFavorited": false,
+        "description": "",
+        "plainSyncWarningAcked": false,
+        "autoLinkedDeviceIds": []
+      }
+    ],
+    "studio_exit": {
+      "code": 0,
+      "signal": null
+    }
+  },
+  "input_text": "card alpha  \n\ncard beta\t\n",
+  "card": {
+    "phase": "card",
+    "jail_network_interfaces": [
+      "lo"
+    ],
+    "electron": "44.4.5",
+    "studio_app_version": "1.1.3",
+    "desktop_mode": "local",
+    "connected": {
+      "volumePath": "/mnt/card",
+      "label": "card",
+      "cardId": "legacy:fbee9d8f28eb728b",
+      "deviceId": null,
+      "registrationCode": null,
+      "firmwareVersion": null,
+      "viaDevice": false,
+      "hasIdentityFile": false,
+      "autoImport": false,
+      "firstSeen": 1794277580826,
+      "lastSeen": 1794277580826
+    },
+    "plan": {
+      "connected": true,
+      "card": {
+        "volumePath": "/mnt/card",
+        "label": "card",
+        "cardId": "legacy:fbee9d8f28eb728b",
+        "deviceId": null,
+        "registrationCode": null,
+        "firmwareVersion": null,
+        "viaDevice": false,
+        "hasIdentityFile": false,
+        "autoImport": false,
+        "firstSeen": 1794277580826,
+        "lastSeen": 1794277580826
+      },
+      "linebreakMode": "paragraph",
+      "projects": [
+        {
+          "key": "name:Synthetic Write-back Project",
+          "name": "Synthetic Write-back Project",
+          "libraryId": null,
+          "studioProjectId": "83d372cf-d170-405d-b3db-f7fcdbbce619",
+          "studioName": "Synthetic Write-back Project",
+          "action": "map",
+          "files": [
+            {
+              "key": "name:Synthetic Write-back Project/Untitled Text.txt",
+              "projectKey": "name:Synthetic Write-back Project",
+              "name": "Untitled Text.txt",
+              "baseName": "Untitled Text",
+              "bytes": 25,
+              "damaged": false,
+              "cardHash": "844bc3d694c93cb122354cb803dc5e2440c34ae79297369a8e2cdddb69265a1c",
+              "html": "<p>card alpha  </p><p>card beta\t</p>",
+              "studioFileId": "e3c81840-bff6-4e1f-898f-9955b033ff5a",
+              "studioName": "Untitled Text",
+              "renamed": false,
+              "status": "changed-card",
+              "action": "update"
+            }
+          ]
+        }
+      ],
+      "deleted": [],
+      "counts": {
+        "create": 0,
+        "update": 1,
+        "conflict": 0,
+        "unchanged": 0,
+        "adopt": 0,
+        "rename": 0,
+        "changedStudio": 0,
+        "projectsToCreate": 0,
+        "actionable": 1
+      },
+      "scannedAt": 1794277600173
+    },
+    "body": "BYOK connected\ncard\n\n1 changed on device\n\nBring in changes (1)\nEject\nBring in changes automatically when this BYOK connects\nTools and fonts\n0 tools · 0 fonts\nSynthetic Write-back Project\nUntitled Text\nChanged on device\nProjects\nCONTINUE WRITING\nUntitled Text\nSynthetic Write-back Project · edited just now\nFilter\nCustom order\nSynthetic Write-back Project",
+    "buttons": [
+      "Bring in changes (1)",
+      "Eject",
+      "Tools and fonts\n0 tools · 0 fonts",
+      "Synthetic Write-back Project",
+      "CONTINUE WRITING\nUntitled Text\nSynthetic Write-back Project · edited just now",
+      "Filter",
+      "Custom order"
+    ],
+    "after_body": "BYOK connected\ncard\n\nEverything on the device is already in Studio.\n\nBring in changes\nEject\nBring in changes automatically when this BYOK connects\nTools and fonts\n0 tools · 0 fonts\nShow 1 up-to-date file\nProjects\nCONTINUE WRITING\nUntitled Text\nSynthetic Write-back Project · edited just now\nFilter\nCustom order\nSynthetic Write-back Project\nBrought in from BYOK: 1 updated.",
+    "after_file": {
+      "id": "e3c81840-bff6-4e1f-898f-9955b033ff5a",
+      "project": "83d372cf-d170-405d-b3db-f7fcdbbce619",
+      "folder": null,
+      "name": "Untitled Text",
+      "type": "text",
+      "content": "<p>card alpha  </p><p>card beta\t</p>",
+      "file": null,
+      "createdAt": "2026-11-10T02:25:56.347Z",
+      "updatedAt": "2026-11-10T02:26:40.358Z",
+      "contentUpdatedAt": "2026-11-10T02:26:40.358Z",
+      "isTrashed": false,
+      "position": 0,
+      "gridLayout": null,
+      "cardColor": null,
+      "tags": [],
+      "isFavorited": false,
+      "description": "",
+      "plainSyncWarningAcked": false,
+      "autoLinkedDeviceIds": []
+    },
+    "after_versions": [
+      {
+        "id": "1cbba29d-873f-4488-bd52-8dadcecfae04",
+        "file": "e3c81840-bff6-4e1f-898f-9955b033ff5a",
+        "extras": null,
+        "createdAt": "2026-11-10T02:26:07.368Z",
+        "reason": "manual",
+        "reasonDisplay": "Manual Snapshot",
+        "fileName": "Untitled Text",
+        "contentSize": 88
+      }
+    ],
+    "after_plan": {
+      "connected": true,
+      "card": {
+        "volumePath": "/mnt/card",
+        "label": "card",
+        "cardId": "legacy:fbee9d8f28eb728b",
+        "deviceId": null,
+        "registrationCode": null,
+        "firmwareVersion": null,
+        "viaDevice": false,
+        "hasIdentityFile": false,
+        "autoImport": false,
+        "firstSeen": 1794277580826,
+        "lastSeen": 1794277580826
+      },
+      "linebreakMode": "paragraph",
+      "projects": [
+        {
+          "key": "name:Synthetic Write-back Project",
+          "name": "Synthetic Write-back Project",
+          "libraryId": null,
+          "studioProjectId": "83d372cf-d170-405d-b3db-f7fcdbbce619",
+          "studioName": "Synthetic Write-back Project",
+          "action": "map",
+          "files": [
+            {
+              "key": "name:Synthetic Write-back Project/Untitled Text.txt",
+              "projectKey": "name:Synthetic Write-back Project",
+              "name": "Untitled Text.txt",
+              "baseName": "Untitled Text",
+              "bytes": 25,
+              "damaged": false,
+              "cardHash": "844bc3d694c93cb122354cb803dc5e2440c34ae79297369a8e2cdddb69265a1c",
+              "html": "<p>card alpha  </p><p>card beta\t</p>",
+              "studioFileId": "e3c81840-bff6-4e1f-898f-9955b033ff5a",
+              "studioName": "Untitled Text",
+              "renamed": false,
+              "status": "unchanged",
+              "action": "none"
+            }
+          ]
+        }
+      ],
+      "deleted": [],
+      "counts": {
+        "create": 0,
+        "update": 0,
+        "conflict": 0,
+        "unchanged": 1,
+        "adopt": 0,
+        "rename": 0,
+        "changedStudio": 0,
+        "projectsToCreate": 0,
+        "actionable": 0
+      },
+      "scannedAt": 1794277607362
+    },
+    "studio_exit": {
+      "code": 0,
+      "signal": null
+    }
+  },
+  "whitespace_only_input": "card alpha\ncard beta\n",
+  "replan": {
+    "phase": "replan",
+    "jail_network_interfaces": [
+      "lo"
+    ],
+    "electron": "44.4.5",
+    "studio_app_version": "1.1.3",
+    "desktop_mode": "local",
+    "connected": {
+      "volumePath": "/mnt/card",
+      "label": "card",
+      "cardId": "legacy:fbee9d8f28eb728b",
+      "deviceId": null,
+      "registrationCode": null,
+      "firmwareVersion": null,
+      "viaDevice": false,
+      "hasIdentityFile": false,
+      "autoImport": false,
+      "firstSeen": 1794277580826,
+      "lastSeen": 1794277614498
+    },
+    "plan": {
+      "connected": true,
+      "card": {
+        "volumePath": "/mnt/card",
+        "label": "card",
+        "cardId": "legacy:fbee9d8f28eb728b",
+        "deviceId": null,
+        "registrationCode": null,
+        "firmwareVersion": null,
+        "viaDevice": false,
+        "hasIdentityFile": false,
+        "autoImport": false,
+        "firstSeen": 1794277580826,
+        "lastSeen": 1794277614498
+      },
+      "linebreakMode": "paragraph",
+      "projects": [
+        {
+          "key": "name:Synthetic Write-back Project",
+          "name": "Synthetic Write-back Project",
+          "libraryId": null,
+          "studioProjectId": "83d372cf-d170-405d-b3db-f7fcdbbce619",
+          "studioName": "Synthetic Write-back Project",
+          "action": "map",
+          "files": [
+            {
+              "key": "name:Synthetic Write-back Project/Untitled Text.txt",
+              "projectKey": "name:Synthetic Write-back Project",
+              "name": "Untitled Text.txt",
+              "baseName": "Untitled Text",
+              "bytes": 21,
+              "damaged": false,
+              "cardHash": "844bc3d694c93cb122354cb803dc5e2440c34ae79297369a8e2cdddb69265a1c",
+              "html": "<p>card alpha</p><p>card beta</p>",
+              "studioFileId": "e3c81840-bff6-4e1f-898f-9955b033ff5a",
+              "studioName": "Untitled Text",
+              "renamed": false,
+              "status": "unchanged",
+              "action": "none"
+            }
+          ]
+        }
+      ],
+      "deleted": [],
+      "counts": {
+        "create": 0,
+        "update": 0,
+        "conflict": 0,
+        "unchanged": 1,
+        "adopt": 0,
+        "rename": 0,
+        "changedStudio": 0,
+        "projectsToCreate": 0,
+        "actionable": 0
+      },
+      "scannedAt": 1794277633596
+    },
+    "body": "BYOK connected\ncard\n\nEverything on the device is already in Studio.\n\nBring in changes\nEject\nBring in changes automatically when this BYOK connects\nTools and fonts\n0 tools · 0 fonts\nShow 1 up-to-date file\nProjects\nCONTINUE WRITING\nUntitled Text\nSynthetic Write-back Project · edited just now\nFilter\nCustom order\nSynthetic Write-back Project",
+    "buttons": [
+      "Bring in changes",
+      "Eject",
+      "Tools and fonts\n0 tools · 0 fonts",
+      "Show 1 up-to-date file",
+      "CONTINUE WRITING\nUntitled Text\nSynthetic Write-back Project · edited just now",
+      "Filter",
+      "Custom order"
+    ],
+    "studio_exit": {
+      "code": 0,
+      "signal": null
+    }
+  },
+  "table_changes_seed_to_import": {
+    "metadata": {
+      "before": 11,
+      "after": 11,
+      "equal": false
+    },
+    "scratchpad_entries": {
+      "before": 0,
+      "after": 0,
+      "equal": true
+    },
+    "comments": {
+      "before": 0,
+      "after": 0,
+      "equal": true
+    },
+    "users": {
+      "before": 0,
+      "after": 0,
+      "equal": true
+    },
+    "projects": {
+      "before": 1,
+      "after": 1,
+      "equal": true
+    },
+    "folders": {
+      "before": 0,
+      "after": 0,
+      "equal": true
+    },
+    "files": {
+      "before": 3,
+      "after": 3,
+      "equal": false
+    },
+    "manuscript_files": {
+      "before": 0,
+      "after": 0,
+      "equal": true
+    },
+    "project_tags": {
+      "before": 0,
+      "after": 0,
+      "equal": true
+    },
+    "outbox": {
+      "before": 3,
+      "after": 3,
+      "equal": false
+    },
+    "id_map": {
+      "before": 0,
+      "after": 0,
+      "equal": true
+    },
+    "local_versions": {
+      "before": 1,
+      "after": 1,
+      "equal": true
+    },
+    "device_cards": {
+      "before": 0,
+      "after": 1,
+      "equal": false
+    },
+    "device_projects": {
+      "before": 0,
+      "after": 1,
+      "equal": false
+    },
+    "device_files": {
+      "before": 0,
+      "after": 1,
+      "equal": false
+    },
+    "card_catalog": {
+      "before": 0,
+      "after": 0,
+      "equal": true
+    },
+    "card_installs": {
+      "before": 0,
+      "after": 0,
+      "equal": true
+    },
+    "telemetry_queue": {
+      "before": 4,
+      "after": 8,
+      "equal": false
+    }
+  },
+  "table_changes_import_to_replan": {
+    "metadata": {
+      "before": 11,
+      "after": 11,
+      "equal": false
+    },
+    "scratchpad_entries": {
+      "before": 0,
+      "after": 0,
+      "equal": true
+    },
+    "comments": {
+      "before": 0,
+      "after": 0,
+      "equal": true
+    },
+    "users": {
+      "before": 0,
+      "after": 0,
+      "equal": true
+    },
+    "projects": {
+      "before": 1,
+      "after": 1,
+      "equal": true
+    },
+    "folders": {
+      "before": 0,
+      "after": 0,
+      "equal": true
+    },
+    "files": {
+      "before": 3,
+      "after": 3,
+      "equal": true
+    },
+    "manuscript_files": {
+      "before": 0,
+      "after": 0,
+      "equal": true
+    },
+    "project_tags": {
+      "before": 0,
+      "after": 0,
+      "equal": true
+    },
+    "outbox": {
+      "before": 3,
+      "after": 3,
+      "equal": true
+    },
+    "id_map": {
+      "before": 0,
+      "after": 0,
+      "equal": true
+    },
+    "local_versions": {
+      "before": 1,
+      "after": 1,
+      "equal": true
+    },
+    "device_cards": {
+      "before": 1,
+      "after": 1,
+      "equal": false
+    },
+    "device_projects": {
+      "before": 1,
+      "after": 1,
+      "equal": true
+    },
+    "device_files": {
+      "before": 1,
+      "after": 1,
+      "equal": true
+    },
+    "card_catalog": {
+      "before": 0,
+      "after": 0,
+      "equal": true
+    },
+    "card_installs": {
+      "before": 0,
+      "after": 0,
+      "equal": true
+    },
+    "telemetry_queue": {
+      "before": 8,
+      "after": 11,
+      "equal": false
+    }
+  },
+  "integrity": [
+    "ok",
+    "ok",
+    "ok"
+  ],
+  "foreign_key_violations": [
+    0,
+    0,
+    0
+  ],
+  "asar_sha256": "25e93b78fb4753f7b47236a91f8907e674c341aab19af271d93c7dd1e04dbcfa",
+  "files_before": [
+    [
+      "e3c81840-bff6-4e1f-898f-9955b033ff5a",
+      "local",
+      "83d372cf-d170-405d-b3db-f7fcdbbce619",
+      null,
+      "text",
+      0,
+      0,
+      "2026-11-10T02:25:56.347Z",
+      "{\"id\":\"e3c81840-bff6-4e1f-898f-9955b033ff5a\",\"project\":\"83d372cf-d170-405d-b3db-f7fcdbbce619\",\"folder\":null,\"name\":\"Untitled Text\",\"type\":\"text\",\"content\":\"<p class=\\\"editor-paragraph\\\">Original synthetic body typed through the Studio UI. Second synthetic sentence typed through the Studio UI.</p>\",\"file\":null,\"createdAt\":\"2026-11-10T02:25:56.347Z\",\"updatedAt\":\"2026-11-10T02:26:09.884Z\",\"contentUpdatedAt\":\"2026-11-10T02:26:09.884Z\",\"isTrashed\":false,\"position\":0,\"gridLayout\":null,\"cardColor\":null,\"tags\":[],\"isFavorited\":false,\"description\":\"\",\"plainSyncWarningAcked\":false,\"autoLinkedDeviceIds\":[]}",
+      1794277569884
+    ],
+    [
+      "synthetic-duplicate",
+      "local",
+      "83d372cf-d170-405d-b3db-f7fcdbbce619",
+      null,
+      "text",
+      0,
+      1,
+      "2026-11-10T02:25:56.347Z",
+      "{\"id\":\"synthetic-duplicate\",\"project\":\"83d372cf-d170-405d-b3db-f7fcdbbce619\",\"folder\":null,\"name\":\"Untitled Text\",\"type\":\"text\",\"content\":\"<p>duplicate untouched sentinel</p>\",\"file\":null,\"createdAt\":\"2026-11-10T02:25:56.347Z\",\"updatedAt\":\"2026-11-10T02:26:09.884Z\",\"contentUpdatedAt\":\"2026-11-10T02:26:09.884Z\",\"isTrashed\":false,\"position\":1,\"gridLayout\":null,\"cardColor\":null,\"tags\":[],\"isFavorited\":false,\"description\":\"\",\"plainSyncWarningAcked\":false,\"autoLinkedDeviceIds\":[]}",
+      1794277573384
+    ],
+    [
+      "synthetic-unrelated",
+      "local",
+      "83d372cf-d170-405d-b3db-f7fcdbbce619",
+      null,
+      "text",
+      0,
+      2,
+      "2026-11-10T02:25:56.347Z",
+      "{\"id\":\"synthetic-unrelated\",\"project\":\"83d372cf-d170-405d-b3db-f7fcdbbce619\",\"folder\":null,\"name\":\"Unrelated\",\"type\":\"text\",\"content\":\"<p>unrelated untouched sentinel</p>\",\"file\":null,\"createdAt\":\"2026-11-10T02:25:56.347Z\",\"updatedAt\":\"2026-11-10T02:26:09.884Z\",\"contentUpdatedAt\":\"2026-11-10T02:26:09.884Z\",\"isTrashed\":false,\"position\":2,\"gridLayout\":null,\"cardColor\":null,\"tags\":[],\"isFavorited\":false,\"description\":\"\",\"plainSyncWarningAcked\":false,\"autoLinkedDeviceIds\":[]}",
+      1794277573386
+    ]
+  ],
+  "files_after": [
+    [
+      "e3c81840-bff6-4e1f-898f-9955b033ff5a",
+      "local",
+      "83d372cf-d170-405d-b3db-f7fcdbbce619",
+      null,
+      "text",
+      0,
+      0,
+      "2026-11-10T02:25:56.347Z",
+      "{\"id\":\"e3c81840-bff6-4e1f-898f-9955b033ff5a\",\"project\":\"83d372cf-d170-405d-b3db-f7fcdbbce619\",\"folder\":null,\"name\":\"Untitled Text\",\"type\":\"text\",\"content\":\"<p>card alpha  </p><p>card beta\\t</p>\",\"file\":null,\"createdAt\":\"2026-11-10T02:25:56.347Z\",\"updatedAt\":\"2026-11-10T02:26:40.358Z\",\"contentUpdatedAt\":\"2026-11-10T02:26:40.358Z\",\"isTrashed\":false,\"position\":0,\"gridLayout\":null,\"cardColor\":null,\"tags\":[],\"isFavorited\":false,\"description\":\"\",\"plainSyncWarningAcked\":false,\"autoLinkedDeviceIds\":[]}",
+      1794277600359
+    ],
+    [
+      "synthetic-duplicate",
+      "local",
+      "83d372cf-d170-405d-b3db-f7fcdbbce619",
+      null,
+      "text",
+      0,
+      1,
+      "2026-11-10T02:25:56.347Z",
+      "{\"id\":\"synthetic-duplicate\",\"project\":\"83d372cf-d170-405d-b3db-f7fcdbbce619\",\"folder\":null,\"name\":\"Untitled Text\",\"type\":\"text\",\"content\":\"<p>duplicate untouched sentinel</p>\",\"file\":null,\"createdAt\":\"2026-11-10T02:25:56.347Z\",\"updatedAt\":\"2026-11-10T02:26:09.884Z\",\"contentUpdatedAt\":\"2026-11-10T02:26:09.884Z\",\"isTrashed\":false,\"position\":1,\"gridLayout\":null,\"cardColor\":null,\"tags\":[],\"isFavorited\":false,\"description\":\"\",\"plainSyncWarningAcked\":false,\"autoLinkedDeviceIds\":[]}",
+      1794277573384
+    ],
+    [
+      "synthetic-unrelated",
+      "local",
+      "83d372cf-d170-405d-b3db-f7fcdbbce619",
+      null,
+      "text",
+      0,
+      2,
+      "2026-11-10T02:25:56.347Z",
+      "{\"id\":\"synthetic-unrelated\",\"project\":\"83d372cf-d170-405d-b3db-f7fcdbbce619\",\"folder\":null,\"name\":\"Unrelated\",\"type\":\"text\",\"content\":\"<p>unrelated untouched sentinel</p>\",\"file\":null,\"createdAt\":\"2026-11-10T02:25:56.347Z\",\"updatedAt\":\"2026-11-10T02:26:09.884Z\",\"contentUpdatedAt\":\"2026-11-10T02:26:09.884Z\",\"isTrashed\":false,\"position\":2,\"gridLayout\":null,\"cardColor\":null,\"tags\":[],\"isFavorited\":false,\"description\":\"\",\"plainSyncWarningAcked\":false,\"autoLinkedDeviceIds\":[]}",
+      1794277573386
+    ]
+  ],
+  "versions_before": [
+    [
+      "1cbba29d-873f-4488-bd52-8dadcecfae04",
+      "e3c81840-bff6-4e1f-898f-9955b033ff5a",
+      "\"<p class=\\\"editor-paragraph\\\">Original synthetic body typed through the Studio UI.</p>\"",
+      null,
+      "0028044b2a25e1a1d32d2635e7b10dd1e4fa1b09e803b0f732dcec41b685449e",
+      "manual",
+      "Untitled Text",
+      88,
+      "2026-11-10T02:26:07.368Z"
+    ]
+  ],
+  "versions_after": [
+    [
+      "1cbba29d-873f-4488-bd52-8dadcecfae04",
+      "e3c81840-bff6-4e1f-898f-9955b033ff5a",
+      "\"<p class=\\\"editor-paragraph\\\">Original synthetic body typed through the Studio UI.</p>\"",
+      null,
+      "0028044b2a25e1a1d32d2635e7b10dd1e4fa1b09e803b0f732dcec41b685449e",
+      "manual",
+      "Untitled Text",
+      88,
+      "2026-11-10T02:26:07.368Z"
+    ]
+  ]
+}
