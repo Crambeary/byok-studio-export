@@ -30,7 +30,8 @@ be lifted for this one command.
 ## What is real and what is not
 
 Real: Obsidian 1.15.0 on Electron 43, its vault and editor code, the built `main.js`,
-and `sqlite3` reading a database created with the schema in `src/tested-schema.json`.
+and `sqlite3` reading a database created from the checked-in
+`experiments/studio_writeback/evidence/schema.sql`.
 
 Driven through real UI over the Chrome DevTools Protocol (mouse, keys, text input):
 the vault trust prompt, enabling the plugin in Settings, typing the database path, the

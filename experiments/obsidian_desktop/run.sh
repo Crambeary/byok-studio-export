@@ -18,7 +18,7 @@ work="$(mktemp -d "${TMPDIR:-/tmp}/byok-obsidian-XXXXXX")"
 trap 'rm -rf "$work"' EXIT
 mkdir -p "$work/plugin" "$here/evidence"
 cp "$repo/manifest.json" "$repo/main.js" "$work/plugin/"
-cp "$repo/src/tested-schema.json" "$work/tested-schema.json"
+cp "$repo/experiments/studio_writeback/evidence/schema.sql" "$work/schema.sql"
 
 # Only metadata of the owner's live Obsidian config is compared; contents are never read.
 live_config="${XDG_CONFIG_HOME:-$HOME/.config}/obsidian"
