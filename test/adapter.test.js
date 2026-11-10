@@ -25,7 +25,7 @@ c.execute('insert into projects values (?,?)', ('p',json.dumps({'name':'Projet Ã
 c.execute('insert into files values (?,?,?,?,?,?)', ('a','p',None,'text',0,json.dumps({'name':sys.argv[2],'content':'<p>Hello</p>'})))
 c.commit()`, db, noteName]);
   const files = new Map(), dirs = new Set([".obsidian", ".obsidian/plugins", ".obsidian/plugins/synthetic"]);
-  const notices = [], reports = []; let leaves = [], saveMode = "ok", beforeProcess;
+  const notices = [], reports = []; let leaves = [], canvasLeaves = [], hover = false, saveMode = "ok", beforeProcess;
   function normalized(p) { assert.equal(p, normalizePath(p), "adapter path must be normalized"); }
   const adapter = {
     getBasePath: () => tmp,
@@ -57,15 +57,16 @@ c.commit()`, db, noteName]);
   vm.runInNewContext(await fs.readFile("src/main.js", "utf8"), {
     module, require: id => id === "obsidian" ? { Plugin, PluginSettingTab: class {}, Setting: class {},
       Notice: class { constructor(message) { notices.push(message); } }, normalizePath, TFile } : localRequire(id),
+    document: { querySelector: () => hover ? {} : null },
     console: { info: (_, report) => reports.push(report), error() {} }
   });
   const plugin = new module.exports();
   plugin.manifest = { dir: ".obsidian\\plugins/synthetic" };
-  plugin.app = { vault, workspace: { getLeavesOfType: () => leaves } };
+  plugin.app = { vault, workspace: { getLeavesOfType: type => type === "markdown" ? leaves : type === "canvas" ? canvasLeaves : [], iterateAllLeaves: () => {} } };
   await plugin.onload();
   plugin.data.database = db; plugin.data.folder = folder;
   const run = () => plugin.runImport();
-  return { plugin, files, notices, reports, run, adapter, setLeaves: value => { leaves = value; },
+  return { plugin, files, notices, reports, run, adapter, setLeaves: value => { leaves = value; }, setCanvasLeaves: value => { canvasLeaves = value; }, setHover: value => { hover = value; },
     setSaveMode: value => { saveMode = value; }, setBeforeProcess: value => { beforeProcess = value; },
     update: content => execFileSync("python3", ["-c", `import sqlite3,json,sys
 c=sqlite3.connect(sys.argv[1]); d=json.loads(c.execute("select data from files where id='a'").fetchone()[0]); d['content']=sys.argv[2]; c.execute("update files set data=? where id='a'", (json.dumps(d),)); c.commit()`, db, content]) };
@@ -120,6 +121,25 @@ test("open or unavailable editors block all filesystem mutations", async t => {
   assert.equal(h.files.size, 0);
   h.plugin.app.workspace.getLeavesOfType = undefined; await h.run();
   assert.equal(h.files.size, 0);
+});
+
+test("Canvas and hover editors refuse import, including a Canvas opened during an update", async t => {
+  const h = await harness(t, "Target", "Visible");
+  await h.run();
+  const note = [...h.files.keys()].find(p => p.endsWith(".md"));
+  const before = h.files.get(note);
+  h.update("<p>Studio revision</p>");
+  h.setCanvasLeaves([{}]); await h.run();
+  assert.match(h.notices.at(-1), /Close all .*editors/);
+  assert.equal(h.files.get(note), before);
+  h.setCanvasLeaves([]); h.setHover(true); await h.run();
+  assert.match(h.notices.at(-1), /Close all .*editors/);
+  assert.equal(h.files.get(note), before);
+  h.setHover(false); h.setBeforeProcess(() => h.setCanvasLeaves([{}])); await h.run();
+  assert.equal(h.files.get(note), before);
+  assert.ok(h.reports.at(-1).some(r => r.status === "changed-during-sync"));
+  h.setCanvasLeaves([]); h.setBeforeProcess(undefined); await h.run();
+  assert.ok(h.reports.at(-1).some(r => r.status === "updated"));
 });
 
 test("disk state deletion, corruption, or replacement blocks repeat sync", async t => {

@@ -46,8 +46,22 @@ module.exports = class ByokImport extends Plugin {
       await this.enqueueOperation(async () => {
       const app = this.app;
       const adapter = app.vault.adapter;
-      const safeToMutate = () => typeof app.workspace.getLeavesOfType === "function" && app.workspace.getLeavesOfType("markdown").length === 0;
-      const assertSafe = () => { if (!safeToMutate()) throw Error("Close all Markdown editors before importing"); };
+      // Canvas embeds can own unsaved Markdown buffers without a Markdown leaf.
+      // Hover popovers can host editors too; inspect each workspace window.
+      const safeToMutate = () => {
+        try {
+          const workspace = app.workspace;
+          if (typeof workspace.getLeavesOfType !== "function" || typeof workspace.iterateAllLeaves !== "function" || typeof document === "undefined") return false;
+          if (workspace.getLeavesOfType("markdown").length || workspace.getLeavesOfType("canvas").length) return false;
+          const documents = new Set([document]);
+          workspace.iterateAllLeaves(leaf => {
+            const doc = leaf.view?.containerEl?.ownerDocument;
+            if (doc) documents.add(doc);
+          });
+          return [...documents].every(doc => typeof doc.querySelector === "function" && !doc.querySelector(".hover-popover"));
+        } catch { return false; }
+      };
+      const assertSafe = () => { if (!safeToMutate()) throw Error("Close all Markdown editors, Canvas views and hover popovers before importing"); };
       assertSafe();
       if (this.dataPersisted) {
         const durable = JSON.parse(await adapter.read(this.dataPath()));
