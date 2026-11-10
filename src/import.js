@@ -4,6 +4,7 @@ const { promisify } = require("node:util");
 const { realpath } = require("node:fs/promises");
 const { parseDocument } = require("htmlparser2");
 const { guardedWrite } = require("./writeback");
+const { structuredView } = require("./structured");
 const { htmlToMarkdown, markdownToHtml } = require("./text-codec");
 const exec = promisify(execFile);
 
@@ -174,6 +175,51 @@ return async function sync({ database, folder, vault, vaultId, state, save, stud
     if (entries[id]?.recovery) reportRecovery(id);
     if (row.is_trashed) { reports.push({ id, status: "trashed" }); continue; }
     if (!row.data) { reports.push({ id, status: "failed", detail: "Malformed record JSON; source preserved" }); continue; }
+    if ((row.kind === "file" && row.type === "outline") || row.kind === "manuscript") {
+      if (entries[id]?.recovery) continue;
+      try {
+        const { content, issues } = structuredView(row, rows, render);
+        if (issues.length) reports.push({ id, status: "lossy", detail: issues.join(", ") });
+        // Recheck the entire snapshot: manuscript projections depend on other rows.
+        const sourceUnchanged = async () => JSON.stringify(await readLibrary(library)) === JSON.stringify(rows);
+        const prior = entries[id];
+        if (prior) {
+          if (prior.conflict) { reports.push({ id, status: "changed", path: prior.path, detail: "Existing conflict requires manual recovery" }); continue; }
+          if (prior.pending === true) {
+            await reserveMarker(id);
+            if (!await safeToMutate(prior.path)) { reports.push({ id, status: "changed", path: prior.path, detail: "Close editors before retrying" }); continue; }
+            if (await vault.read(prior.path) !== null || await vault.exists(prior.path)) { reports.push({ id, status: "changed", path: prior.path, detail: "Reserved path occupied; preserve and move the note before retrying" }); continue; }
+            await vault.create(prior.path, prior.baseline);
+            delete prior.pending;
+            try { await save(state); } catch (error) { prior.pending = true; throw error; }
+            reports.push({ id, status: "recovered", path: prior.path }); continue;
+          }
+          const current = await vault.read(prior.path);
+          if (current === null) { reports.push({ id, status: "missing", path: prior.path }); continue; }
+          if (current !== prior.baseline) { reports.push({ id, status: "changed", path: prior.path, detail: "Structured view edited; preserved. Reconcile manually; structured write-back is unavailable" }); continue; }
+          if (current === content) { reports.push({ id, status: "unchanged", path: prior.path }); continue; }
+          if (!await sourceUnchanged() || !await safeToMutate(prior.path) || typeof vault.compareAndWrite !== "function" || !await vault.compareAndWrite(prior.path, current, content)) { reports.push({ id, status: "changed-during-sync", path: prior.path }); continue; }
+          const previous = prior.baseline; prior.baseline = content;
+          try { await save(state); } catch (error) { prior.baseline = previous; throw error; }
+          reports.push({ id, status: "updated", path: prior.path }); continue;
+        }
+        const directory = [root, ...hierarchy(row)].filter(Boolean).join("/");
+        const name = safe(row.data.name);
+        const makePath = suffix => [directory, withSuffix(name, suffix, ".md")].filter(Boolean).join("/");
+        let path = makePath(""), n = 1;
+        while (reservedPaths.has(keyForPath(path)) || await vault.exists(path)) { if (n === 1) reports.push({ id, status: "collision", path }); if (++n > 10000) throw Error("Too many path collisions"); path = makePath(` (${n})`); }
+        if (!await sourceUnchanged()) { reports.push({ id, status: "changed-during-sync", path }); continue; }
+        if (!await safeToMutate(path)) { reports.push({ id, status: "changed", path, detail: "Close editors before retrying" }); continue; }
+        if (legacyMarker) throw new Error("Legacy import marker cannot prove record identity; manual recovery required");
+        entries[id] = { path, baseline: content, pending: true };
+        try { await save(state); } catch (error) { delete entries[id]; throw error; }
+        reservedPaths.add(keyForPath(path)); await reserveMarker(id); await vault.create(path, content);
+        delete entries[id].pending;
+        try { await save(state); } catch (error) { entries[id].pending = true; throw error; }
+        reports.push({ id, status: "imported", path });
+      } catch (e) { reports.push({ id, status: "failed", detail: String(e.message || e) }); }
+      continue;
+    }
     if (row.kind !== "file" || row.type !== "text" || typeof row.data.content !== "string") {
       reports.push({ id, status: "unsupported", detail: String(row.type || "unknown") }); continue;
     }
