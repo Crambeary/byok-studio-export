@@ -141,8 +141,23 @@ async function seed(s, out) {
   out.tree_added = await s.call(`window.desktop.mirror.getProjectTree(${JSON.stringify(projectId)})`); 
   await s.ev(`document.querySelector('button[title="Add Card"]').click()`); await sleep(1500);
   await s.ev(`document.querySelector('button[title="Add Section"]').click()`); await sleep(3000);
+  const editCard = async (index, title, body) => {
+    for (const [selector, text] of [['.card-title', title], ['.card-content', body]]) {
+      await s.ev(`document.querySelectorAll('.card')[${index}].querySelector('${selector}').click()`);
+      await sleep(300);
+      await s.send('Input.insertText', {text});
+      await s.ev('document.activeElement.blur()'); await sleep(1000);
+    }
+  };
+  await editCard(0, 'Synthetic alpha', 'First body with café & punctuation.');
+  await editCard(1, 'Synthetic beta', 'Second body on another card.');
+  await sleep(6000);
+
   out.tree_sections = await s.call(`window.desktop.mirror.getProjectTree(${JSON.stringify(projectId)})`);
-  await s.ev(`Array.from(document.querySelectorAll('button[title="Move Section Up"]')).at(-1).click()`); await sleep(3000);
+  const cardBox = await s.ev(`(() => {const b=document.querySelector('.card').getBoundingClientRect(); return {x:b.x+b.width/2,y:b.y+b.height/2};})()`);
+  await s.send('Input.dispatchMouseEvent', {type:'mouseMoved', ...cardBox}); await sleep(500);
+  await s.ev(`(() => {const b=document.querySelector('button[title="Move to section"]'); if (!b) throw Error('move control missing'); b.dispatchEvent(new MouseEvent('mousedown', {bubbles:true}));})()`); await sleep(500);
+  await s.ev(`(() => {const b=document.querySelector('.toolbar-section-option'); if (!b) throw Error('move target missing'); b.dispatchEvent(new MouseEvent('mousedown', {bubbles:true}));})()`); await sleep(7000);
   out.tree_reordered = await s.call(`window.desktop.mirror.getProjectTree(${JSON.stringify(projectId)})`);
 
 
@@ -153,6 +168,10 @@ async function seed(s, out) {
   out.tree_tile = await s.call(`window.desktop.mirror.getProjectTree(${JSON.stringify(projectId)})`);
   await s.ev(`document.querySelector('.tile-content-editable').focus()`);
   await s.send('Input.insertText', {text:'Synthetic grid tile'}); await s.ev('document.activeElement.blur()'); await sleep(7000);
+  await s.ev(`document.querySelector('button[aria-label="Add tile"]').click()`); await sleep(3000);
+  await s.ev(`document.querySelector('.tile-content-editable').focus()`);
+  await s.send('Input.insertText', {text:'Synthetic second tile'}); await s.ev('document.activeElement.blur()'); await sleep(7000);
+  out.project_id = projectId;
   out.tree_tile_edited = await s.call(`window.desktop.mirror.getProjectTree(${JSON.stringify(projectId)})`);
 
   const py = `import sqlite3,json\nc=sqlite3.connect('file:/work/config/studio-desktop/byokwa/db.sqlite?mode=ro',uri=True)\nprint(json.dumps([json.loads(r[0]) for r in c.execute('select data from files')]))`;
@@ -176,7 +195,18 @@ async function seed(s, out) {
   try {
     out.desktop_mode = await s.ev('window.desktop.mode');
     if (phase === 'seed') await seed(s, out);
-    else throw new Error(`unknown phase ${phase}`);
+    else if (phase === 'verify') {
+      await s.clickText('OK', 'button'); await sleep(800);
+      if (!await s.clickText(PROJECT)) throw new Error('project missing after reopen');
+      await sleep(4000);
+      out.tree_reopened = await s.call(`window.desktop.mirror.getProjectTree(${JSON.stringify(target.project_id)})`);
+      for (const name of ['Untitled Cardstack', 'Untitled Grid']) {
+        if (!await s.clickText(name)) throw new Error(`missing reopened file ${name}`);
+        await sleep(3000);
+        out[name === 'Untitled Cardstack' ? 'ui_card_reopened' : 'ui_grid_reopened'] = await s.ev(`document.querySelector('.file-content')?.innerText`);
+        await s.ev(`document.querySelector('button[aria-label="Close document"]').click()`); await sleep(1000);
+      }
+    } else throw new Error(`unknown phase ${phase}`);
   } catch (err) {
     out.error = String(err && err.stack || err);
     await s.shot(`failure-${phase}.png`);
