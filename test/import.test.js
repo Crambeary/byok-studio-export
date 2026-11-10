@@ -279,3 +279,60 @@ for ident,project,folder,name in [('b','p','f','B'),('c','p','g','C'),('d','q','
   assert.equal(scope['file:e'].baseline, notes.get(scope['file:e'].path));
   assert.equal(scope['file:e'].studioContent, '<p>second</p>');
 });
+
+test('persisted hierarchy survives same-depth moves and legacy paths reserve names', async t => {
+  const tmp = await fs.mkdtemp(path.join(os.tmpdir(), 'byok-moves-'));
+  t.after(() => fs.rm(tmp, { recursive: true, force: true }));
+  const db = path.join(tmp, 'source.sqlite');
+  const sql = code => execFileSync('python3', ['-c', `import sqlite3,json,sys\nc=sqlite3.connect(sys.argv[1])\n${code}\nc.commit()`, db]);
+  sql(`c.executescript("create table projects(id text,data text); create table folders(id text,parent_folder_id text,data text); create table files(id text,project_id text,folder_id text,type text,is_trashed integer,data text); create table manuscript_files(id text,project_id text,folder_id text,is_trashed integer,data text);")
+for i,n in [('p','Project'),('q','Other')]: c.execute('insert into projects values (?,?)',(i,json.dumps({'name':n})))
+for i,n in [('f','Folder'),('g','Other folder')]: c.execute('insert into folders values (?,?,?)',(i,None,json.dumps({'name':n})))
+for i,p,f in [('a','p','f'),('b','q','g')]: c.execute('insert into files values (?,?,?,?,?,?)',(i,p,f,'text',0,json.dumps({'name':i,'content':'<p>text</p>'})))`);
+  const notes = new Map(); let durable = { version: 1, scopes: {} };
+  const vault = { safeToMutate: async () => true, exists: async p => notes.has(p), read: async p => notes.get(p) ?? null, create: async (p,c) => { if (notes.has(p)) throw Error('exists'); notes.set(p,c); }, compareAndWrite: async (p,a,b) => { if (notes.get(p) !== a) return false; notes.set(p,b); return true; } };
+  const run = () => sync({ database: db, folder: 'Target', vault, vaultId: tmp, state: structuredClone(durable), save: async s => { durable = structuredClone(s); } });
+  await run();
+  const key = JSON.stringify([db, tmp, 'Target']); const old = structuredClone(durable.scopes[key]);
+  sql(`c.execute("update files set project_id='q', folder_id='g' where id='a'")
+c.execute("update projects set data=? where id='p'",(json.dumps({'name':'Renamed'}),))
+c.execute("update folders set data=? where id='f'",(json.dumps({'name':'Renamed folder'}),))
+for i,p,f in [('c','q','g'),('d','p','f')]: c.execute('insert into files values (?,?,?,?,?,?)',(i,p,f,'text',0,json.dumps({'name':i,'content':'<p>new</p>'})))`);
+  const report = await run();
+  assert.ok(report.some(r => r.id === 'file:c' && r.status === 'imported'), JSON.stringify(report));
+  assert.ok(report.some(r => r.id === 'file:d' && r.status === 'imported'), JSON.stringify(report));
+  assert.equal(durable.scopes[key]['file:a'].path, old['file:a'].path);
+  assert.equal(durable.scopes[key]['file:c'].path, 'Target/Other/Other folder/c.md');
+  assert.equal(durable.scopes[key]['file:d'].path, 'Target/Project/Folder/d.md');
+  // Legacy state cannot prove the ancestor identities, even when depths match.
+  for (const entry of Object.values(durable.scopes[key])) delete entry.ancestors;
+  sql(`c.execute('insert into files values (?,?,?,?,?,?)',('e','q','g','text',0,json.dumps({'name':'e','content':'<p>new</p>'})))`);
+  const legacy = await run();
+  assert.ok(legacy.some(r => r.id === 'file:e' && r.status === 'imported'), JSON.stringify(legacy));
+  assert.notEqual(durable.scopes[key]['file:e'].path, 'Target/Other/Other folder/e.md');
+});
+
+test('text refresh survives durable intent and write crash windows', async t => {
+  const tmp = await fs.mkdtemp(path.join(os.tmpdir(), 'byok-refresh-'));
+  t.after(() => fs.rm(tmp, { recursive: true, force: true }));
+  const db = path.join(tmp, 'source.sqlite');
+  execFileSync('python3', ['-c', `import sqlite3,json,sys
+c=sqlite3.connect(sys.argv[1]); c.executescript("create table projects(id text,data text); create table folders(id text,parent_folder_id text,data text); create table files(id text,project_id text,folder_id text,type text,is_trashed integer,data text); create table manuscript_files(id text,project_id text,folder_id text,is_trashed integer,data text);")
+c.execute('insert into projects values (?,?)',('p',json.dumps({'name':'Project'}))); c.execute('insert into files values (?,?,?,?,?,?)',('a','p',None,'text',0,json.dumps({'name':'A','content':'<p>old</p>'}))); c.commit()`, db]);
+  const notes = new Map(); let durable = { version: 1, scopes: {} }, failSave = 0, saves = 0, failWrite = false;
+  const vault = { safeToMutate: async () => true, exists: async p => notes.has(p), read: async p => notes.get(p) ?? null, create: async (p,c) => notes.set(p,c), compareAndWrite: async (p,a,b) => { if (failWrite && !p.includes('.byok-sync-')) return false; if (notes.get(p) !== a) return false; notes.set(p,b); return true; } };
+  const run = () => { saves = 0; return sync({ database: db, folder: 'Target', vault, vaultId: tmp, state: structuredClone(durable), save: async s => { if (++saves === failSave) throw Error('save failure'); durable = structuredClone(s); } }); };
+  await run(); const key = JSON.stringify([db, tmp, 'Target']); const notePath = durable.scopes[key]['file:a'].path; const from = notes.get(notePath);
+  execFileSync('python3', ['-c', `import sqlite3,json,sys
+c=sqlite3.connect(sys.argv[1]); d=json.loads(c.execute("select data from files where id='a'").fetchone()[0]); d['content']='<p>new</p>'; c.execute("update files set data=? where id='a'",(json.dumps(d),)); c.commit()`, db]);
+  failWrite = true; assert.ok((await run()).some(r => r.status === 'changed-during-sync'));
+  const intent = structuredClone(durable.scopes[key]['file:a'].textRefresh); assert.equal(intent.from, from); assert.equal(notes.get(notePath), from);
+  notes.set(notePath, 'other'); assert.ok((await run()).some(r => r.status === 'changed' && /Interrupted/.test(r.detail))); assert.deepEqual(durable.scopes[key]['file:a'].textRefresh, intent);
+  notes.set(notePath, from); failWrite = false; failSave = 2; assert.ok((await run()).some(r => r.status === 'failed')); // clearing intent succeeds; saving new intent fails
+  assert.equal(notes.get(notePath), from); assert.equal(durable.scopes[key]['file:a'].textRefresh, undefined);
+  failSave = 2; assert.ok((await run()).some(r => r.status === 'failed')); // intent persisted; final save fails after write
+  assert.equal(notes.get(notePath), intent.to); assert.deepEqual(durable.scopes[key]['file:a'].textRefresh, intent);
+  failSave = 1; assert.ok((await run()).some(r => r.status === 'failed')); assert.deepEqual(durable.scopes[key]['file:a'].textRefresh, intent);
+  failSave = 0; assert.ok((await run()).some(r => r.status === 'recovered'));
+  assert.equal(durable.scopes[key]['file:a'].baseline, intent.to); assert.equal(durable.scopes[key]['file:a'].studioContent, intent.studio); assert.equal(durable.scopes[key]['file:a'].textRefresh, undefined);
+});
