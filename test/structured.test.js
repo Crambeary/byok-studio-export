@@ -4,7 +4,7 @@ const fs = require('node:fs/promises');
 const os = require('node:os');
 const path = require('node:path');
 const { execFileSync } = require('node:child_process');
-const { createSync } = require('../src/import');
+const { sync } = require('../src/import');
 const { structuredView } = require('../src/structured');
 
 test('structured projection reports flattened whitespace and rejects missing manuscript associations', () => {
@@ -36,12 +36,12 @@ c.execute('insert into manuscript_files values (?,?,?,?,?)',('m','p',None,0,json
   const snapshot = () => execFileSync('python3', ['-c', "import sqlite3,sys,json; c=sqlite3.connect(sys.argv[1]); print(json.dumps([list(c.execute('select * from '+t)) for t in ['projects','folders','files','manuscript_files']]))", db], {encoding:'utf8'});
   const before = snapshot(), notes = new Map([['Target/Project/Same.md','existing']]);
   const vault = {safeToMutate:async()=>true, exists:async p=>notes.has(p), read:async p=>notes.get(p) ?? null, create:async(p,c)=>{assert.ok(!notes.has(p)); notes.set(p,c)}, compareAndWrite:async(p,a,b)=>{if(notes.get(p)!==a)return false; notes.set(p,b); return true}};
-  const state = {version:1,scopes:{}}; let writes = 0;
-  const run = () => createSync(async()=>{writes++; throw Error('unexpected write')})({database:db,folder:'Target',vault,vaultId:tmp,state,save:async()=>{},studioAsar:'synthetic'});
+  const state = {version:1,scopes:{}};
+  const run = () => sync({database:db,folder:'Target',vault,vaultId:tmp,state,save:async()=>{}});
   const first = await run(); const o = first.find(r=>r.id==='file:o' && r.status==='imported').path; const m = first.find(r=>r.id==='manuscript:m' && r.status==='imported').path;
   assert.match(notes.get(o), /- Parent[^\n]*\n  - Child/); assert.ok(first.some(r=>r.status==='collision'));
   const body = notes.get(m); assert.ok(body.indexOf('Current B') < body.indexOf('Current A')); assert.equal((body.match(/Current A/g)||[]).length,2); assert.doesNotMatch(body,/STALE/); assert.ok(first.some(r=>r.id==='manuscript:m' && /Repeated file reference/.test(r.detail||'')));
-  assert.ok((await run()).some(r=>r.id==='manuscript:m' && r.status==='unchanged')); assert.equal(snapshot(),before); assert.equal(writes,0);
+  assert.ok((await run()).some(r=>r.id==='manuscript:m' && r.status==='unchanged')); assert.equal(snapshot(),before);
   sql(`d=json.loads(c.execute("select data from files where id='o'").fetchone()[0]); d['content'][0]['type']='unknown'; c.execute("update files set data=? where id='o'",(json.dumps(d),))`);
   const old = notes.get(o); assert.ok((await run()).some(r=>r.id==='file:o' && r.status==='failed')); assert.equal(notes.get(o),old);
   sql(`d=json.loads(c.execute("select data from manuscript_files where id='m'").fetchone()[0]); d['manuscripts'][0]['file']['id']='missing'; c.execute("update manuscript_files set data=? where id='m'",(json.dumps(d),))`);
@@ -57,7 +57,7 @@ c.execute('insert into manuscript_files values (?,?,?,?,?)',('m','p',None,0,json
   const colorNote = notes.get(m); assert.ok((await run()).some(r=>r.id==='manuscript:m' && r.status==='failed')); assert.equal(notes.get(m),colorNote);
   // Simulate a process restart after the note write but before baseline persistence.
   let persisted = structuredClone(state), failAfterWrite = false;
-  const restartRun = () => createSync(async()=>{throw Error('unexpected write')})({database:db,folder:'Target',vault,vaultId:tmp,state:persisted,save:async value=>{
+  const restartRun = () => sync({database:db,folder:'Target',vault,vaultId:tmp,state:persisted,save:async value=>{
     const e = value.scopes[JSON.stringify([db,tmp,'Target'])]['manuscript:m'];
     if (failAfterWrite && !e.structuredRefresh) { failAfterWrite = false; throw Error('interrupted'); }
     persisted = structuredClone(value);
@@ -95,5 +95,5 @@ d=json.loads(c.execute("select data from manuscript_files where id='m'").fetchon
     assert.ok((await run()).some(r=>r.id==='manuscript:m' && r.status==='failed')); assert.equal(notes.get(m),emptyManuscript);
   }
   sql(`d=json.loads(c.execute("select data from files where id='o'").fetchone()[0]); d['content']=[]; c.execute("update files set data=? where id='o'",(json.dumps(d),))`);
-  notes.set(o,'user edit'); assert.ok((await run()).some(r=>r.id==='file:o' && r.status==='changed')); assert.equal(notes.get(o),'user edit'); assert.equal(writes,0);
+  notes.set(o,'user edit'); assert.ok((await run()).some(r=>r.id==='file:o' && r.status==='changed')); assert.equal(notes.get(o),'user edit');
 });

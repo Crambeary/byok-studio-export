@@ -43,13 +43,12 @@ the imported content and record paths per database path, vault path, destination
 data; moving a database or vault, upgrading from the previous import-only
 state, or removing state starts a separate import and can create additional
 notes. Do not edit or delete that state if you
-want to retain the mapping. Write-back is currently disabled because Studio being closed cannot be established throughout a write. The experimental transaction is restricted to explicitly marked disposable libraries and uses the Linux Studio 1.1.3 WAL exclusive-lock guard. The setting requires the tested Studio app.asar. Inside the transaction, the guard requires the exact recorded schema, migration marker and last-launch version, zero SQLite header versions, and local account state with no auth row. These conservative checks can refuse otherwise safe libraries. They do not establish migration provenance or compatibility with older builds; real libraries remain ineligible. See `experiments/studio_migration_provenance/README.md` for the evidence and limitations. The narrow literal-paragraph codec limits eligible edits.
-Pending outbox operations may contain stale text and must be checked before any
-future write-back; the experiment observed this hazard. Future Studio sync behavior
-is outside the plugin's control and has not been verified. No unmarked Studio database is written. A state-save failure after a note update requires manual
-recovery; the prior baseline is retained.
+want to retain the mapping. The plugin opens the Studio database read-only and
+never writes vault edits back. Historical write-back experiments are research,
+not plugin features. A failed state save after a note refresh retains the old
+baseline; a retry can recover when the note exactly matches the current source.
 
-Run `npm test` for the disposable SQLite/WAL sync-boundary tests; these run without the proprietary Studio binary. The schema allowlist in `src/tested-schema.json` is reproducible by executing the checked-in schema in SQLite and selecting `type, name, sql` from `sqlite_master` with `name NOT GLOB 'sqlite_*'`, ordered by type and name. The original
+Run `npm test` for the disposable SQLite/WAL sync-boundary tests. The original
 Python exporter described below remains separate from the plugin.
 
 One-way export of your [BYOK Studio](https://byok.io/studio) desktop library to
@@ -181,29 +180,9 @@ are protected once run with this version; state already lost before that cannot 
 identified automatically. Note creation still saves state per record to preserve
 these recovery guarantees, so large imports can remain slow.
 
-Studio 1.1.3 has been observed creating local projects with JSON `user: null`
-([synthetic upgrade evidence](experiments/studio_upgrade_compat/README.md)), but
-that experiment did not prove that accepting null preserves the account ownership
-guard. Normal-mode write-back therefore refuses it and records with outbox
-references. The disposable-only restriction also remains in force.
-
-
-### Disposable local-only experiment
-
-Write-back is off by default. The separate **Enable disposable write-back and accept risks** setting opts in to writes only to marked disposable synthetic libraries on the tested Linux build. Close Studio first: the process check is a best-effort snapshot and the SQLite lock cannot prevent Studio from starting between that check and the write. Process inspection may miss instances in other PID or mount namespaces, or renamed executables; an unavailable or uncertain inspection refuses the write. Later Studio Sync may overwrite these edits. The **Disposable local-only experiment** setting is also off by default and separately opts into its outbox and local ownership exceptions. The research transaction can accept JSON null local ownership and existing queued references only for marked disposable synthetic libraries; it never changes the outbox. The pinned build, local metadata, schema, ownership, and live-library restrictions remain in the research transaction.
-
-**Future Studio Sync can overwrite these edits** using older queued operations or
-remote data. This setting does not make Studio Sync safe. Do not use it on real
-libraries, or transition an experimental library to an account or Studio Sync.
-Keep separate backups and preserve the vault and previous baseline if a sync
-reports a conflict or partial application.
-
-### Experimental concurrent text edits
-
-This dependent prototype builds on PR #39 and issue #5, which remains incomplete. All existing disposable-library, local-only, Studio closure and write-back safeguards still apply. Only the verified literal paragraph subset can be reconciled. Changes to distinct existing paragraphs may merge; reordered, repeated, inserted, deleted, overlapping or otherwise ambiguous paragraphs may require manual recovery or a conflict. Unsupported formats remain protected.
-
-For a reported conflict, the original vault note remains in place and a separately named `Studio conflict` note holds the Studio version. The record stays paused. To resolve it, edit the original note to the desired reversible text, leave its metadata intact, and append a separate `RESOLVED` line to the unchanged conflict note. Close editors and run sync. The Studio snapshot is retained. If the Studio record changed, the conflict note is missing or altered, or a partial write occurred, automatic resolution refuses; preserve both copies and recover manually. Conflict state also retains the original vault text.
-
-Before every Studio write, sync saves a recovery record containing the original vault text, Studio snapshot, and intended content. If a write fails or its completion cannot be verified, including a changed conflict note, later syncs pause that record even after restart. Even a guard rejection can require review because a failed write may have committed. There is no automatic recovery UI yet.
-
-To inspect recovery, stop sync and back up the vault, Studio library, and plugin's `.obsidian/plugins/byok-studio-import/data.json` together. In that JSON, locate the record ID from the report inside `state.scopes`; the matching entry's `recovery` holds `vault`, `studio` (a serialized source snapshot), and `intended`. Preserve these and any conflict note separately, then compare them with the current note and Studio record. Do not clear recovery until you have manually reconciled the versions and verified a consistent state. Clearing it requires carefully editing that one entry in a backed-up `data.json` while Obsidian is closed; an incorrect baseline can cause a later sync to overwrite content. Restore the backup if unsure.
+Older plugin versions may have left `recovery` or `conflict` state from their
+experimental write-back. These records remain paused and are reported, even if
+the source record disappears. Preserve the note, conflict snapshot and plugin
+`data.json`; back up the Studio library and vault, then reconcile manually.
+There is no automatic resolution UI. Do not remove recovery state until the saved
+versions and current source have been compared and a consistent baseline restored.

@@ -3,9 +3,7 @@ const { createHash } = require("node:crypto");
 const { promisify } = require("node:util");
 const { realpath } = require("node:fs/promises");
 const { parseDocument } = require("htmlparser2");
-const { guardedWrite } = require("./writeback");
 const { structuredView } = require("./structured");
-const { htmlToMarkdown, markdownToHtml } = require("./text-codec");
 const exec = promisify(execFile);
 
 // A single SELECT holds one SQLite read snapshot across all tables, including WAL.
@@ -72,8 +70,7 @@ function destination(value) {
   if (parts.some(p => p === "." || p === ".." || safe(p) !== p)) throw new Error("Invalid destination folder");
   return parts.join("/");
 }
-function createSync(write = guardedWrite) {
-return async function sync({ database, folder, vault, vaultId, state, save, studioAsar, normalizePath, localExperiment, writebackRiskAccepted }) {
+async function sync({ database, folder, vault, vaultId, state, save, normalizePath }) {
   const keyForPath = path => collisionKey(path, normalizePath);
   const root = destination(folder);
   const library = await realpath(database);
@@ -129,18 +126,6 @@ return async function sync({ database, folder, vault, vaultId, state, save, stud
     savedMarker = next; markerText = nextText;
   }
   const safeToMutate = async path => typeof vault.safeToMutate === "function" && await vault.safeToMutate(path);
-
-  async function beginWrite(prior, current, row, intended) {
-    prior.recovery = { vault: current, studio: JSON.stringify(row), intended };
-    try { await save(state); } catch (error) { delete prior.recovery; throw error; }
-  }
-  async function finishWrite(prior, applied, studioContent, clearConflict = false) {
-    const previous = { ...prior };
-    prior.baseline = applied; prior.studioContent = studioContent;
-    delete prior.recovery;
-    if (clearConflict) delete prior.conflict;
-    try { await save(state); } catch (error) { Object.assign(prior, previous); throw error; }
-  }
 
   const reports = [];
   const projects = new Map(rows.filter(r => r.kind === "project").map(r => [String(r.id), r]));
@@ -219,7 +204,7 @@ return async function sync({ database, folder, vault, vaultId, state, save, stud
               try { await save(state); } catch (error) { prior.structuredRefresh = intent; throw error; }
             }
           }
-          if (current !== prior.baseline) { reports.push({ id, status: "changed", path: prior.path, detail: "Structured view edited; preserved. Reconcile manually; structured write-back is unavailable" }); continue; }
+          if (current !== prior.baseline) { reports.push({ id, status: "changed", path: prior.path, detail: "Structured view edited; preserved. Reconcile manually before refreshing" }); continue; }
           if (current === content) { reports.push({ id, status: "unchanged", path: prior.path }); continue; }
           if (!await sourceUnchanged() || !await safeToMutate(prior.path) || typeof vault.compareAndWrite !== "function") { reports.push({ id, status: "changed-during-sync", path: prior.path }); continue; }
           const intent = { from: current, to: content }; prior.structuredRefresh = intent;
@@ -272,53 +257,19 @@ return async function sync({ database, folder, vault, vaultId, state, save, stud
         const current = await vault.read(prior.path);
         if (current === null) { reports.push({ id, status: "missing", path: prior.path }); continue; }
         if (prior.conflict) {
-          const c = prior.conflict;
-          const conflictNote = await vault.read(c.path);
-          if (conflictNote !== c.note + "\nRESOLVED\n") {
-            reports.push({ id, status: "conflict", path: prior.path, detail: `Paused. Studio snapshot: ${c.path}. Edit the original note, then append RESOLVED on its own line to the conflict note and sync.` }); continue;
-          }
-          const baseBody = htmlToMarkdown(prior.studioContent);
-          const prefix = baseBody && prior.baseline.endsWith(baseBody) ? prior.baseline.slice(0, -baseBody.length) : null;
-          let validPrefix = false;
-          try { const match = prefix && prefix.match(/\nbyok-updated: (.*)\n---\n\n$/); validPrefix = !!match && prefix === metadata(row.id, JSON.parse(match[1])); } catch {}
-          const resolved = validPrefix && current.startsWith(prefix) ? markdownToHtml(current.slice(prefix.length), row.data.content) : null;
-          if (JSON.stringify(row) !== c.snapshot || resolved === null || !studioAsar || !await safeToMutate(prior.path) || !await safeToMutate(c.path) || await vault.read(prior.path) !== current || await vault.read(c.path) !== conflictNote) {
-            reports.push({ id, status: "conflict", path: prior.path, detail: "Resolution refused: source, editor, or reversible text cannot be verified; preserve both notes and recover manually" }); continue;
-          }
-          await beginWrite(prior, current, row, resolved);
-          const stamp = await write(library, row, resolved, studioAsar, localExperiment === true, writebackRiskAccepted === true);
-          if (!await safeToMutate(c.path) || await vault.read(c.path) !== conflictNote) {
-            reports.push({ id, status: "recovery-required", path: prior.path, detail: "Conflict snapshot changed during Studio write; preserve both notes and reconcile manually" }); continue;
-          }
-          const applied = metadata(row.id, stamp) + current.slice(prefix.length);
-          if (!await safeToMutate(prior.path) || !await vault.compareAndWrite(prior.path, current, applied)) {
-            reports.push({ id, status: "conflict", path: prior.path, detail: "Studio updated but note changed; manual recovery required" }); continue;
-          }
-          if (!await safeToMutate(c.path) || await vault.read(c.path) !== conflictNote) {
-            reports.push({ id, status: "recovery-required", path: prior.path, detail: "Conflict snapshot changed during resolution; preserve both notes and reconcile manually" }); continue;
-          }
-          await finishWrite(prior, applied, resolved, true);
-          reports.push({ id, status: "resolved", path: prior.path, detail: `Studio snapshot retained at ${c.path}` }); continue;
+          reports.push({ id, status: "conflict", path: prior.path, detail: `Previous conflict requires manual recovery; preserve the Studio snapshot at ${prior.conflict.path}` }); continue;
         }
-        const hasStudioBaseline = typeof prior.studioContent === "string";
-        if (current === content && current === prior.baseline) {
-          reports.push({ id, status: hasStudioBaseline ? "unchanged" : "changed", path: prior.path, ...(!hasStudioBaseline ? { detail: "Studio baseline missing; manual recovery required" } : {}) }); continue;
+        if (typeof prior.studioContent !== "string") {
+          reports.push({ id, status: "changed", path: prior.path, detail: "Studio baseline missing; manual recovery required" }); continue;
         }
-        // Recovery only advances an existing, complete baseline when both current sides
-        // prove equivalence. Recheck both snapshots before changing anything.
-        const oldMarkdown = hasStudioBaseline ? htmlToMarkdown(prior.studioContent) : null;
-        const newMarkdown = htmlToMarkdown(row.data.content);
-        let oldPrefix = oldMarkdown && prior.baseline.endsWith(oldMarkdown) ? prior.baseline.slice(0, -oldMarkdown.length) : null;
-        if (oldPrefix !== null) {
-          try {
-            const updated = oldPrefix.match(/\nbyok-updated: (.*)\n---\n\n$/);
-            if (!updated || oldPrefix !== metadata(row.id, JSON.parse(updated[1]))) oldPrefix = null;
-          } catch { oldPrefix = null; }
+        if (current === prior.baseline && current === content) {
+          reports.push({ id, status: "unchanged", path: prior.path }); continue;
         }
-        const equivalentEdit = oldPrefix !== null && newMarkdown !== null && current === oldPrefix + newMarkdown && current !== prior.baseline;
-        if (hasStudioBaseline && (current === content || equivalentEdit)) {
+        // A prior refresh may have completed before its state save failed.
+        // Matching the current source proves that no note replacement is needed.
+        if (current === content && current !== prior.baseline) {
           const fresh = await readRecord(library, row);
-          if (!fresh || JSON.stringify(fresh) !== JSON.stringify(row) || !await safeToMutate(prior.path) || typeof vault.compareAndWrite !== "function" || !await vault.compareAndWrite(prior.path, current, content)) {
+          if (!fresh || JSON.stringify(fresh) !== JSON.stringify(row) || !await safeToMutate(prior.path) || typeof vault.compareAndWrite !== "function" || !await vault.compareAndWrite(prior.path, current, current)) {
             reports.push({ id, status: "changed-during-sync", path: prior.path }); continue;
           }
           const oldBaseline = prior.baseline, oldStudioContent = prior.studioContent;
@@ -326,69 +277,8 @@ return async function sync({ database, folder, vault, vaultId, state, save, stud
           try { await save(state); } catch (error) { prior.baseline = oldBaseline; prior.studioContent = oldStudioContent; throw error; }
           reports.push({ id, status: "recovered", path: prior.path }); continue;
         }
-        if (!hasStudioBaseline) { reports.push({ id, status: "changed", path: prior.path, detail: "Studio baseline missing; manual recovery required" }); continue; }
-        if (current !== prior.baseline && row.data.content !== prior.studioContent) {
-          const base = oldMarkdown;
-          const vaultBody = oldPrefix !== null && current.startsWith(oldPrefix) ? current.slice(oldPrefix.length) : null;
-          const valid = base !== null && newMarkdown !== null && vaultBody !== null && markdownToHtml(vaultBody, prior.studioContent) !== null && prior.baseline === oldPrefix + base;
-          const b = valid ? base.trimEnd().split("\n\n") : [], v = valid ? vaultBody.trimEnd().split("\n\n") : [], st = valid ? newMarkdown.trimEnd().split("\n\n") : [];
-          const compatible = valid && b.length === v.length && b.length === st.length && new Set(b).size === b.length && b.every((x, i) => (v[i] === x || !b.includes(v[i])) && (st[i] === x || !b.includes(st[i])) && (v[i] === x || st[i] === x || v[i] === st[i]));
-          if (compatible && studioAsar) {
-            const merged = b.map((x, i) => v[i] === x ? st[i] : v[i]).join("\n\n") + "\n";
-            const normalized = markdownToHtml(merged, row.data.content);
-            if (normalized !== null && await safeToMutate(prior.path) && await vault.read(prior.path) === current && typeof vault.compareAndWrite === "function") {
-              await beginWrite(prior, current, row, normalized);
-              const stamp = await write(library, row, normalized, studioAsar, localExperiment === true, writebackRiskAccepted === true);
-              const applied = metadata(row.id, stamp) + merged;
-              if (!await safeToMutate(prior.path) || !await vault.compareAndWrite(prior.path, current, applied)) { reports.push({ id, status: "failed", path: prior.path, detail: "Studio updated, but vault changed; manual recovery required" }); continue; }
-              await finishWrite(prior, applied, normalized);
-              reports.push({ id, status: "merged", path: prior.path }); continue;
-            }
-            reports.push({ id, status: "changed-during-sync", path: prior.path }); continue;
-          }
-          // Only create a conflict snapshot for reversible text. Other formats and
-          // unverifiable metadata remain untouched for manual recovery.
-          if (valid && !compatible) {
-            const fresh = await readRecord(library, row);
-            if (!fresh || JSON.stringify(fresh) !== JSON.stringify(row) || !await safeToMutate(prior.path) || await vault.read(prior.path) !== current) { reports.push({ id, status: "changed-during-sync", path: prior.path }); continue; }
-            const slash = prior.path.lastIndexOf("/");
-            const dir = slash < 0 ? "" : prior.path.slice(0, slash + 1);
-            const name = prior.path.slice(slash + 1, -3);
-            let n = 1, conflictPath;
-            do { conflictPath = dir + withSuffix(name, ` (Studio conflict${n === 1 ? "" : " " + n})`, ".md"); n++; if (n > 10002) throw Error("Too many conflict collisions"); } while (reservedPaths.has(keyForPath(conflictPath)) || await vault.exists(conflictPath));
-            if (!await safeToMutate(conflictPath)) { reports.push({ id, status: "changed-during-sync", path: prior.path }); continue; }
-            const note = content;
-            prior.conflict = { path: conflictPath, note, snapshot: JSON.stringify(row), vaultOriginal: current };
-            try { await save(state); } catch (error) { delete prior.conflict; throw error; }
-            reservedPaths.add(keyForPath(conflictPath));
-            await vault.create(conflictPath, note);
-            reports.push({ id, status: "conflict", path: prior.path, detail: `Paused; Studio snapshot: ${conflictPath}. Edit the original note, then append RESOLVED on its own line to the conflict note and sync.` }); continue;
-          }
-        }
         if (current !== prior.baseline) {
-          // Classify a narrow reversible subset without enabling database writes.
-          const prefix = metadata(row.id, row.data.updatedAt);
-          const original = htmlToMarkdown(row.data.content);
-          const edited = current.startsWith(prefix) ? markdownToHtml(current.slice(prefix.length)) : null;
-          const reversible = row.data.content === prior.studioContent && original !== null && prefix + original === prior.baseline && edited !== null;
-          if (!reversible || !studioAsar) {
-            reports.push({ id, status: "changed", path: prior.path, detail: reversible
-              ? "Vault edit preserved; reversible text, but configure the Studio app.asar path and opt in to the write-back risks"
-              : "Vault edit preserved; conversion is unsupported or lossy and Studio write-back is unavailable" }); continue;
-          }
-          if (!await safeToMutate(prior.path) || typeof vault.compareAndWrite !== "function" || await vault.read(prior.path) !== current) {
-            reports.push({ id, status: "changed-during-sync", path: prior.path }); continue;
-          }
-          const normalized = markdownToHtml(current.slice(prefix.length), row.data.content);
-          if (normalized === null) throw new Error("Unsupported paragraph form; manual recovery required");
-          await beginWrite(prior, current, row, normalized);
-          const stamp = await write(library, row, normalized, studioAsar, localExperiment === true, writebackRiskAccepted === true);
-          const applied = metadata(row.id, stamp) + current.slice(prefix.length);
-          if (!await safeToMutate(prior.path) || !await vault.compareAndWrite(prior.path, current, applied)) {
-            reports.push({ id, status: "failed", path: prior.path, detail: "Studio updated, but vault changed; manual recovery required" }); continue;
-          }
-          await finishWrite(prior, applied, normalized);
-          reports.push({ id, status: "written-back", path: prior.path }); continue;
+          reports.push({ id, status: "changed", path: prior.path, detail: "Vault edit preserved; reconcile manually before refreshing" }); continue;
         }
         // Verify the source snapshot again, then compare and replace the note atomically.
         const fresh = await readRecord(library, row);
@@ -428,6 +318,4 @@ return async function sync({ database, folder, vault, vaultId, state, save, stud
   }
   return reports;
 }
-}
-const sync = createSync();
-module.exports = { sync, createSync, readLibrary, destination };
+module.exports = { sync, readLibrary, destination };
