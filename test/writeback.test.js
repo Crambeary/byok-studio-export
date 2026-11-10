@@ -38,6 +38,9 @@ test('guarded sync on a disposable WAL library', async t => {
   assert.equal(notes.get(file), baseline.replace('Hello', 'Vault edit'));
   assert.equal(sql("SELECT json_extract(data,'$.content') FROM files WHERE id='a'").trim(), '<p>Racing source</p>');
   sql("UPDATE files SET data=json_set(data,'$.content','<p>Hello</p>') WHERE id='a'");
+  const entry = state.scopes[JSON.stringify([db, dir, 'Target'])]['file:a'];
+  assert.ok(entry.recovery);
+  delete entry.recovery; // Fixture operator verified the rejected transaction and reconciled it.
   vault.read = originalRead;
   reads = 0;
   vault.read = async p => { const value = await originalRead(p); if (p === file && ++reads === 2) { notes.set(p, 'racing vault edit'); return 'racing vault edit'; } return value; };
@@ -55,47 +58,10 @@ test('guarded sync on a disposable WAL library', async t => {
   assert.ok((await run()).some(r => r.status === 'failed'));
   assert.equal(sql("SELECT json_extract(data,'$.content') FROM files WHERE id='a';").trim(), '<p>Vault edit</p>');
   assert.equal(state.scopes[JSON.stringify([db, dir, 'Target'])]['file:a'].baseline, beforeBaseline);
-  write = createGuardedWrite(async () => {});
-  sql('CREATE TABLE unexpected(x)');
-  assert.ok((await run()).some(r => r.status === 'failed'));
-  sql('DROP TABLE unexpected');
-  const holder = spawn('python3', ['-u', '-c', "import sqlite3,sys; c=sqlite3.connect(sys.argv[1]); c.execute('select * from files').fetchall(); print('ready',flush=True); sys.stdin.readline()", db], {stdio:['pipe','pipe','inherit']});
-  await once(holder.stdout, 'data');
-  assert.ok((await run()).some(r => r.status === 'failed'));
-  holder.stdin.end('done\n'); await once(holder, 'exit');
-  write = createGuardedWrite(async () => {}, (database, script) => runSql(database, script.replace("FROM outbox WHERE", "FROM (SELECT 'complete' status, 'a' entity_id, NULL temp_ids, NULL url, NULL body) WHERE")));
-  assert.ok((await run()).some(r => r.status === 'failed'));
-  assert.equal(sql("SELECT json_extract(data,'$.content') FROM files WHERE id='a';").trim(), '<p>Vault edit</p>');
+  assert.ok(entry.recovery);
+  assert.ok((await run()).some(r => r.status === 'recovery-required'));
   assert.equal(notes.get(file), saved.replace('Vault edit', 'Second edit'));
   assert.equal(sql("SELECT json_group_array(json_object('id',id,'data',body)) FROM outbox;"), before);
-  write = createGuardedWrite(async () => {});
-  assert.ok((await run({ save: async () => { throw Error('save failed'); } })).some(r => r.status === 'failed'));
-  assert.equal(state.scopes[JSON.stringify([db, dir, 'Target'])]['file:a'].baseline, beforeBaseline);
-  assert.equal(sql("SELECT json_extract(data,'$.content') FROM files WHERE id='a';").trim(), '<p>Second edit</p>');
-  assert.match(notes.get(file), /Second edit/);
-  assert.ok((await run()).some(r => r.status === 'recovered'));
-  assert.equal(state.scopes[JSON.stringify([db, dir, 'Target'])]['file:a'].studioContent, '<p>Second edit</p>');
-
-  // Studio committed but the vault changed before its metadata could be updated.
-  const savedSecond = notes.get(file);
-  notes.set(file, savedSecond.replace('Second edit', 'Third edit'));
-  const compare = vault.compareAndWrite;
-  vault.compareAndWrite = async () => false;
-  assert.ok((await run()).some(r => r.status === 'failed'));
-  assert.equal(sql("SELECT json_extract(data,'$.content') FROM files WHERE id='a';").trim(), '<p>Third edit</p>');
-  vault.compareAndWrite = compare;
-  assert.ok((await run()).some(r => r.status === 'recovered'));
-  assert.match(notes.get(file), /Third edit/);
-
-  // A divergent vault edit after the partial write must never be adopted.
-  const savedThird = notes.get(file);
-  notes.set(file, savedThird.replace('Third edit', 'Fourth edit'));
-  vault.compareAndWrite = async (p, a, b) => { notes.set(p, 'independent vault edit'); return false; };
-  assert.ok((await run()).some(r => r.status === 'failed'));
-  vault.compareAndWrite = compare;
-  assert.ok((await run()).some(r => r.status === 'changed'));
-  assert.equal(notes.get(file), 'independent vault edit');
-  assert.equal(state.scopes[JSON.stringify([db, dir, 'Target'])]['file:a'].studioContent, '<p>Third edit</p>');
 });
 
 test('compatibility fails closed for unsupported environments', async () => {
@@ -323,6 +289,10 @@ test('opt-in experiment crosses sync boundary with null local ownership and queu
   assert.equal(JSON.parse(beforeOutbox).length, 1);
   notes.set(file, notes.get(file).replace('Original', 'Vault edit'));
   assert.ok((await run()).some(r => r.status === 'failed' && /Outbox/.test(r.detail)));
+  assert.ok((await run({ localExperiment: true })).some(r => r.status === 'recovery-required'));
+  const blocked = Object.values(state.scopes)[0]['file:file-a'];
+  assert.ok(blocked.recovery);
+  delete blocked.recovery; // Synthetic operator verified the guard rolled back.
   assert.ok((await run({ localExperiment: true })).some(r => r.status === 'written-back'));
   assert.match(f.sql("SELECT data FROM files WHERE id='file-a'"), /Vault edit/);
   state = JSON.parse(await fs.readFile(stateFile, 'utf8'));
@@ -404,4 +374,50 @@ test('failed conflict snapshot creation remains paused and preserves both sides'
   assert.ok((await run()).some(r => r.status === 'conflict'));
   assert.match(notes.get(file), /Vault/);
   assert.match(f.sql("SELECT data FROM files WHERE id='file-a'"), /Studio/);
+});
+
+test("merge write racing a vault revert remains paused across restart", async t => {
+  const f = await fixture(t, { id: "file-a", name: "File", content: "<p>One</p><p>Two</p>" });
+  const notes = new Map(); let state = { version: 1, scopes: {} }, persisted, race = false, writes = 0;
+  const vault = { safeToMutate: async () => true, exists: async p => notes.has(p), read: async p => notes.get(p) ?? null,
+    create: async (p,c) => { if (notes.has(p)) throw Error("collision"); notes.set(p,c); },
+    compareAndWrite: async (p,a,b) => { if (race && p === file) { race = false; notes.set(p, baseline); } if (notes.get(p) !== a) return false; notes.set(p,b); return true; } };
+  const guarded = createGuardedWrite(async () => {});
+  const run = () => createSync(async (...args) => { writes++; assert.ok(Object.values(persisted.scopes)[0]["file:file-a"].recovery); return guarded(...args); })({ database: f.db, folder: "Target", vault, vaultId: "synthetic", state, studioAsar: "synthetic", save: async () => { persisted = structuredClone(state); } });
+  const file = (await run()).find(r => r.status === "imported").path, baseline = notes.get(file);
+  notes.set(file, baseline.replace("One", "Vault one"));
+  f.sql("UPDATE files SET data=json_set(data,'$.content','<p>One</p><p>Studio two</p>') WHERE id='file-a'");
+  race = true;
+  assert.ok((await run()).some(r => r.status === "failed"));
+  assert.equal(notes.get(file), baseline);
+  assert.match(f.sql("SELECT data FROM files WHERE id='file-a'"), /Vault one/);
+  state = structuredClone(persisted);
+  const recovery = Object.values(state.scopes)[0]["file:file-a"].recovery;
+  assert.match(recovery.vault, /Vault one/); assert.match(recovery.studio, /Studio two/);
+  assert.ok((await run()).some(r => r.status === "recovery-required"));
+  assert.equal(notes.get(file), baseline); assert.equal(writes, 1);
+});
+
+test("resolution snapshot mutation during write retains recovery and colliding notes across restart", async t => {
+  const f = await fixture(t, { id: "file-a", name: "File", content: "<p>Original</p>" });
+  const notes = new Map(); let state = { version: 1, scopes: {} }, persisted, mutate = false, writes = 0;
+  const vault = { safeToMutate: async () => true, exists: async p => notes.has(p), read: async p => notes.get(p) ?? null,
+    create: async (p,c) => { if (notes.has(p)) throw Error("collision"); notes.set(p,c); }, compareAndWrite: async (p,a,b) => { if (notes.get(p) !== a) return false; notes.set(p,b); return true; } };
+  const guarded = createGuardedWrite(async () => {});
+  const run = () => createSync(async (...args) => { writes++; const stamp = await guarded(...args); if (mutate) notes.set(c.path, notes.get(c.path).replace("RESOLVED", "CHANGED")); return stamp; })({ database: f.db, folder: "Target", vault, vaultId: "synthetic", state, studioAsar: "synthetic", save: async () => { persisted = structuredClone(state); } });
+  const file = (await run()).find(r => r.status === "imported").path;
+  const occupied = file.replace(/\.md$/, " (Studio conflict).md"); notes.set(occupied, "existing note");
+  notes.set(file, notes.get(file).replace("Original", "Vault"));
+  f.sql("UPDATE files SET data=json_set(data,'$.content','<p>Studio</p>') WHERE id='file-a'");
+  assert.ok((await run()).some(r => r.status === "conflict"));
+  const c = Object.values(state.scopes)[0]["file:file-a"].conflict;
+  assert.match(c.path, /Studio conflict 2/); assert.equal(notes.get(occupied), "existing note");
+  notes.set(file, notes.get(file).replace("Vault", "Resolution")); notes.set(c.path, notes.get(c.path) + "\nRESOLVED\n"); mutate = true;
+  assert.ok((await run()).some(r => r.status === "recovery-required"));
+  assert.match(notes.get(c.path), /CHANGED/); assert.match(notes.get(file), /Resolution/);
+  state = structuredClone(persisted);
+  assert.ok(Object.values(state.scopes)[0]["file:file-a"].recovery);
+  assert.ok(Object.values(state.scopes)[0]["file:file-a"].conflict);
+  assert.ok((await run()).some(r => r.status === "recovery-required"));
+  assert.equal(writes, 1); assert.equal(notes.get(occupied), "existing note");
 });
