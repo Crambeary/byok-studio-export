@@ -32,6 +32,20 @@ test('process scan refuses unsupported, filtered, incomplete and failed inspecti
   ];
   for (const override of variants) await assert.rejects(checkStudioClosed('/opt/studio/resources/app.asar', { ...fixture(), ...override }), /unavailable|uncertain/);
 });
+test('process scan ignores exited processes, zombies and kernel threads but refuses uncertain live processes', async () => {
+  const missing = Object.assign(new Error('missing'), { code: 'ENOENT' });
+  for (const stat of [null, '42 (zombie) Z 1 1 1 0 0 0', '42 (kthread) S 1 1 1 0 0 2097152']) {
+    const env = fixture();
+    env.readlink = async () => { throw missing; };
+    env.readFile = async p => p === '/proc/mounts' ? 'proc /proc proc rw 0 0\n' : stat === null ? Promise.reject(missing) : stat;
+    await checkStudioClosed('/opt/studio/resources/app.asar', env);
+  }
+  for (const stat of ['42 (live) S 1 1 1 0 0 0', 'invalid']) {
+    const env = fixture(); env.readlink = async () => { throw missing; };
+    env.readFile = async p => p === '/proc/mounts' ? 'proc /proc proc rw 0 0\n' : stat;
+    await assert.rejects(checkStudioClosed('/opt/studio/resources/app.asar', env), /uncertain/);
+  }
+});
 test('production gate defaults disabled, checks before writing, and forwards both modes', async () => {
   let checks = 0, calls = [];
   const write = createProductionWrite(async () => { checks++; }, async (...args) => { calls.push(args); return 'written'; });
