@@ -172,8 +172,8 @@ these recovery guarantees, so large imports can remain slow.
 Studio 1.1.3 has been observed creating local projects with JSON `user: null`
 ([synthetic upgrade evidence](experiments/studio_upgrade_compat/README.md)), but
 that experiment did not prove that accepting null preserves the account ownership
-guard. Write-back therefore continues to refuse it; disposable-only and outbox
-checks remain in force.
+guard. Normal-mode write-back therefore refuses it and records with outbox
+references. The disposable-only restriction also remains in force.
 
 
 ### Disposable local-only experiment
