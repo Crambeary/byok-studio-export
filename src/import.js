@@ -43,10 +43,10 @@ function safe(value) {
 function collisionKey(path, normalize = value => value.replace(/\u00a0/g, " ")) { return normalize(path).normalize("NFC").toLowerCase(); }
 function withSuffix(name, suffix, extension = "") { return limit(name, 180 - Buffer.byteLength(suffix + extension)) + suffix + extension; }
 
-function render(html) {
+function render(html, literalSafe = false) {
   const issues = new Set();
   function visit(node) {
-    if (node.type === "text") return node.data;
+    if (node.type === "text") return literalSafe ? node.data.replace(/[\r\n\t]+/g, " ").replace(/[!"#$%&'()*+,\-./:;<=>?@[\]\\^_`{|}~]/g, "\\$&") : node.data;
     if (node.type !== "tag") { issues.add("non-text HTML"); return ""; }
     const children = (node.children || []).map(visit).join("");
     if (Object.keys(node.attribs || {}).length) issues.add("HTML attributes");
@@ -93,6 +93,7 @@ return async function sync({ database, folder, vault, vaultId, state, save, stud
     const parts = entry.path.split("/");
     if (entry.path.includes("\\") || parts.some(p => !p || p === "." || p === ".." || safe(p) !== p) || (root && !entry.path.startsWith(root + "/")) || reservedPaths.has(keyForPath(entry.path))) throw new Error("Invalid or duplicate record path");
     reservedPaths.add(keyForPath(entry.path));
+    if (Object.hasOwn(entry, "structuredRefresh") && (!object(entry.structuredRefresh) || typeof entry.structuredRefresh.from !== "string" || typeof entry.structuredRefresh.to !== "string" || entry.structuredRefresh.from !== entry.baseline)) throw new Error("Invalid structured refresh state");
     if (Object.hasOwn(entry, "recovery")) {
       const r = entry.recovery;
       if (!object(r) || typeof r.vault !== "string" || typeof r.studio !== "string" || typeof r.intended !== "string") throw new Error("Invalid write recovery state");
@@ -178,7 +179,7 @@ return async function sync({ database, folder, vault, vaultId, state, save, stud
     if ((row.kind === "file" && row.type === "outline") || row.kind === "manuscript") {
       if (entries[id]?.recovery) continue;
       try {
-        const { content, issues } = structuredView(row, rows, render);
+        const { content, issues } = structuredView(row, rows, html => render(html, true));
         if (issues.length) reports.push({ id, status: "lossy", detail: issues.join(", ") });
         // Recheck the entire snapshot: manuscript projections depend on other rows.
         const sourceUnchanged = async () => JSON.stringify(await readLibrary(library)) === JSON.stringify(rows);
@@ -196,11 +197,25 @@ return async function sync({ database, folder, vault, vaultId, state, save, stud
           }
           const current = await vault.read(prior.path);
           if (current === null) { reports.push({ id, status: "missing", path: prior.path }); continue; }
+          if (prior.structuredRefresh) {
+            const intent = prior.structuredRefresh;
+            if (current === intent.to && content === intent.to && await sourceUnchanged()) {
+              prior.baseline = intent.to; delete prior.structuredRefresh;
+              try { await save(state); } catch (error) { prior.baseline = intent.from; prior.structuredRefresh = intent; throw error; }
+              reports.push({ id, status: "recovered", path: prior.path }); continue;
+            }
+            if (current !== intent.from) { reports.push({ id, status: "changed", path: prior.path, detail: "Interrupted structured refresh requires manual reconciliation" }); continue; }
+            delete prior.structuredRefresh;
+            try { await save(state); } catch (error) { prior.structuredRefresh = intent; throw error; }
+          }
           if (current !== prior.baseline) { reports.push({ id, status: "changed", path: prior.path, detail: "Structured view edited; preserved. Reconcile manually; structured write-back is unavailable" }); continue; }
           if (current === content) { reports.push({ id, status: "unchanged", path: prior.path }); continue; }
-          if (!await sourceUnchanged() || !await safeToMutate(prior.path) || typeof vault.compareAndWrite !== "function" || !await vault.compareAndWrite(prior.path, current, content)) { reports.push({ id, status: "changed-during-sync", path: prior.path }); continue; }
-          const previous = prior.baseline; prior.baseline = content;
-          try { await save(state); } catch (error) { prior.baseline = previous; throw error; }
+          if (!await sourceUnchanged() || !await safeToMutate(prior.path) || typeof vault.compareAndWrite !== "function") { reports.push({ id, status: "changed-during-sync", path: prior.path }); continue; }
+          const intent = { from: current, to: content }; prior.structuredRefresh = intent;
+          try { await save(state); } catch (error) { delete prior.structuredRefresh; throw error; }
+          if (!await sourceUnchanged() || !await safeToMutate(prior.path) || !await vault.compareAndWrite(prior.path, current, content)) { reports.push({ id, status: "changed-during-sync", path: prior.path }); continue; }
+          prior.baseline = content; delete prior.structuredRefresh;
+          try { await save(state); } catch (error) { prior.baseline = current; prior.structuredRefresh = intent; throw error; }
           reports.push({ id, status: "updated", path: prior.path }); continue;
         }
         const directory = [root, ...hierarchy(row)].filter(Boolean).join("/");

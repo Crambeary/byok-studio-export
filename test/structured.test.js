@@ -31,6 +31,38 @@ c.execute('insert into manuscript_files values (?,?,?,?,?)',('m','p',None,0,json
   const old = notes.get(o); assert.ok((await run()).some(r=>r.id==='file:o' && r.status==='failed')); assert.equal(notes.get(o),old);
   sql(`d=json.loads(c.execute("select data from manuscript_files where id='m'").fetchone()[0]); d['manuscripts'][0]['file']['id']='missing'; c.execute("update manuscript_files set data=? where id='m'",(json.dumps(d),))`);
   assert.ok((await run()).some(r=>r.id==='manuscript:m' && /missing/.test(r.detail||''))); assert.equal(notes.get(m),body);
+  // Literal HTML text must not become active Markdown at the sync boundary.
+  sql(`d=json.loads(c.execute("select data from files where id='a'").fetchone()[0]); d['content']='<p>![alt](https://example.invalid/a)\\n&lt;img src=x&gt; [link](https://example.invalid)</p>'; c.execute("update files set data=? where id='a'",(json.dumps(d),)); d=json.loads(c.execute("select data from manuscript_files where id='m'").fetchone()[0]); d['manuscripts'][0]['file']['id']='a'; c.execute("update manuscript_files set data=? where id='m'",(json.dumps(d),))`);
+  await run(); assert.doesNotMatch(notes.get(m), /!\[alt\]\(|<img src=x>|(?<!\\)\[link\]\(/);
+  const entry = state.scopes[JSON.stringify([db,tmp,'Target'])]['manuscript:m'];
+  const original = notes.get(m);
+  sql(`d=json.loads(c.execute("select data from manuscript_files where id='m'").fetchone()[0]); d['manuscripts'][0]['color']='#abc'; c.execute("update manuscript_files set data=? where id='m'",(json.dumps(d),))`);
+  await run(); assert.notEqual(notes.get(m), original, 'color-only change must be represented');
+  sql(`d=json.loads(c.execute("select data from manuscript_files where id='m'").fetchone()[0]); d['manuscripts'][0]['color']={}; c.execute("update manuscript_files set data=? where id='m'",(json.dumps(d),))`);
+  const colorNote = notes.get(m); assert.ok((await run()).some(r=>r.id==='manuscript:m' && r.status==='failed')); assert.equal(notes.get(m),colorNote);
+  // Simulate a process restart after the note write but before baseline persistence.
+  let persisted = structuredClone(state), failAfterWrite = false;
+  const restartRun = () => createSync(async()=>{throw Error('unexpected write')})({database:db,folder:'Target',vault,vaultId:tmp,state:persisted,save:async value=>{
+    const e = value.scopes[JSON.stringify([db,tmp,'Target'])]['manuscript:m'];
+    if (failAfterWrite && !e.structuredRefresh) { failAfterWrite = false; throw Error('interrupted'); }
+    persisted = structuredClone(value);
+  }});
+  sql(`d=json.loads(c.execute("select data from manuscript_files where id='m'").fetchone()[0]); d['manuscripts'][0]['color']='#def'; c.execute("update manuscript_files set data=? where id='m'",(json.dumps(d),))`);
+  failAfterWrite = true; assert.ok((await restartRun()).some(r=>r.id==='manuscript:m' && r.status==='failed'));
+  assert.ok((await restartRun()).some(r=>r.id==='manuscript:m' && r.status==='recovered'));
+  Object.assign(state, structuredClone(persisted));
+  // A vault edit that differs from the recorded intent is never adopted.
+  sql(`d=json.loads(c.execute("select data from manuscript_files where id='m'").fetchone()[0]); d['manuscripts'][0]['color']='#123'; c.execute("update manuscript_files set data=? where id='m'",(json.dumps(d),))`);
+  failAfterWrite = true; await restartRun(); notes.set(m, 'independent edit');
+  assert.ok((await restartRun()).some(r=>r.id==='manuscript:m' && r.status==='changed')); assert.equal(notes.get(m),'independent edit');
+  notes.set(m,persisted.scopes[JSON.stringify([db,tmp,'Target'])]['manuscript:m'].structuredRefresh.to); await restartRun(); Object.assign(state, structuredClone(persisted));
+  sql(`d=json.loads(c.execute("select data from files where id='o'").fetchone()[0]); d['content'][0]['type']='II'; d['content'][0]['isCollapsed']=True; c.execute("update files set data=? where id='o'",(json.dumps(d),))`);
+  const beforeFields = notes.get(o); await run(); assert.notEqual(notes.get(o),beforeFields);
+  for (const field of ['type','isCollapsed']) {
+    sql(`d=json.loads(c.execute("select data from files where id='o'").fetchone()[0]); del d['content'][0]['${field}']; c.execute("update files set data=? where id='o'",(json.dumps(d),))`);
+    const previous = notes.get(o); assert.ok((await run()).some(r=>r.id==='file:o' && r.status==='failed')); assert.equal(notes.get(o),previous);
+    sql(`d=json.loads(c.execute("select data from files where id='o'").fetchone()[0]); d['content'][0]['${field}']=${field === 'type' ? "'II'" : 'True'}; c.execute("update files set data=? where id='o'",(json.dumps(d),))`);
+  }
   // Empty observed shapes and a source edit refresh unchanged views.
   sql(`d=json.loads(c.execute("select data from files where id='o'").fetchone()[0]); d['content']=[]; c.execute("update files set data=? where id='o'",(json.dumps(d),)); d=json.loads(c.execute("select data from manuscript_files where id='m'").fetchone()[0]); d['manuscripts']=[]; c.execute("update manuscript_files set data=? where id='m'",(json.dumps(d),))`);
   const empty = await run(); assert.ok(empty.some(r=>r.id==='file:o' && r.status==='updated')); assert.ok(empty.some(r=>r.id==='manuscript:m' && r.status==='updated'));
