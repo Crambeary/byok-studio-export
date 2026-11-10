@@ -30,8 +30,10 @@ function structuredView(row, rows, render) {
         unique(tile.id);
       }
     }
-    const json = JSON.stringify(content, null, 2);
-    const longest = Math.max(2, ...Array.from(json.matchAll(/`+/g), match => match[0].length));
+    // Keep record-level fields too, including fields whose semantics are unknown.
+    const json = JSON.stringify(row.data, null, 2);
+    let longest = 2;
+    for (const match of json.matchAll(/`+/g)) longest = Math.max(longest, match[0].length);
     const fence = '`'.repeat(longest + 1);
     return { content: header + fence + 'json\n' + json + '\n' + fence + '\n', issues: [] };
   }
