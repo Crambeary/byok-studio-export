@@ -5,6 +5,21 @@ const os = require('node:os');
 const path = require('node:path');
 const { execFileSync } = require('node:child_process');
 const { createSync } = require('../src/import');
+const { structuredView } = require('../src/structured');
+
+test('structured projection reports flattened whitespace and rejects missing manuscript associations', () => {
+  const outline = text => ({ kind: 'file', id: 'o', data: { content: [{ id: 'n', text, type: 'I', children: [], isCollapsed: false }] } });
+  const multiline = structuredView(outline('a\nb\tc'), [], () => {});
+  const single = structuredView(outline('a b c'), [], () => {});
+  assert.notEqual(multiline.content, single.content);
+  assert.ok(multiline.issues.some(issue => /flattened/.test(issue)));
+  const file = { kind: 'file', id: 'a', project_id: 'p', type: 'text', data: { name: 'A', content: '<p>x</p>' } };
+  const entry = { id: 'e', position: 0, color: '#fff', outline_item_id: null, outlineItemId: null, file: { id: 'a' } };
+  for (const key of ['outline_item_id', 'outlineItemId']) {
+    const copy = { ...entry }; delete copy[key];
+    assert.throws(() => structuredView({ kind: 'manuscript', id: 'm', project_id: 'p', data: { manuscripts: [copy] } }, [file], () => ({ body: '', issues: [] })), /association/);
+  }
+});
 
 test('structured views use current rows, preserve ordering and protect source and notes', async t => {
   const tmp = await fs.mkdtemp(path.join(os.tmpdir(), 'structured-')); t.after(() => fs.rm(tmp, { recursive: true, force: true }));

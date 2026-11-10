@@ -16,7 +16,8 @@ function structuredView(row, rows, render) {
         if (Object.keys(node).some(k => !['id', 'text', 'type', 'children', 'isCollapsed'].includes(k))) fail('Unrecognized outline node fields');
         if (ids.has(node.id)) fail(`Repeated outline node ID ${node.id}`);
         ids.add(node.id);
-        lines.push(`${'  '.repeat(depth)}- ${escape(node.text)} <!-- byok-outline-id: ${Buffer.from(node.id).toString('hex')}; byok-outline-fields: ${Buffer.from(JSON.stringify([node.type, node.isCollapsed])).toString('hex')} -->`);
+        if (/[\r\n\t]/.test(node.text)) issues.push('Outline text contains line breaks or tabs flattened in the readable view; original text is retained in metadata');
+        lines.push(`${'  '.repeat(depth)}- ${escape(node.text)} <!-- byok-outline-id: ${Buffer.from(node.id).toString('hex')}; byok-outline-fields: ${Buffer.from(JSON.stringify([node.type, node.isCollapsed, node.text])).toString('hex')} -->`);
         visit(node.children, depth + 1);
       }
     }
@@ -29,7 +30,7 @@ function structuredView(row, rows, render) {
     if (!obj(entry) || !ident(entry.id) || !Number.isInteger(entry.position) || entry.position !== index || !obj(entry.file) || !ident(entry.file.id)) fail(`Malformed or unrecognized manuscript entry at ${index + 1}`);
     if (Object.keys(entry).some(k => !['id', 'position', 'color', 'outline_item_id', 'outlineItemId', 'file'].includes(k))) fail(`Unrecognized manuscript entry fields at ${index + 1}`);
     if (typeof entry.color !== 'string') fail(`Malformed manuscript color at ${index + 1}`);
-    if (entry.outline_item_id != null || entry.outlineItemId != null) fail(`Unrecognized manuscript outline association at ${index + 1}`);
+    if (!Object.hasOwn(entry, 'outline_item_id') || !Object.hasOwn(entry, 'outlineItemId') || entry.outline_item_id !== null || entry.outlineItemId !== null) fail(`Unrecognized manuscript outline association at ${index + 1}`);
     if (ids.has(entry.id)) fail(`Repeated manuscript entry ID ${entry.id}`);
     ids.add(entry.id);
     if (references.has(entry.file.id)) issues.push(`Repeated file reference ${entry.file.id} retained`);
