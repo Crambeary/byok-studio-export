@@ -1,0 +1,1650 @@
+{
+  "harness": "experiments/obsidian_desktop",
+  "plugin": {
+    "sha256": "9a66953460d06d164c4276cd6a031d3b1b887bad4d745f64a780a7548b1222ec",
+    "srcTree": "fa41afa4de201865edb762afaa0bfcbc2e618422",
+    "baseCommit": "96be89c558ac649b71af5e082edc66cbbc7553c1"
+  },
+  "observations": {
+    "vaultTrustPromptShownAfterManualCopy": true,
+    "settingsRenderedInPopoutWindow": true,
+    "savedEditForm": {
+      "expected": "---\nbyok-id: \"beta\"\nbyok-type: text\nbyok-updated: \"2026-01-01T00:00:00Z\"\n---\n\nBeta original. Added in the Obsidian editor.\n",
+      "actual": "---\nbyok-id: \"beta\"\nbyok-type: text\nbyok-updated: \"2026-01-01T00:00:00Z\"\n---\n\nBeta original.\n Added in the Obsidian editor."
+    },
+    "midImport": {
+      "created": 7,
+      "statuses": {
+        "lossy": 304,
+        "unchanged": 2,
+        "changed": 295,
+        "trashed": 1,
+        "unsupported": 2,
+        "imported": 7
+      },
+      "retry": {
+        "lossy": 304,
+        "unchanged": 9,
+        "changed": 2,
+        "trashed": 1,
+        "unsupported": 2,
+        "imported": 293
+      }
+    },
+    "unsavedCanvasEmbed": {
+      "failed": false,
+      "error": null,
+      "gamma": [
+        {
+          "id": "file:gamma",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:gamma",
+          "status": "updated",
+          "path": "BYOK Studio/Synthetic Project/Gamma.md"
+        }
+      ],
+      "diskRightAfterImport": "---\nbyok-id: \"gamma\"\nbyok-type: text\nbyok-updated: \"2026-05-05T00:00:00Z\"\n---\n\nGamma revised in Studio.\n",
+      "finalDisk": "---\nbyok-id: \"gamma\"\nbyok-type: text\nbyok-updated: \"2026-01-01T00:00:00Z\"\n---\n\nGamma stable. UNSAVED-CANVAS-SENTINEL\n",
+      "finalBuffer": "---\nbyok-id: \"gamma\"\nbyok-type: text\nbyok-updated: \"2026-01-01T00:00:00Z\"\n---\n\nGamma stable. UNSAVED-CANVAS-SENTINEL\n",
+      "baselineMatchesDisk": false,
+      "followUp": {
+        "failed": false,
+        "error": null,
+        "gamma": [
+          {
+            "id": "file:gamma",
+            "status": "lossy",
+            "detail": "HTML-to-Markdown conversion is not verified lossless"
+          },
+          {
+            "id": "file:gamma",
+            "status": "changed",
+            "path": "BYOK Studio/Synthetic Project/Gamma.md",
+            "detail": "Vault edit preserved; conversion is unsupported or lossy and Studio write-back is unavailable"
+          }
+        ],
+        "disk": "---\nbyok-id: \"gamma\"\nbyok-type: text\nbyok-updated: \"2026-01-01T00:00:00Z\"\n---\n\nGamma stable. UNSAVED-CANVAS-SENTINEL\n"
+      }
+    },
+    "studioDirectoryAfterAllImports": [
+      "db.sqlite",
+      "db.sqlite-shm",
+      "db.sqlite-wal"
+    ],
+    "rendererHttpHostsRequestedByApp": []
+  },
+  "findings": [
+    {
+      "scenario": "unsaved-canvas-embed",
+      "summary": "import with a note open in a Canvas editor is not refused: it reports the note updated, then the open editor saves over the Studio revision",
+      "observed": {
+        "diskRightAfterImport": "---\nbyok-id: \"gamma\"\nbyok-type: text\nbyok-updated: \"2026-05-05T00:00:00Z\"\n---\n\nGamma revised in Studio.\n",
+        "finalDisk": "---\nbyok-id: \"gamma\"\nbyok-type: text\nbyok-updated: \"2026-01-01T00:00:00Z\"\n---\n\nGamma stable. UNSAVED-CANVAS-SENTINEL\n",
+        "followUp": {
+          "failed": false,
+          "error": null,
+          "gamma": [
+            {
+              "id": "file:gamma",
+              "status": "lossy",
+              "detail": "HTML-to-Markdown conversion is not verified lossless"
+            },
+            {
+              "id": "file:gamma",
+              "status": "changed",
+              "path": "BYOK Studio/Synthetic Project/Gamma.md",
+              "detail": "Vault edit preserved; conversion is unsupported or lossy and Studio write-back is unavailable"
+            }
+          ],
+          "disk": "---\nbyok-id: \"gamma\"\nbyok-type: text\nbyok-updated: \"2026-01-01T00:00:00Z\"\n---\n\nGamma stable. UNSAVED-CANVAS-SENTINEL\n"
+        }
+      }
+    }
+  ],
+  "environment": {
+    "obsidian": "1.15.0",
+    "electron": "43.8.7",
+    "sqlite": "3.54.0",
+    "display": "Chromium ozone headless (real Electron app, no compositor or window manager)"
+  },
+  "results": [
+    {
+      "scenario": "isolation",
+      "name": "/home is empty inside the jail",
+      "pass": true
+    },
+    {
+      "scenario": "isolation",
+      "name": "only loopback network interface exists",
+      "pass": true,
+      "observed": [
+        "lo"
+      ]
+    },
+    {
+      "scenario": "isolation",
+      "name": "external connection attempt fails",
+      "pass": true,
+      "observed": "ENETUNREACH"
+    },
+    {
+      "scenario": "isolation",
+      "name": "no credential-like environment variables",
+      "pass": true,
+      "observed": []
+    },
+    {
+      "scenario": "install",
+      "name": "the real desktop app is running on the disposable vault",
+      "pass": true,
+      "observed": {
+        "versions": "43.8.7",
+        "app": "1.15.0",
+        "mobile": false,
+        "vault": "/work/vault",
+        "home": "/work/home",
+        "sqlite": "3.54.0"
+      }
+    },
+    {
+      "scenario": "install",
+      "name": "plugin is not active before the user enables it",
+      "pass": true
+    },
+    {
+      "scenario": "install",
+      "name": "plugin stays disabled until enabled in settings",
+      "pass": true
+    },
+    {
+      "scenario": "install",
+      "name": "community-plugins.json records the plugin after UI enable",
+      "pass": true,
+      "observed": [
+        "byok-studio-import"
+      ]
+    },
+    {
+      "scenario": "install",
+      "name": "import command is registered",
+      "pass": true
+    },
+    {
+      "scenario": "install",
+      "name": "settings UI persisted database path and default folder",
+      "pass": true,
+      "observed": {
+        "database": "/work/studio/db.sqlite",
+        "folder": "BYOK Studio",
+        "state": {
+          "version": 1,
+          "scopes": {}
+        }
+      }
+    },
+    {
+      "scenario": "install",
+      "name": "write-back is not configured",
+      "pass": true
+    },
+    {
+      "scenario": "first-import",
+      "name": "no Markdown editor open before import",
+      "pass": true
+    },
+    {
+      "scenario": "first-import",
+      "name": "first import: Studio database bytes, records and outbox unchanged by the plugin",
+      "pass": true,
+      "observed": {
+        "before": {
+          "mainDbSha": "ef63916aae7a6722caeb5c91756e2cf8a4681741fdb54b76bac478e2856d8fae",
+          "files": "b1fcb9e7f06ce634bc86a5cc89abde3b14dee5c3f9f34de7c27e938d28b58d94",
+          "outbox": "[{\"id\":1,\"user_id\":null,\"kind\":\"update\",\"entity_type\":\"file\",\"entity_id\":\"alpha\",\"method\":\"PUT\",\"url\":\"https://invalid.example/synthetic\",\"body\":\"synthetic outbox sentinel\",\"temp_ids\":null,\"status\":\"pending\",\"attempts\":0,\"last_error\":null,\"created_at\":1,\"updated_at\":1}]"
+        },
+        "after": {
+          "mainDbSha": "ef63916aae7a6722caeb5c91756e2cf8a4681741fdb54b76bac478e2856d8fae",
+          "files": "b1fcb9e7f06ce634bc86a5cc89abde3b14dee5c3f9f34de7c27e938d28b58d94",
+          "outbox": "[{\"id\":1,\"user_id\":null,\"kind\":\"update\",\"entity_type\":\"file\",\"entity_id\":\"alpha\",\"method\":\"PUT\",\"url\":\"https://invalid.example/synthetic\",\"body\":\"synthetic outbox sentinel\",\"temp_ids\":null,\"status\":\"pending\",\"attempts\":0,\"last_error\":null,\"created_at\":1,\"updated_at\":1}]"
+        }
+      }
+    },
+    {
+      "scenario": "first-import",
+      "name": "import succeeded",
+      "pass": true,
+      "observed": null
+    },
+    {
+      "scenario": "first-import",
+      "name": "alpha imported",
+      "pass": true,
+      "observed": [
+        {
+          "id": "file:alpha",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:alpha",
+          "status": "imported",
+          "path": "BYOK Studio/Synthetic Project/Alpha.md"
+        },
+        {
+          "id": "file:beta",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:beta",
+          "status": "imported",
+          "path": "BYOK Studio/Synthetic Project/Chapters/Beta.md"
+        },
+        {
+          "id": "file:gamma",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:gamma",
+          "status": "imported",
+          "path": "BYOK Studio/Synthetic Project/Gamma.md"
+        },
+        {
+          "id": "file:delta",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:delta",
+          "status": "imported",
+          "path": "BYOK Studio/Synthetic Project/Delta.md"
+        },
+        {
+          "id": "file:trashed",
+          "status": "trashed"
+        },
+        {
+          "id": "file:picture",
+          "status": "unsupported",
+          "detail": "image"
+        },
+        {
+          "id": "manuscript:m1",
+          "status": "unsupported",
+          "detail": "manuscript"
+        }
+      ]
+    },
+    {
+      "scenario": "first-import",
+      "name": "beta imported",
+      "pass": true,
+      "observed": [
+        {
+          "id": "file:alpha",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:alpha",
+          "status": "imported",
+          "path": "BYOK Studio/Synthetic Project/Alpha.md"
+        },
+        {
+          "id": "file:beta",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:beta",
+          "status": "imported",
+          "path": "BYOK Studio/Synthetic Project/Chapters/Beta.md"
+        },
+        {
+          "id": "file:gamma",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:gamma",
+          "status": "imported",
+          "path": "BYOK Studio/Synthetic Project/Gamma.md"
+        },
+        {
+          "id": "file:delta",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:delta",
+          "status": "imported",
+          "path": "BYOK Studio/Synthetic Project/Delta.md"
+        },
+        {
+          "id": "file:trashed",
+          "status": "trashed"
+        },
+        {
+          "id": "file:picture",
+          "status": "unsupported",
+          "detail": "image"
+        },
+        {
+          "id": "manuscript:m1",
+          "status": "unsupported",
+          "detail": "manuscript"
+        }
+      ]
+    },
+    {
+      "scenario": "first-import",
+      "name": "gamma imported",
+      "pass": true,
+      "observed": [
+        {
+          "id": "file:alpha",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:alpha",
+          "status": "imported",
+          "path": "BYOK Studio/Synthetic Project/Alpha.md"
+        },
+        {
+          "id": "file:beta",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:beta",
+          "status": "imported",
+          "path": "BYOK Studio/Synthetic Project/Chapters/Beta.md"
+        },
+        {
+          "id": "file:gamma",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:gamma",
+          "status": "imported",
+          "path": "BYOK Studio/Synthetic Project/Gamma.md"
+        },
+        {
+          "id": "file:delta",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:delta",
+          "status": "imported",
+          "path": "BYOK Studio/Synthetic Project/Delta.md"
+        },
+        {
+          "id": "file:trashed",
+          "status": "trashed"
+        },
+        {
+          "id": "file:picture",
+          "status": "unsupported",
+          "detail": "image"
+        },
+        {
+          "id": "manuscript:m1",
+          "status": "unsupported",
+          "detail": "manuscript"
+        }
+      ]
+    },
+    {
+      "scenario": "first-import",
+      "name": "delta imported",
+      "pass": true,
+      "observed": [
+        {
+          "id": "file:alpha",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:alpha",
+          "status": "imported",
+          "path": "BYOK Studio/Synthetic Project/Alpha.md"
+        },
+        {
+          "id": "file:beta",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:beta",
+          "status": "imported",
+          "path": "BYOK Studio/Synthetic Project/Chapters/Beta.md"
+        },
+        {
+          "id": "file:gamma",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:gamma",
+          "status": "imported",
+          "path": "BYOK Studio/Synthetic Project/Gamma.md"
+        },
+        {
+          "id": "file:delta",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:delta",
+          "status": "imported",
+          "path": "BYOK Studio/Synthetic Project/Delta.md"
+        },
+        {
+          "id": "file:trashed",
+          "status": "trashed"
+        },
+        {
+          "id": "file:picture",
+          "status": "unsupported",
+          "detail": "image"
+        },
+        {
+          "id": "manuscript:m1",
+          "status": "unsupported",
+          "detail": "manuscript"
+        }
+      ]
+    },
+    {
+      "scenario": "first-import",
+      "name": "trashed record reported and not imported",
+      "pass": true
+    },
+    {
+      "scenario": "first-import",
+      "name": "non-text file reported unsupported",
+      "pass": true
+    },
+    {
+      "scenario": "first-import",
+      "name": "manuscript reported unsupported",
+      "pass": true
+    },
+    {
+      "scenario": "first-import",
+      "name": "notice summarizes the run",
+      "pass": true,
+      "observed": [
+        "BYOK import: 4 imported, 7 reports. See developer console."
+      ]
+    },
+    {
+      "scenario": "first-import",
+      "name": "note bytes match the expected format",
+      "pass": true,
+      "observed": "---\nbyok-id: \"alpha\"\nbyok-type: text\nbyok-updated: \"2026-01-01T00:00:00Z\"\n---\n\nAlpha original.\n"
+    },
+    {
+      "scenario": "first-import",
+      "name": "Obsidian indexed exactly the four notes",
+      "pass": true,
+      "observed": [
+        "BYOK Studio/Synthetic Project/Alpha.md",
+        "BYOK Studio/Synthetic Project/Chapters/Beta.md",
+        "BYOK Studio/Synthetic Project/Delta.md",
+        "BYOK Studio/Synthetic Project/Gamma.md"
+      ]
+    },
+    {
+      "scenario": "first-import",
+      "name": "Obsidian parsed byok-id frontmatter",
+      "pass": true
+    },
+    {
+      "scenario": "first-import",
+      "name": "hidden marker exists in the destination folder",
+      "pass": true,
+      "observed": [
+        ".byok-sync-35c6a48f6f535ba637f68369fd29f9edecc3f086b8b2ebf61b2c500d87395e11.json",
+        "Synthetic Project"
+      ]
+    },
+    {
+      "scenario": "first-import",
+      "name": "marker scope binds database, vault and destination",
+      "pass": true,
+      "observed": {
+        "version": 1,
+        "scope": "[\"/work/studio/db.sqlite\",\"/work/vault\",\"BYOK Studio\"]",
+        "ids": [
+          "file:alpha",
+          "file:beta",
+          "file:gamma",
+          "file:delta"
+        ]
+      }
+    },
+    {
+      "scenario": "first-import",
+      "name": "marker reserves exactly the imported record IDs",
+      "pass": true,
+      "observed": [
+        "file:alpha",
+        "file:beta",
+        "file:gamma",
+        "file:delta"
+      ]
+    },
+    {
+      "scenario": "first-import",
+      "name": "marker is absent from the vault index",
+      "pass": true
+    },
+    {
+      "scenario": "first-import",
+      "name": "state has no pending reservation after success",
+      "pass": true,
+      "observed": {
+        "file:alpha": {
+          "path": "BYOK Studio/Synthetic Project/Alpha.md",
+          "baseline": "---\nbyok-id: \"alpha\"\nbyok-type: text\nbyok-updated: \"2026-01-01T00:00:00Z\"\n---\n\nAlpha original.\n",
+          "studioContent": "<p>Alpha original.</p>"
+        },
+        "file:beta": {
+          "path": "BYOK Studio/Synthetic Project/Chapters/Beta.md",
+          "baseline": "---\nbyok-id: \"beta\"\nbyok-type: text\nbyok-updated: \"2026-01-01T00:00:00Z\"\n---\n\nBeta original.\n",
+          "studioContent": "<p>Beta original.</p>"
+        },
+        "file:gamma": {
+          "path": "BYOK Studio/Synthetic Project/Gamma.md",
+          "baseline": "---\nbyok-id: \"gamma\"\nbyok-type: text\nbyok-updated: \"2026-01-01T00:00:00Z\"\n---\n\nGamma stable.\n",
+          "studioContent": "<p>Gamma stable.</p>"
+        },
+        "file:delta": {
+          "path": "BYOK Studio/Synthetic Project/Delta.md",
+          "baseline": "---\nbyok-id: \"delta\"\nbyok-type: text\nbyok-updated: \"2026-01-01T00:00:00Z\"\n---\n\nDelta original.\n",
+          "studioContent": "<p>Delta original.</p>"
+        }
+      }
+    },
+    {
+      "scenario": "repeat-import",
+      "name": "repeat import: Studio database bytes, records and outbox unchanged by the plugin",
+      "pass": true,
+      "observed": {
+        "before": {
+          "mainDbSha": "ef63916aae7a6722caeb5c91756e2cf8a4681741fdb54b76bac478e2856d8fae",
+          "files": "b1fcb9e7f06ce634bc86a5cc89abde3b14dee5c3f9f34de7c27e938d28b58d94",
+          "outbox": "[{\"id\":1,\"user_id\":null,\"kind\":\"update\",\"entity_type\":\"file\",\"entity_id\":\"alpha\",\"method\":\"PUT\",\"url\":\"https://invalid.example/synthetic\",\"body\":\"synthetic outbox sentinel\",\"temp_ids\":null,\"status\":\"pending\",\"attempts\":0,\"last_error\":null,\"created_at\":1,\"updated_at\":1}]"
+        },
+        "after": {
+          "mainDbSha": "ef63916aae7a6722caeb5c91756e2cf8a4681741fdb54b76bac478e2856d8fae",
+          "files": "b1fcb9e7f06ce634bc86a5cc89abde3b14dee5c3f9f34de7c27e938d28b58d94",
+          "outbox": "[{\"id\":1,\"user_id\":null,\"kind\":\"update\",\"entity_type\":\"file\",\"entity_id\":\"alpha\",\"method\":\"PUT\",\"url\":\"https://invalid.example/synthetic\",\"body\":\"synthetic outbox sentinel\",\"temp_ids\":null,\"status\":\"pending\",\"attempts\":0,\"last_error\":null,\"created_at\":1,\"updated_at\":1}]"
+        }
+      }
+    },
+    {
+      "scenario": "repeat-import",
+      "name": "import succeeded",
+      "pass": true,
+      "observed": null
+    },
+    {
+      "scenario": "repeat-import",
+      "name": "all four notes are unchanged",
+      "pass": true,
+      "observed": [
+        {
+          "id": "file:alpha",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:alpha",
+          "status": "unchanged",
+          "path": "BYOK Studio/Synthetic Project/Alpha.md"
+        },
+        {
+          "id": "file:beta",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:beta",
+          "status": "unchanged",
+          "path": "BYOK Studio/Synthetic Project/Chapters/Beta.md"
+        },
+        {
+          "id": "file:gamma",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:gamma",
+          "status": "unchanged",
+          "path": "BYOK Studio/Synthetic Project/Gamma.md"
+        },
+        {
+          "id": "file:delta",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:delta",
+          "status": "unchanged",
+          "path": "BYOK Studio/Synthetic Project/Delta.md"
+        },
+        {
+          "id": "file:trashed",
+          "status": "trashed"
+        },
+        {
+          "id": "file:picture",
+          "status": "unsupported",
+          "detail": "image"
+        },
+        {
+          "id": "manuscript:m1",
+          "status": "unsupported",
+          "detail": "manuscript"
+        }
+      ]
+    },
+    {
+      "scenario": "repeat-import",
+      "name": "nothing newly imported",
+      "pass": true,
+      "observed": [
+        {
+          "id": "file:alpha",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:alpha",
+          "status": "unchanged",
+          "path": "BYOK Studio/Synthetic Project/Alpha.md"
+        },
+        {
+          "id": "file:beta",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:beta",
+          "status": "unchanged",
+          "path": "BYOK Studio/Synthetic Project/Chapters/Beta.md"
+        },
+        {
+          "id": "file:gamma",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:gamma",
+          "status": "unchanged",
+          "path": "BYOK Studio/Synthetic Project/Gamma.md"
+        },
+        {
+          "id": "file:delta",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:delta",
+          "status": "unchanged",
+          "path": "BYOK Studio/Synthetic Project/Delta.md"
+        },
+        {
+          "id": "file:trashed",
+          "status": "trashed"
+        },
+        {
+          "id": "file:picture",
+          "status": "unsupported",
+          "detail": "image"
+        },
+        {
+          "id": "manuscript:m1",
+          "status": "unsupported",
+          "detail": "manuscript"
+        }
+      ]
+    },
+    {
+      "scenario": "repeat-import",
+      "name": "destination files, including hidden marker, are byte and mtime identical",
+      "pass": true,
+      "observed": {
+        "before": {
+          "BYOK Studio/.byok-sync-35c6a48f6f535ba637f68369fd29f9edecc3f086b8b2ebf61b2c500d87395e11.json": {
+            "sha": "c293643f7b6b0b76a3857346e1de417e87b95bda739f565e6d5a257b75a80f08",
+            "mtimeMs": 1794274647188.3936
+          },
+          "BYOK Studio/Synthetic Project/Alpha.md": {
+            "sha": "bd714e6609a7eda44d53f52d0d821c09093706c0b26629e638ec45de0972c270",
+            "mtimeMs": 1794274647148.3936
+          },
+          "BYOK Studio/Synthetic Project/Chapters/Beta.md": {
+            "sha": "421b6bea4555b9177f958135f67c12413c6aa5d07f61902294c7bd831f4a20cd",
+            "mtimeMs": 1794274647165.3936
+          },
+          "BYOK Studio/Synthetic Project/Delta.md": {
+            "sha": "3ccd2f3422553660c626872f95ed40ecdbee693ebe6e93e97259cd70bd10940b",
+            "mtimeMs": 1794274647189.3936
+          },
+          "BYOK Studio/Synthetic Project/Gamma.md": {
+            "sha": "2c18bfd922fa22b091ef10b1bfaadea12e60941380a67f857bde46b540937087",
+            "mtimeMs": 1794274647177.3936
+          }
+        },
+        "after": {
+          "BYOK Studio/.byok-sync-35c6a48f6f535ba637f68369fd29f9edecc3f086b8b2ebf61b2c500d87395e11.json": {
+            "sha": "c293643f7b6b0b76a3857346e1de417e87b95bda739f565e6d5a257b75a80f08",
+            "mtimeMs": 1794274647188.3936
+          },
+          "BYOK Studio/Synthetic Project/Alpha.md": {
+            "sha": "bd714e6609a7eda44d53f52d0d821c09093706c0b26629e638ec45de0972c270",
+            "mtimeMs": 1794274647148.3936
+          },
+          "BYOK Studio/Synthetic Project/Chapters/Beta.md": {
+            "sha": "421b6bea4555b9177f958135f67c12413c6aa5d07f61902294c7bd831f4a20cd",
+            "mtimeMs": 1794274647165.3936
+          },
+          "BYOK Studio/Synthetic Project/Delta.md": {
+            "sha": "3ccd2f3422553660c626872f95ed40ecdbee693ebe6e93e97259cd70bd10940b",
+            "mtimeMs": 1794274647189.3936
+          },
+          "BYOK Studio/Synthetic Project/Gamma.md": {
+            "sha": "2c18bfd922fa22b091ef10b1bfaadea12e60941380a67f857bde46b540937087",
+            "mtimeMs": 1794274647177.3936
+          }
+        }
+      }
+    },
+    {
+      "scenario": "repeat-import",
+      "name": "plugin state bytes unchanged",
+      "pass": true
+    },
+    {
+      "scenario": "restart",
+      "name": "plugin is active after restart without re-enabling",
+      "pass": true
+    },
+    {
+      "scenario": "restart",
+      "name": "repeat import after restart: Studio database bytes, records and outbox unchanged by the plugin",
+      "pass": true,
+      "observed": {
+        "before": {
+          "mainDbSha": "ef63916aae7a6722caeb5c91756e2cf8a4681741fdb54b76bac478e2856d8fae",
+          "files": "b1fcb9e7f06ce634bc86a5cc89abde3b14dee5c3f9f34de7c27e938d28b58d94",
+          "outbox": "[{\"id\":1,\"user_id\":null,\"kind\":\"update\",\"entity_type\":\"file\",\"entity_id\":\"alpha\",\"method\":\"PUT\",\"url\":\"https://invalid.example/synthetic\",\"body\":\"synthetic outbox sentinel\",\"temp_ids\":null,\"status\":\"pending\",\"attempts\":0,\"last_error\":null,\"created_at\":1,\"updated_at\":1}]"
+        },
+        "after": {
+          "mainDbSha": "ef63916aae7a6722caeb5c91756e2cf8a4681741fdb54b76bac478e2856d8fae",
+          "files": "b1fcb9e7f06ce634bc86a5cc89abde3b14dee5c3f9f34de7c27e938d28b58d94",
+          "outbox": "[{\"id\":1,\"user_id\":null,\"kind\":\"update\",\"entity_type\":\"file\",\"entity_id\":\"alpha\",\"method\":\"PUT\",\"url\":\"https://invalid.example/synthetic\",\"body\":\"synthetic outbox sentinel\",\"temp_ids\":null,\"status\":\"pending\",\"attempts\":0,\"last_error\":null,\"created_at\":1,\"updated_at\":1}]"
+        }
+      }
+    },
+    {
+      "scenario": "restart",
+      "name": "import succeeded",
+      "pass": true,
+      "observed": null
+    },
+    {
+      "scenario": "restart",
+      "name": "all four notes are unchanged",
+      "pass": true,
+      "observed": [
+        {
+          "id": "file:alpha",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:alpha",
+          "status": "unchanged",
+          "path": "BYOK Studio/Synthetic Project/Alpha.md"
+        },
+        {
+          "id": "file:beta",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:beta",
+          "status": "unchanged",
+          "path": "BYOK Studio/Synthetic Project/Chapters/Beta.md"
+        },
+        {
+          "id": "file:gamma",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:gamma",
+          "status": "unchanged",
+          "path": "BYOK Studio/Synthetic Project/Gamma.md"
+        },
+        {
+          "id": "file:delta",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:delta",
+          "status": "unchanged",
+          "path": "BYOK Studio/Synthetic Project/Delta.md"
+        },
+        {
+          "id": "file:trashed",
+          "status": "trashed"
+        },
+        {
+          "id": "file:picture",
+          "status": "unsupported",
+          "detail": "image"
+        },
+        {
+          "id": "manuscript:m1",
+          "status": "unsupported",
+          "detail": "manuscript"
+        }
+      ]
+    },
+    {
+      "scenario": "restart",
+      "name": "nothing newly imported",
+      "pass": true,
+      "observed": [
+        {
+          "id": "file:alpha",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:alpha",
+          "status": "unchanged",
+          "path": "BYOK Studio/Synthetic Project/Alpha.md"
+        },
+        {
+          "id": "file:beta",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:beta",
+          "status": "unchanged",
+          "path": "BYOK Studio/Synthetic Project/Chapters/Beta.md"
+        },
+        {
+          "id": "file:gamma",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:gamma",
+          "status": "unchanged",
+          "path": "BYOK Studio/Synthetic Project/Gamma.md"
+        },
+        {
+          "id": "file:delta",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:delta",
+          "status": "unchanged",
+          "path": "BYOK Studio/Synthetic Project/Delta.md"
+        },
+        {
+          "id": "file:trashed",
+          "status": "trashed"
+        },
+        {
+          "id": "file:picture",
+          "status": "unsupported",
+          "detail": "image"
+        },
+        {
+          "id": "manuscript:m1",
+          "status": "unsupported",
+          "detail": "manuscript"
+        }
+      ]
+    },
+    {
+      "scenario": "restart",
+      "name": "destination files, including hidden marker, are byte and mtime identical",
+      "pass": true,
+      "observed": {
+        "before": {
+          "BYOK Studio/.byok-sync-35c6a48f6f535ba637f68369fd29f9edecc3f086b8b2ebf61b2c500d87395e11.json": {
+            "sha": "c293643f7b6b0b76a3857346e1de417e87b95bda739f565e6d5a257b75a80f08",
+            "mtimeMs": 1794274647188.3936
+          },
+          "BYOK Studio/Synthetic Project/Alpha.md": {
+            "sha": "bd714e6609a7eda44d53f52d0d821c09093706c0b26629e638ec45de0972c270",
+            "mtimeMs": 1794274647148.3936
+          },
+          "BYOK Studio/Synthetic Project/Chapters/Beta.md": {
+            "sha": "421b6bea4555b9177f958135f67c12413c6aa5d07f61902294c7bd831f4a20cd",
+            "mtimeMs": 1794274647165.3936
+          },
+          "BYOK Studio/Synthetic Project/Delta.md": {
+            "sha": "3ccd2f3422553660c626872f95ed40ecdbee693ebe6e93e97259cd70bd10940b",
+            "mtimeMs": 1794274647189.3936
+          },
+          "BYOK Studio/Synthetic Project/Gamma.md": {
+            "sha": "2c18bfd922fa22b091ef10b1bfaadea12e60941380a67f857bde46b540937087",
+            "mtimeMs": 1794274647177.3936
+          }
+        },
+        "after": {
+          "BYOK Studio/.byok-sync-35c6a48f6f535ba637f68369fd29f9edecc3f086b8b2ebf61b2c500d87395e11.json": {
+            "sha": "c293643f7b6b0b76a3857346e1de417e87b95bda739f565e6d5a257b75a80f08",
+            "mtimeMs": 1794274647188.3936
+          },
+          "BYOK Studio/Synthetic Project/Alpha.md": {
+            "sha": "bd714e6609a7eda44d53f52d0d821c09093706c0b26629e638ec45de0972c270",
+            "mtimeMs": 1794274647148.3936
+          },
+          "BYOK Studio/Synthetic Project/Chapters/Beta.md": {
+            "sha": "421b6bea4555b9177f958135f67c12413c6aa5d07f61902294c7bd831f4a20cd",
+            "mtimeMs": 1794274647165.3936
+          },
+          "BYOK Studio/Synthetic Project/Delta.md": {
+            "sha": "3ccd2f3422553660c626872f95ed40ecdbee693ebe6e93e97259cd70bd10940b",
+            "mtimeMs": 1794274647189.3936
+          },
+          "BYOK Studio/Synthetic Project/Gamma.md": {
+            "sha": "2c18bfd922fa22b091ef10b1bfaadea12e60941380a67f857bde46b540937087",
+            "mtimeMs": 1794274647177.3936
+          }
+        }
+      }
+    },
+    {
+      "scenario": "restart",
+      "name": "plugin state bytes unchanged",
+      "pass": true
+    },
+    {
+      "scenario": "studio-update",
+      "name": "Studio-side update: Studio database bytes, records and outbox unchanged by the plugin",
+      "pass": true,
+      "observed": {
+        "before": {
+          "mainDbSha": "c9e53a04e689c5da5c59069c9686d6c5252aa7e0965c8bcb1b822908ef4a9a31",
+          "files": "df24da26fd92f01dfc7a883ad9f707d0ca731a76d6358513d3c7f96be819c68d",
+          "outbox": "[{\"id\":1,\"user_id\":null,\"kind\":\"update\",\"entity_type\":\"file\",\"entity_id\":\"alpha\",\"method\":\"PUT\",\"url\":\"https://invalid.example/synthetic\",\"body\":\"synthetic outbox sentinel\",\"temp_ids\":null,\"status\":\"pending\",\"attempts\":0,\"last_error\":null,\"created_at\":1,\"updated_at\":1}]"
+        },
+        "after": {
+          "mainDbSha": "c9e53a04e689c5da5c59069c9686d6c5252aa7e0965c8bcb1b822908ef4a9a31",
+          "files": "df24da26fd92f01dfc7a883ad9f707d0ca731a76d6358513d3c7f96be819c68d",
+          "outbox": "[{\"id\":1,\"user_id\":null,\"kind\":\"update\",\"entity_type\":\"file\",\"entity_id\":\"alpha\",\"method\":\"PUT\",\"url\":\"https://invalid.example/synthetic\",\"body\":\"synthetic outbox sentinel\",\"temp_ids\":null,\"status\":\"pending\",\"attempts\":0,\"last_error\":null,\"created_at\":1,\"updated_at\":1}]"
+        }
+      }
+    },
+    {
+      "scenario": "studio-update",
+      "name": "import succeeded",
+      "pass": true,
+      "observed": null
+    },
+    {
+      "scenario": "studio-update",
+      "name": "alpha reported updated",
+      "pass": true,
+      "observed": [
+        {
+          "id": "file:alpha",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:alpha",
+          "status": "updated",
+          "path": "BYOK Studio/Synthetic Project/Alpha.md"
+        },
+        {
+          "id": "file:beta",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:beta",
+          "status": "unchanged",
+          "path": "BYOK Studio/Synthetic Project/Chapters/Beta.md"
+        },
+        {
+          "id": "file:gamma",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:gamma",
+          "status": "unchanged",
+          "path": "BYOK Studio/Synthetic Project/Gamma.md"
+        },
+        {
+          "id": "file:delta",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:delta",
+          "status": "unchanged",
+          "path": "BYOK Studio/Synthetic Project/Delta.md"
+        },
+        {
+          "id": "file:trashed",
+          "status": "trashed"
+        },
+        {
+          "id": "file:picture",
+          "status": "unsupported",
+          "detail": "image"
+        },
+        {
+          "id": "manuscript:m1",
+          "status": "unsupported",
+          "detail": "manuscript"
+        }
+      ]
+    },
+    {
+      "scenario": "studio-update",
+      "name": "alpha note replaced on disk",
+      "pass": true,
+      "observed": "---\nbyok-id: \"alpha\"\nbyok-type: text\nbyok-updated: \"2026-02-02T00:00:00Z\"\n---\n\nAlpha revised in Studio.\n"
+    },
+    {
+      "scenario": "studio-update",
+      "name": "Beta.md untouched",
+      "pass": true
+    },
+    {
+      "scenario": "studio-update",
+      "name": "Gamma.md untouched",
+      "pass": true
+    },
+    {
+      "scenario": "studio-update",
+      "name": "Delta.md untouched",
+      "pass": true
+    },
+    {
+      "scenario": "studio-update",
+      "name": "baseline advanced to the new note",
+      "pass": true,
+      "observed": {
+        "path": "BYOK Studio/Synthetic Project/Alpha.md",
+        "baseline": "---\nbyok-id: \"alpha\"\nbyok-type: text\nbyok-updated: \"2026-02-02T00:00:00Z\"\n---\n\nAlpha revised in Studio.\n",
+        "studioContent": "<p>Alpha revised in Studio.</p>"
+      }
+    },
+    {
+      "scenario": "studio-update",
+      "name": "Obsidian reads the replacement through its Vault API",
+      "pass": true
+    },
+    {
+      "scenario": "saved-vault-edit",
+      "name": "saved vault edit vs Studio change: Studio database bytes, records and outbox unchanged by the plugin",
+      "pass": true,
+      "observed": {
+        "before": {
+          "mainDbSha": "0fac1f4b7b3a5551925aaa8a63158f748710930e5d4c145a098aea5373584854",
+          "files": "19986b2bd08ef4aa07d07ce674f45fd8f9adb17bb063a1e664a0955375a221b6",
+          "outbox": "[{\"id\":1,\"user_id\":null,\"kind\":\"update\",\"entity_type\":\"file\",\"entity_id\":\"alpha\",\"method\":\"PUT\",\"url\":\"https://invalid.example/synthetic\",\"body\":\"synthetic outbox sentinel\",\"temp_ids\":null,\"status\":\"pending\",\"attempts\":0,\"last_error\":null,\"created_at\":1,\"updated_at\":1}]"
+        },
+        "after": {
+          "mainDbSha": "0fac1f4b7b3a5551925aaa8a63158f748710930e5d4c145a098aea5373584854",
+          "files": "19986b2bd08ef4aa07d07ce674f45fd8f9adb17bb063a1e664a0955375a221b6",
+          "outbox": "[{\"id\":1,\"user_id\":null,\"kind\":\"update\",\"entity_type\":\"file\",\"entity_id\":\"alpha\",\"method\":\"PUT\",\"url\":\"https://invalid.example/synthetic\",\"body\":\"synthetic outbox sentinel\",\"temp_ids\":null,\"status\":\"pending\",\"attempts\":0,\"last_error\":null,\"created_at\":1,\"updated_at\":1}]"
+        }
+      }
+    },
+    {
+      "scenario": "saved-vault-edit",
+      "name": "import ran",
+      "pass": true,
+      "observed": null
+    },
+    {
+      "scenario": "saved-vault-edit",
+      "name": "beta reported changed, not updated",
+      "pass": true,
+      "observed": [
+        {
+          "id": "file:alpha",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:alpha",
+          "status": "unchanged",
+          "path": "BYOK Studio/Synthetic Project/Alpha.md"
+        },
+        {
+          "id": "file:beta",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:beta",
+          "status": "changed",
+          "path": "BYOK Studio/Synthetic Project/Chapters/Beta.md",
+          "detail": "Vault edit preserved; conversion is unsupported or lossy and Studio write-back is unavailable"
+        },
+        {
+          "id": "file:gamma",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:gamma",
+          "status": "unchanged",
+          "path": "BYOK Studio/Synthetic Project/Gamma.md"
+        },
+        {
+          "id": "file:delta",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:delta",
+          "status": "unchanged",
+          "path": "BYOK Studio/Synthetic Project/Delta.md"
+        },
+        {
+          "id": "file:trashed",
+          "status": "trashed"
+        },
+        {
+          "id": "file:picture",
+          "status": "unsupported",
+          "detail": "image"
+        },
+        {
+          "id": "manuscript:m1",
+          "status": "unsupported",
+          "detail": "manuscript"
+        }
+      ]
+    },
+    {
+      "scenario": "saved-vault-edit",
+      "name": "edited note bytes preserved",
+      "pass": true,
+      "observed": "---\nbyok-id: \"beta\"\nbyok-type: text\nbyok-updated: \"2026-01-01T00:00:00Z\"\n---\n\nBeta original.\n Added in the Obsidian editor."
+    },
+    {
+      "scenario": "saved-vault-edit",
+      "name": "Studio text was not merged into the note",
+      "pass": true
+    },
+    {
+      "scenario": "saved-vault-edit",
+      "name": "baseline not advanced",
+      "pass": true
+    },
+    {
+      "scenario": "unsaved-editor",
+      "name": "typed text was genuinely unsaved when import started",
+      "pass": true,
+      "observed": {
+        "buffer": "---\nbyok-id: \"delta\"\nbyok-type: text\nbyok-updated: \"2026-01-01T00:00:00Z\"\n---\n\nDelta original.\n UNSAVED-EDITOR-SENTINEL",
+        "disk": "---\nbyok-id: \"delta\"\nbyok-type: text\nbyok-updated: \"2026-01-01T00:00:00Z\"\n---\n\nDelta original.\n"
+      }
+    },
+    {
+      "scenario": "unsaved-editor",
+      "name": "note on disk matched its pre-edit bytes when import started",
+      "pass": true
+    },
+    {
+      "scenario": "unsaved-editor",
+      "name": "import with unsaved editor: Studio database bytes, records and outbox unchanged by the plugin",
+      "pass": true,
+      "observed": {
+        "before": {
+          "mainDbSha": "e611594b644a8c3158ae0b6327b681bfffa6cb9653682f81f4e9edb8a5e50ee1",
+          "files": "f63971cadb9413b25bfb82a59cc5c98c45546a9ab168530666772b4507668122",
+          "outbox": "[{\"id\":1,\"user_id\":null,\"kind\":\"update\",\"entity_type\":\"file\",\"entity_id\":\"alpha\",\"method\":\"PUT\",\"url\":\"https://invalid.example/synthetic\",\"body\":\"synthetic outbox sentinel\",\"temp_ids\":null,\"status\":\"pending\",\"attempts\":0,\"last_error\":null,\"created_at\":1,\"updated_at\":1}]"
+        },
+        "after": {
+          "mainDbSha": "e611594b644a8c3158ae0b6327b681bfffa6cb9653682f81f4e9edb8a5e50ee1",
+          "files": "f63971cadb9413b25bfb82a59cc5c98c45546a9ab168530666772b4507668122",
+          "outbox": "[{\"id\":1,\"user_id\":null,\"kind\":\"update\",\"entity_type\":\"file\",\"entity_id\":\"alpha\",\"method\":\"PUT\",\"url\":\"https://invalid.example/synthetic\",\"body\":\"synthetic outbox sentinel\",\"temp_ids\":null,\"status\":\"pending\",\"attempts\":0,\"last_error\":null,\"created_at\":1,\"updated_at\":1}]"
+        }
+      }
+    },
+    {
+      "scenario": "unsaved-editor",
+      "name": "import refused",
+      "pass": true,
+      "observed": "Close all Markdown editors before importing"
+    },
+    {
+      "scenario": "unsaved-editor",
+      "name": "user sees the refusal notice",
+      "pass": true,
+      "observed": [
+        "BYOK import failed: Close all Markdown editors before importing"
+      ]
+    },
+    {
+      "scenario": "unsaved-editor",
+      "name": "editor buffer retained the unsaved text",
+      "pass": true
+    },
+    {
+      "scenario": "unsaved-editor",
+      "name": "Studio text did not reach the editor",
+      "pass": true
+    },
+    {
+      "scenario": "unsaved-editor",
+      "name": "other destination files untouched by the refused import",
+      "pass": true
+    },
+    {
+      "scenario": "unsaved-editor",
+      "name": "plugin state bytes unchanged",
+      "pass": true
+    },
+    {
+      "scenario": "unsaved-editor",
+      "name": "user text reached disk through Obsidian's own save",
+      "pass": true,
+      "observed": "---\nbyok-id: \"delta\"\nbyok-type: text\nbyok-updated: \"2026-01-01T00:00:00Z\"\n---\n\nDelta original.\n UNSAVED-EDITOR-SENTINEL"
+    },
+    {
+      "scenario": "unsaved-editor",
+      "name": "import after closing the editor: Studio database bytes, records and outbox unchanged by the plugin",
+      "pass": true,
+      "observed": {
+        "before": {
+          "mainDbSha": "e611594b644a8c3158ae0b6327b681bfffa6cb9653682f81f4e9edb8a5e50ee1",
+          "files": "f63971cadb9413b25bfb82a59cc5c98c45546a9ab168530666772b4507668122",
+          "outbox": "[{\"id\":1,\"user_id\":null,\"kind\":\"update\",\"entity_type\":\"file\",\"entity_id\":\"alpha\",\"method\":\"PUT\",\"url\":\"https://invalid.example/synthetic\",\"body\":\"synthetic outbox sentinel\",\"temp_ids\":null,\"status\":\"pending\",\"attempts\":0,\"last_error\":null,\"created_at\":1,\"updated_at\":1}]"
+        },
+        "after": {
+          "mainDbSha": "e611594b644a8c3158ae0b6327b681bfffa6cb9653682f81f4e9edb8a5e50ee1",
+          "files": "f63971cadb9413b25bfb82a59cc5c98c45546a9ab168530666772b4507668122",
+          "outbox": "[{\"id\":1,\"user_id\":null,\"kind\":\"update\",\"entity_type\":\"file\",\"entity_id\":\"alpha\",\"method\":\"PUT\",\"url\":\"https://invalid.example/synthetic\",\"body\":\"synthetic outbox sentinel\",\"temp_ids\":null,\"status\":\"pending\",\"attempts\":0,\"last_error\":null,\"created_at\":1,\"updated_at\":1}]"
+        }
+      }
+    },
+    {
+      "scenario": "unsaved-editor",
+      "name": "later import ran",
+      "pass": true,
+      "observed": null
+    },
+    {
+      "scenario": "unsaved-editor",
+      "name": "edited note is reported, not overwritten",
+      "pass": true,
+      "observed": [
+        {
+          "id": "file:alpha",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:alpha",
+          "status": "unchanged",
+          "path": "BYOK Studio/Synthetic Project/Alpha.md"
+        },
+        {
+          "id": "file:beta",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:beta",
+          "status": "changed",
+          "path": "BYOK Studio/Synthetic Project/Chapters/Beta.md",
+          "detail": "Vault edit preserved; conversion is unsupported or lossy and Studio write-back is unavailable"
+        },
+        {
+          "id": "file:gamma",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:gamma",
+          "status": "unchanged",
+          "path": "BYOK Studio/Synthetic Project/Gamma.md"
+        },
+        {
+          "id": "file:delta",
+          "status": "lossy",
+          "detail": "HTML-to-Markdown conversion is not verified lossless"
+        },
+        {
+          "id": "file:delta",
+          "status": "changed",
+          "path": "BYOK Studio/Synthetic Project/Delta.md",
+          "detail": "Vault edit preserved; conversion is unsupported or lossy and Studio write-back is unavailable"
+        },
+        {
+          "id": "file:trashed",
+          "status": "trashed"
+        },
+        {
+          "id": "file:picture",
+          "status": "unsupported",
+          "detail": "image"
+        },
+        {
+          "id": "manuscript:m1",
+          "status": "unsupported",
+          "detail": "manuscript"
+        }
+      ]
+    },
+    {
+      "scenario": "editor-opened-mid-import",
+      "name": "import interrupted by opening an editor: Studio database bytes, records and outbox unchanged by the plugin",
+      "pass": true,
+      "observed": {
+        "before": {
+          "mainDbSha": "26da7bb8ee329ca864a492f88fa724a1e357386dfa7df6b005b0df99dae5e5b3",
+          "files": "b042490cd0f2b9454f88f6741a435eba570c5a4e39be591381488f9b6f6e5619",
+          "outbox": "[{\"id\":1,\"user_id\":null,\"kind\":\"update\",\"entity_type\":\"file\",\"entity_id\":\"alpha\",\"method\":\"PUT\",\"url\":\"https://invalid.example/synthetic\",\"body\":\"synthetic outbox sentinel\",\"temp_ids\":null,\"status\":\"pending\",\"attempts\":0,\"last_error\":null,\"created_at\":1,\"updated_at\":1}]"
+        },
+        "after": {
+          "mainDbSha": "26da7bb8ee329ca864a492f88fa724a1e357386dfa7df6b005b0df99dae5e5b3",
+          "files": "b042490cd0f2b9454f88f6741a435eba570c5a4e39be591381488f9b6f6e5619",
+          "outbox": "[{\"id\":1,\"user_id\":null,\"kind\":\"update\",\"entity_type\":\"file\",\"entity_id\":\"alpha\",\"method\":\"PUT\",\"url\":\"https://invalid.example/synthetic\",\"body\":\"synthetic outbox sentinel\",\"temp_ids\":null,\"status\":\"pending\",\"attempts\":0,\"last_error\":null,\"created_at\":1,\"updated_at\":1}]"
+        }
+      }
+    },
+    {
+      "scenario": "editor-opened-mid-import",
+      "name": "the guard fired part-way through (scenario exercised)",
+      "pass": true,
+      "observed": {
+        "created": 7,
+        "statuses": {
+          "lossy": 304,
+          "unchanged": 2,
+          "changed": 295,
+          "trashed": 1,
+          "unsupported": 2,
+          "imported": 7
+        },
+        "retry": {
+          "lossy": 304,
+          "unchanged": 9,
+          "changed": 2,
+          "trashed": 1,
+          "unsupported": 2,
+          "imported": 293
+        }
+      }
+    },
+    {
+      "scenario": "editor-opened-mid-import",
+      "name": "open note was not written",
+      "pass": true
+    },
+    {
+      "scenario": "editor-opened-mid-import",
+      "name": "retry after closing the editor: Studio database bytes, records and outbox unchanged by the plugin",
+      "pass": true,
+      "observed": {
+        "before": {
+          "mainDbSha": "26da7bb8ee329ca864a492f88fa724a1e357386dfa7df6b005b0df99dae5e5b3",
+          "files": "b042490cd0f2b9454f88f6741a435eba570c5a4e39be591381488f9b6f6e5619",
+          "outbox": "[{\"id\":1,\"user_id\":null,\"kind\":\"update\",\"entity_type\":\"file\",\"entity_id\":\"alpha\",\"method\":\"PUT\",\"url\":\"https://invalid.example/synthetic\",\"body\":\"synthetic outbox sentinel\",\"temp_ids\":null,\"status\":\"pending\",\"attempts\":0,\"last_error\":null,\"created_at\":1,\"updated_at\":1}]"
+        },
+        "after": {
+          "mainDbSha": "26da7bb8ee329ca864a492f88fa724a1e357386dfa7df6b005b0df99dae5e5b3",
+          "files": "b042490cd0f2b9454f88f6741a435eba570c5a4e39be591381488f9b6f6e5619",
+          "outbox": "[{\"id\":1,\"user_id\":null,\"kind\":\"update\",\"entity_type\":\"file\",\"entity_id\":\"alpha\",\"method\":\"PUT\",\"url\":\"https://invalid.example/synthetic\",\"body\":\"synthetic outbox sentinel\",\"temp_ids\":null,\"status\":\"pending\",\"attempts\":0,\"last_error\":null,\"created_at\":1,\"updated_at\":1}]"
+        }
+      }
+    },
+    {
+      "scenario": "editor-opened-mid-import",
+      "name": "retry ran",
+      "pass": true,
+      "observed": null
+    },
+    {
+      "scenario": "editor-opened-mid-import",
+      "name": "all remaining records completed on retry",
+      "pass": true,
+      "observed": {
+        "finished": 293,
+        "count": 300,
+        "created": 7
+      }
+    },
+    {
+      "scenario": "editor-opened-mid-import",
+      "name": "every bulk record exists exactly once",
+      "pass": true,
+      "observed": 300
+    },
+    {
+      "scenario": "editor-opened-mid-import",
+      "name": "no pending reservation remains",
+      "pass": true
+    },
+    {
+      "scenario": "editor-opened-mid-import",
+      "name": "marker reserves every tracked record once",
+      "pass": true,
+      "observed": {
+        "marker": 304,
+        "state": 304
+      }
+    },
+    {
+      "scenario": "editor-opened-mid-import",
+      "name": "completed note bytes are correct",
+      "pass": true,
+      "observed": "---\nbyok-id: \"bulk250\"\nbyok-type: text\nbyok-updated: \"2026-01-01T00:00:00Z\"\n---\n\nBulk body 250.\n"
+    },
+    {
+      "scenario": "marker-and-state-guards",
+      "name": "import with marker removed: Studio database bytes, records and outbox unchanged by the plugin",
+      "pass": true,
+      "observed": {
+        "before": {
+          "mainDbSha": "26da7bb8ee329ca864a492f88fa724a1e357386dfa7df6b005b0df99dae5e5b3",
+          "files": "b042490cd0f2b9454f88f6741a435eba570c5a4e39be591381488f9b6f6e5619",
+          "outbox": "[{\"id\":1,\"user_id\":null,\"kind\":\"update\",\"entity_type\":\"file\",\"entity_id\":\"alpha\",\"method\":\"PUT\",\"url\":\"https://invalid.example/synthetic\",\"body\":\"synthetic outbox sentinel\",\"temp_ids\":null,\"status\":\"pending\",\"attempts\":0,\"last_error\":null,\"created_at\":1,\"updated_at\":1}]"
+        },
+        "after": {
+          "mainDbSha": "26da7bb8ee329ca864a492f88fa724a1e357386dfa7df6b005b0df99dae5e5b3",
+          "files": "b042490cd0f2b9454f88f6741a435eba570c5a4e39be591381488f9b6f6e5619",
+          "outbox": "[{\"id\":1,\"user_id\":null,\"kind\":\"update\",\"entity_type\":\"file\",\"entity_id\":\"alpha\",\"method\":\"PUT\",\"url\":\"https://invalid.example/synthetic\",\"body\":\"synthetic outbox sentinel\",\"temp_ids\":null,\"status\":\"pending\",\"attempts\":0,\"last_error\":null,\"created_at\":1,\"updated_at\":1}]"
+        }
+      }
+    },
+    {
+      "scenario": "marker-and-state-guards",
+      "name": "missing marker refused",
+      "pass": true,
+      "observed": "Import marker missing; restore it from backup"
+    },
+    {
+      "scenario": "marker-and-state-guards",
+      "name": "no note changed",
+      "pass": true
+    },
+    {
+      "scenario": "marker-and-state-guards",
+      "name": "no replacement marker was fabricated",
+      "pass": true
+    },
+    {
+      "scenario": "marker-and-state-guards",
+      "name": "import with state changed on disk: Studio database bytes, records and outbox unchanged by the plugin",
+      "pass": true,
+      "observed": {
+        "before": {
+          "mainDbSha": "26da7bb8ee329ca864a492f88fa724a1e357386dfa7df6b005b0df99dae5e5b3",
+          "files": "b042490cd0f2b9454f88f6741a435eba570c5a4e39be591381488f9b6f6e5619",
+          "outbox": "[{\"id\":1,\"user_id\":null,\"kind\":\"update\",\"entity_type\":\"file\",\"entity_id\":\"alpha\",\"method\":\"PUT\",\"url\":\"https://invalid.example/synthetic\",\"body\":\"synthetic outbox sentinel\",\"temp_ids\":null,\"status\":\"pending\",\"attempts\":0,\"last_error\":null,\"created_at\":1,\"updated_at\":1}]"
+        },
+        "after": {
+          "mainDbSha": "26da7bb8ee329ca864a492f88fa724a1e357386dfa7df6b005b0df99dae5e5b3",
+          "files": "b042490cd0f2b9454f88f6741a435eba570c5a4e39be591381488f9b6f6e5619",
+          "outbox": "[{\"id\":1,\"user_id\":null,\"kind\":\"update\",\"entity_type\":\"file\",\"entity_id\":\"alpha\",\"method\":\"PUT\",\"url\":\"https://invalid.example/synthetic\",\"body\":\"synthetic outbox sentinel\",\"temp_ids\":null,\"status\":\"pending\",\"attempts\":0,\"last_error\":null,\"created_at\":1,\"updated_at\":1}]"
+        }
+      }
+    },
+    {
+      "scenario": "marker-and-state-guards",
+      "name": "external state change refused",
+      "pass": true,
+      "observed": "Plugin state changed on disk; reload or restore from backup"
+    },
+    {
+      "scenario": "marker-and-state-guards",
+      "name": "refused import left the external state bytes alone",
+      "pass": true
+    },
+    {
+      "scenario": "marker-and-state-guards",
+      "name": "import after restoring marker and state: Studio database bytes, records and outbox unchanged by the plugin",
+      "pass": true,
+      "observed": {
+        "before": {
+          "mainDbSha": "26da7bb8ee329ca864a492f88fa724a1e357386dfa7df6b005b0df99dae5e5b3",
+          "files": "b042490cd0f2b9454f88f6741a435eba570c5a4e39be591381488f9b6f6e5619",
+          "outbox": "[{\"id\":1,\"user_id\":null,\"kind\":\"update\",\"entity_type\":\"file\",\"entity_id\":\"alpha\",\"method\":\"PUT\",\"url\":\"https://invalid.example/synthetic\",\"body\":\"synthetic outbox sentinel\",\"temp_ids\":null,\"status\":\"pending\",\"attempts\":0,\"last_error\":null,\"created_at\":1,\"updated_at\":1}]"
+        },
+        "after": {
+          "mainDbSha": "26da7bb8ee329ca864a492f88fa724a1e357386dfa7df6b005b0df99dae5e5b3",
+          "files": "b042490cd0f2b9454f88f6741a435eba570c5a4e39be591381488f9b6f6e5619",
+          "outbox": "[{\"id\":1,\"user_id\":null,\"kind\":\"update\",\"entity_type\":\"file\",\"entity_id\":\"alpha\",\"method\":\"PUT\",\"url\":\"https://invalid.example/synthetic\",\"body\":\"synthetic outbox sentinel\",\"temp_ids\":null,\"status\":\"pending\",\"attempts\":0,\"last_error\":null,\"created_at\":1,\"updated_at\":1}]"
+        }
+      }
+    },
+    {
+      "scenario": "marker-and-state-guards",
+      "name": "restored marker and state work again",
+      "pass": true,
+      "observed": null
+    },
+    {
+      "scenario": "unsaved-canvas-embed",
+      "name": "typed text was unsaved when import started",
+      "pass": true,
+      "observed": {
+        "buffer": "---\nbyok-id: \"gamma\"\nbyok-type: text\nbyok-updated: \"2026-01-01T00:00:00Z\"\n---\n\nGamma stable. UNSAVED-CANVAS-SENTINEL\n",
+        "disk": "---\nbyok-id: \"gamma\"\nbyok-type: text\nbyok-updated: \"2026-01-01T00:00:00Z\"\n---\n\nGamma stable.\n",
+        "markdownLeaves": 0
+      }
+    },
+    {
+      "scenario": "unsaved-canvas-embed",
+      "name": "no markdown-type leaf exists, so the plugin's guard has nothing to count",
+      "pass": true,
+      "observed": 0
+    },
+    {
+      "scenario": "unsaved-canvas-embed",
+      "name": "import with unsaved Canvas-embedded editor: Studio database bytes, records and outbox unchanged by the plugin",
+      "pass": true,
+      "observed": {
+        "before": {
+          "mainDbSha": "fa6fd682c30871f372b62dd0b6a05d913cc375f87fea0732fcbe0754e302cdb9",
+          "files": "81bb52bab067111034a1bd819595331a06d0c9bf9b29b2d334d81a7a340b35b0",
+          "outbox": "[{\"id\":1,\"user_id\":null,\"kind\":\"update\",\"entity_type\":\"file\",\"entity_id\":\"alpha\",\"method\":\"PUT\",\"url\":\"https://invalid.example/synthetic\",\"body\":\"synthetic outbox sentinel\",\"temp_ids\":null,\"status\":\"pending\",\"attempts\":0,\"last_error\":null,\"created_at\":1,\"updated_at\":1}]"
+        },
+        "after": {
+          "mainDbSha": "fa6fd682c30871f372b62dd0b6a05d913cc375f87fea0732fcbe0754e302cdb9",
+          "files": "81bb52bab067111034a1bd819595331a06d0c9bf9b29b2d334d81a7a340b35b0",
+          "outbox": "[{\"id\":1,\"user_id\":null,\"kind\":\"update\",\"entity_type\":\"file\",\"entity_id\":\"alpha\",\"method\":\"PUT\",\"url\":\"https://invalid.example/synthetic\",\"body\":\"synthetic outbox sentinel\",\"temp_ids\":null,\"status\":\"pending\",\"attempts\":0,\"last_error\":null,\"created_at\":1,\"updated_at\":1}]"
+        }
+      }
+    },
+    {
+      "scenario": "unsaved-canvas-embed",
+      "name": "unsaved Canvas edit survives the import",
+      "pass": true,
+      "observed": {
+        "failed": false,
+        "error": null,
+        "gamma": [
+          {
+            "id": "file:gamma",
+            "status": "lossy",
+            "detail": "HTML-to-Markdown conversion is not verified lossless"
+          },
+          {
+            "id": "file:gamma",
+            "status": "updated",
+            "path": "BYOK Studio/Synthetic Project/Gamma.md"
+          }
+        ],
+        "diskRightAfterImport": "---\nbyok-id: \"gamma\"\nbyok-type: text\nbyok-updated: \"2026-05-05T00:00:00Z\"\n---\n\nGamma revised in Studio.\n",
+        "finalDisk": "---\nbyok-id: \"gamma\"\nbyok-type: text\nbyok-updated: \"2026-01-01T00:00:00Z\"\n---\n\nGamma stable. UNSAVED-CANVAS-SENTINEL\n",
+        "finalBuffer": "---\nbyok-id: \"gamma\"\nbyok-type: text\nbyok-updated: \"2026-01-01T00:00:00Z\"\n---\n\nGamma stable. UNSAVED-CANVAS-SENTINEL\n",
+        "baselineMatchesDisk": false,
+        "followUp": {
+          "failed": false,
+          "error": null,
+          "gamma": [
+            {
+              "id": "file:gamma",
+              "status": "lossy",
+              "detail": "HTML-to-Markdown conversion is not verified lossless"
+            },
+            {
+              "id": "file:gamma",
+              "status": "changed",
+              "path": "BYOK Studio/Synthetic Project/Gamma.md",
+              "detail": "Vault edit preserved; conversion is unsupported or lossy and Studio write-back is unavailable"
+            }
+          ],
+          "disk": "---\nbyok-id: \"gamma\"\nbyok-type: text\nbyok-updated: \"2026-01-01T00:00:00Z\"\n---\n\nGamma stable. UNSAVED-CANVAS-SENTINEL\n"
+        }
+      }
+    },
+    {
+      "scenario": "unsaved-canvas-embed",
+      "name": "import after the Canvas editor closed: Studio database bytes, records and outbox unchanged by the plugin",
+      "pass": true,
+      "observed": {
+        "before": {
+          "mainDbSha": "fa6fd682c30871f372b62dd0b6a05d913cc375f87fea0732fcbe0754e302cdb9",
+          "files": "81bb52bab067111034a1bd819595331a06d0c9bf9b29b2d334d81a7a340b35b0",
+          "outbox": "[{\"id\":1,\"user_id\":null,\"kind\":\"update\",\"entity_type\":\"file\",\"entity_id\":\"alpha\",\"method\":\"PUT\",\"url\":\"https://invalid.example/synthetic\",\"body\":\"synthetic outbox sentinel\",\"temp_ids\":null,\"status\":\"pending\",\"attempts\":0,\"last_error\":null,\"created_at\":1,\"updated_at\":1}]"
+        },
+        "after": {
+          "mainDbSha": "fa6fd682c30871f372b62dd0b6a05d913cc375f87fea0732fcbe0754e302cdb9",
+          "files": "81bb52bab067111034a1bd819595331a06d0c9bf9b29b2d334d81a7a340b35b0",
+          "outbox": "[{\"id\":1,\"user_id\":null,\"kind\":\"update\",\"entity_type\":\"file\",\"entity_id\":\"alpha\",\"method\":\"PUT\",\"url\":\"https://invalid.example/synthetic\",\"body\":\"synthetic outbox sentinel\",\"temp_ids\":null,\"status\":\"pending\",\"attempts\":0,\"last_error\":null,\"created_at\":1,\"updated_at\":1}]"
+        }
+      }
+    }
+  ],
+  "summary": {
+    "total": 95,
+    "failed": 0,
+    "findings": 1
+  }
+}

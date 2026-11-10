@@ -1,9 +1,9 @@
 {
   "harness": "experiments/obsidian_desktop",
   "plugin": {
-    "sha256": "9a66953460d06d164c4276cd6a031d3b1b887bad4d745f64a780a7548b1222ec",
-    "srcTree": "fa41afa4de201865edb762afaa0bfcbc2e618422",
-    "baseCommit": "96be89c558ac649b71af5e082edc66cbbc7553c1"
+    "sha256": "bd1fa6d646781072e6d7136065d93ade30e6dd7f024fdcfd6075579dec7c1239",
+    "srcTree": "832f3da722b631cba31c536da74e9c9721dd5abf",
+    "baseCommit": "74e49940eacd8cefba2ed89a427abce5d75446e4"
   },
   "observations": {
     "vaultTrustPromptShownAfterManualCopy": true,
@@ -13,40 +13,28 @@
       "actual": "---\nbyok-id: \"beta\"\nbyok-type: text\nbyok-updated: \"2026-01-01T00:00:00Z\"\n---\n\nBeta original.\n Added in the Obsidian editor."
     },
     "midImport": {
-      "created": 7,
+      "created": 5,
       "statuses": {
         "lossy": 304,
         "unchanged": 2,
-        "changed": 295,
+        "changed": 297,
         "trashed": 1,
         "unsupported": 2,
-        "imported": 7
+        "imported": 5
       },
       "retry": {
         "lossy": 304,
-        "unchanged": 9,
+        "unchanged": 7,
         "changed": 2,
         "trashed": 1,
         "unsupported": 2,
-        "imported": 293
+        "imported": 295
       }
     },
     "unsavedCanvasEmbed": {
-      "failed": false,
-      "error": null,
-      "gamma": [
-        {
-          "id": "file:gamma",
-          "status": "lossy",
-          "detail": "HTML-to-Markdown conversion is not verified lossless"
-        },
-        {
-          "id": "file:gamma",
-          "status": "updated",
-          "path": "BYOK Studio/Synthetic Project/Gamma.md"
-        }
-      ],
-      "diskRightAfterImport": "---\nbyok-id: \"gamma\"\nbyok-type: text\nbyok-updated: \"2026-05-05T00:00:00Z\"\n---\n\nGamma revised in Studio.\n",
+      "failed": true,
+      "error": "Close all Markdown editors, Canvas views and hover popovers before importing",
+      "diskRightAfterImport": "---\nbyok-id: \"gamma\"\nbyok-type: text\nbyok-updated: \"2026-01-01T00:00:00Z\"\n---\n\nGamma stable.\n",
       "finalDisk": "---\nbyok-id: \"gamma\"\nbyok-type: text\nbyok-updated: \"2026-01-01T00:00:00Z\"\n---\n\nGamma stable. UNSAVED-CANVAS-SENTINEL\n",
       "finalBuffer": "---\nbyok-id: \"gamma\"\nbyok-type: text\nbyok-updated: \"2026-01-01T00:00:00Z\"\n---\n\nGamma stable. UNSAVED-CANVAS-SENTINEL\n",
       "baselineMatchesDisk": false,
@@ -76,34 +64,7 @@
     ],
     "rendererHttpHostsRequestedByApp": []
   },
-  "findings": [
-    {
-      "scenario": "unsaved-canvas-embed",
-      "summary": "import with a note open in a Canvas editor is not refused: it reports the note updated, then the open editor saves over the Studio revision",
-      "observed": {
-        "diskRightAfterImport": "---\nbyok-id: \"gamma\"\nbyok-type: text\nbyok-updated: \"2026-05-05T00:00:00Z\"\n---\n\nGamma revised in Studio.\n",
-        "finalDisk": "---\nbyok-id: \"gamma\"\nbyok-type: text\nbyok-updated: \"2026-01-01T00:00:00Z\"\n---\n\nGamma stable. UNSAVED-CANVAS-SENTINEL\n",
-        "followUp": {
-          "failed": false,
-          "error": null,
-          "gamma": [
-            {
-              "id": "file:gamma",
-              "status": "lossy",
-              "detail": "HTML-to-Markdown conversion is not verified lossless"
-            },
-            {
-              "id": "file:gamma",
-              "status": "changed",
-              "path": "BYOK Studio/Synthetic Project/Gamma.md",
-              "detail": "Vault edit preserved; conversion is unsupported or lossy and Studio write-back is unavailable"
-            }
-          ],
-          "disk": "---\nbyok-id: \"gamma\"\nbyok-type: text\nbyok-updated: \"2026-01-01T00:00:00Z\"\n---\n\nGamma stable. UNSAVED-CANVAS-SENTINEL\n"
-        }
-      }
-    }
-  ],
+  "findings": [],
   "environment": {
     "obsidian": "1.15.0",
     "electron": "43.8.7",
@@ -727,45 +688,45 @@
         "before": {
           "BYOK Studio/.byok-sync-35c6a48f6f535ba637f68369fd29f9edecc3f086b8b2ebf61b2c500d87395e11.json": {
             "sha": "c293643f7b6b0b76a3857346e1de417e87b95bda739f565e6d5a257b75a80f08",
-            "mtimeMs": 1794274647188.3936
+            "mtimeMs": 1794275529459.844
           },
           "BYOK Studio/Synthetic Project/Alpha.md": {
             "sha": "bd714e6609a7eda44d53f52d0d821c09093706c0b26629e638ec45de0972c270",
-            "mtimeMs": 1794274647148.3936
+            "mtimeMs": 1794275529371.8438
           },
           "BYOK Studio/Synthetic Project/Chapters/Beta.md": {
             "sha": "421b6bea4555b9177f958135f67c12413c6aa5d07f61902294c7bd831f4a20cd",
-            "mtimeMs": 1794274647165.3936
+            "mtimeMs": 1794275529403.8438
           },
           "BYOK Studio/Synthetic Project/Delta.md": {
             "sha": "3ccd2f3422553660c626872f95ed40ecdbee693ebe6e93e97259cd70bd10940b",
-            "mtimeMs": 1794274647189.3936
+            "mtimeMs": 1794275529460.844
           },
           "BYOK Studio/Synthetic Project/Gamma.md": {
             "sha": "2c18bfd922fa22b091ef10b1bfaadea12e60941380a67f857bde46b540937087",
-            "mtimeMs": 1794274647177.3936
+            "mtimeMs": 1794275529434.8438
           }
         },
         "after": {
           "BYOK Studio/.byok-sync-35c6a48f6f535ba637f68369fd29f9edecc3f086b8b2ebf61b2c500d87395e11.json": {
             "sha": "c293643f7b6b0b76a3857346e1de417e87b95bda739f565e6d5a257b75a80f08",
-            "mtimeMs": 1794274647188.3936
+            "mtimeMs": 1794275529459.844
           },
           "BYOK Studio/Synthetic Project/Alpha.md": {
             "sha": "bd714e6609a7eda44d53f52d0d821c09093706c0b26629e638ec45de0972c270",
-            "mtimeMs": 1794274647148.3936
+            "mtimeMs": 1794275529371.8438
           },
           "BYOK Studio/Synthetic Project/Chapters/Beta.md": {
             "sha": "421b6bea4555b9177f958135f67c12413c6aa5d07f61902294c7bd831f4a20cd",
-            "mtimeMs": 1794274647165.3936
+            "mtimeMs": 1794275529403.8438
           },
           "BYOK Studio/Synthetic Project/Delta.md": {
             "sha": "3ccd2f3422553660c626872f95ed40ecdbee693ebe6e93e97259cd70bd10940b",
-            "mtimeMs": 1794274647189.3936
+            "mtimeMs": 1794275529460.844
           },
           "BYOK Studio/Synthetic Project/Gamma.md": {
             "sha": "2c18bfd922fa22b091ef10b1bfaadea12e60941380a67f857bde46b540937087",
-            "mtimeMs": 1794274647177.3936
+            "mtimeMs": 1794275529434.8438
           }
         }
       }
@@ -933,45 +894,45 @@
         "before": {
           "BYOK Studio/.byok-sync-35c6a48f6f535ba637f68369fd29f9edecc3f086b8b2ebf61b2c500d87395e11.json": {
             "sha": "c293643f7b6b0b76a3857346e1de417e87b95bda739f565e6d5a257b75a80f08",
-            "mtimeMs": 1794274647188.3936
+            "mtimeMs": 1794275529459.844
           },
           "BYOK Studio/Synthetic Project/Alpha.md": {
             "sha": "bd714e6609a7eda44d53f52d0d821c09093706c0b26629e638ec45de0972c270",
-            "mtimeMs": 1794274647148.3936
+            "mtimeMs": 1794275529371.8438
           },
           "BYOK Studio/Synthetic Project/Chapters/Beta.md": {
             "sha": "421b6bea4555b9177f958135f67c12413c6aa5d07f61902294c7bd831f4a20cd",
-            "mtimeMs": 1794274647165.3936
+            "mtimeMs": 1794275529403.8438
           },
           "BYOK Studio/Synthetic Project/Delta.md": {
             "sha": "3ccd2f3422553660c626872f95ed40ecdbee693ebe6e93e97259cd70bd10940b",
-            "mtimeMs": 1794274647189.3936
+            "mtimeMs": 1794275529460.844
           },
           "BYOK Studio/Synthetic Project/Gamma.md": {
             "sha": "2c18bfd922fa22b091ef10b1bfaadea12e60941380a67f857bde46b540937087",
-            "mtimeMs": 1794274647177.3936
+            "mtimeMs": 1794275529434.8438
           }
         },
         "after": {
           "BYOK Studio/.byok-sync-35c6a48f6f535ba637f68369fd29f9edecc3f086b8b2ebf61b2c500d87395e11.json": {
             "sha": "c293643f7b6b0b76a3857346e1de417e87b95bda739f565e6d5a257b75a80f08",
-            "mtimeMs": 1794274647188.3936
+            "mtimeMs": 1794275529459.844
           },
           "BYOK Studio/Synthetic Project/Alpha.md": {
             "sha": "bd714e6609a7eda44d53f52d0d821c09093706c0b26629e638ec45de0972c270",
-            "mtimeMs": 1794274647148.3936
+            "mtimeMs": 1794275529371.8438
           },
           "BYOK Studio/Synthetic Project/Chapters/Beta.md": {
             "sha": "421b6bea4555b9177f958135f67c12413c6aa5d07f61902294c7bd831f4a20cd",
-            "mtimeMs": 1794274647165.3936
+            "mtimeMs": 1794275529403.8438
           },
           "BYOK Studio/Synthetic Project/Delta.md": {
             "sha": "3ccd2f3422553660c626872f95ed40ecdbee693ebe6e93e97259cd70bd10940b",
-            "mtimeMs": 1794274647189.3936
+            "mtimeMs": 1794275529460.844
           },
           "BYOK Studio/Synthetic Project/Gamma.md": {
             "sha": "2c18bfd922fa22b091ef10b1bfaadea12e60941380a67f857bde46b540937087",
-            "mtimeMs": 1794274647177.3936
+            "mtimeMs": 1794275529434.8438
           }
         }
       }
@@ -1237,14 +1198,14 @@
       "scenario": "unsaved-editor",
       "name": "import refused",
       "pass": true,
-      "observed": "Close all Markdown editors before importing"
+      "observed": "Close all Markdown editors, Canvas views and hover popovers before importing"
     },
     {
       "scenario": "unsaved-editor",
       "name": "user sees the refusal notice",
       "pass": true,
       "observed": [
-        "BYOK import failed: Close all Markdown editors before importing"
+        "BYOK import failed: Close all Markdown editors, Canvas views and hover popovers before importing"
       ]
     },
     {
@@ -1381,22 +1342,22 @@
       "name": "the guard fired part-way through (scenario exercised)",
       "pass": true,
       "observed": {
-        "created": 7,
+        "created": 5,
         "statuses": {
           "lossy": 304,
           "unchanged": 2,
-          "changed": 295,
+          "changed": 297,
           "trashed": 1,
           "unsupported": 2,
-          "imported": 7
+          "imported": 5
         },
         "retry": {
           "lossy": 304,
-          "unchanged": 9,
+          "unchanged": 7,
           "changed": 2,
           "trashed": 1,
           "unsupported": 2,
-          "imported": 293
+          "imported": 295
         }
       }
     },
@@ -1433,9 +1394,9 @@
       "name": "all remaining records completed on retry",
       "pass": true,
       "observed": {
-        "finished": 293,
+        "finished": 295,
         "count": 300,
-        "created": 7
+        "created": 5
       }
     },
     {
@@ -1583,24 +1544,43 @@
     },
     {
       "scenario": "unsaved-canvas-embed",
+      "name": "Canvas editor blocks import before the Studio revision is written",
+      "pass": true,
+      "observed": {
+        "failed": true,
+        "error": "Close all Markdown editors, Canvas views and hover popovers before importing",
+        "diskRightAfterImport": "---\nbyok-id: \"gamma\"\nbyok-type: text\nbyok-updated: \"2026-01-01T00:00:00Z\"\n---\n\nGamma stable.\n",
+        "finalDisk": "---\nbyok-id: \"gamma\"\nbyok-type: text\nbyok-updated: \"2026-01-01T00:00:00Z\"\n---\n\nGamma stable. UNSAVED-CANVAS-SENTINEL\n",
+        "finalBuffer": "---\nbyok-id: \"gamma\"\nbyok-type: text\nbyok-updated: \"2026-01-01T00:00:00Z\"\n---\n\nGamma stable. UNSAVED-CANVAS-SENTINEL\n",
+        "baselineMatchesDisk": false,
+        "followUp": {
+          "failed": false,
+          "error": null,
+          "gamma": [
+            {
+              "id": "file:gamma",
+              "status": "lossy",
+              "detail": "HTML-to-Markdown conversion is not verified lossless"
+            },
+            {
+              "id": "file:gamma",
+              "status": "changed",
+              "path": "BYOK Studio/Synthetic Project/Gamma.md",
+              "detail": "Vault edit preserved; conversion is unsupported or lossy and Studio write-back is unavailable"
+            }
+          ],
+          "disk": "---\nbyok-id: \"gamma\"\nbyok-type: text\nbyok-updated: \"2026-01-01T00:00:00Z\"\n---\n\nGamma stable. UNSAVED-CANVAS-SENTINEL\n"
+        }
+      }
+    },
+    {
+      "scenario": "unsaved-canvas-embed",
       "name": "unsaved Canvas edit survives the import",
       "pass": true,
       "observed": {
-        "failed": false,
-        "error": null,
-        "gamma": [
-          {
-            "id": "file:gamma",
-            "status": "lossy",
-            "detail": "HTML-to-Markdown conversion is not verified lossless"
-          },
-          {
-            "id": "file:gamma",
-            "status": "updated",
-            "path": "BYOK Studio/Synthetic Project/Gamma.md"
-          }
-        ],
-        "diskRightAfterImport": "---\nbyok-id: \"gamma\"\nbyok-type: text\nbyok-updated: \"2026-05-05T00:00:00Z\"\n---\n\nGamma revised in Studio.\n",
+        "failed": true,
+        "error": "Close all Markdown editors, Canvas views and hover popovers before importing",
+        "diskRightAfterImport": "---\nbyok-id: \"gamma\"\nbyok-type: text\nbyok-updated: \"2026-01-01T00:00:00Z\"\n---\n\nGamma stable.\n",
         "finalDisk": "---\nbyok-id: \"gamma\"\nbyok-type: text\nbyok-updated: \"2026-01-01T00:00:00Z\"\n---\n\nGamma stable. UNSAVED-CANVAS-SENTINEL\n",
         "finalBuffer": "---\nbyok-id: \"gamma\"\nbyok-type: text\nbyok-updated: \"2026-01-01T00:00:00Z\"\n---\n\nGamma stable. UNSAVED-CANVAS-SENTINEL\n",
         "baselineMatchesDisk": false,
@@ -1643,8 +1623,8 @@
     }
   ],
   "summary": {
-    "total": 95,
+    "total": 96,
     "failed": 0,
-    "findings": 1
+    "findings": 0
   }
 }
