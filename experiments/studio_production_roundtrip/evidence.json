@@ -1,0 +1,813 @@
+{
+  "checks": {
+    "loopback_only": true,
+    "local_mode": true,
+    "populated_outbox": true,
+    "outbox_import": true,
+    "outbox_write": true,
+    "outbox_repeat": true,
+    "outbox_reopen": true,
+    "outbox_export": true,
+    "reopened_editor": true,
+    "studio_edit_exported": true,
+    "persisted_baseline": true,
+    "repeat_no_database_change": true,
+    "integrity": true,
+    "clean_exits": true
+  },
+  "environment": {
+    "app_asar_sha256": "25e93b78fb4753f7b47236a91f8907e674c341aab19af271d93c7dd1e04dbcfa",
+    "xvfb_sha256": "ffe89f25f4aa76a7c97d72bd4fa8b74d8304a1b4811a70a2614b0c953c241396",
+    "studio": "1.1.3",
+    "electron": "44.4.5"
+  },
+  "results": {
+    "import": {
+      "id": "file:84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+      "status": "imported",
+      "path": "Target/Synthetic Write-back Project/Untitled Text.md"
+    },
+    "write": {
+      "id": "file:84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+      "status": "written-back",
+      "path": "Target/Synthetic Write-back Project/Untitled Text.md"
+    },
+    "repeat": {
+      "id": "file:84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+      "status": "unchanged",
+      "path": "Target/Synthetic Write-back Project/Untitled Text.md"
+    },
+    "export": {
+      "id": "file:84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+      "status": "updated",
+      "path": "Target/Synthetic Write-back Project/Untitled Text.md"
+    },
+    "repeat_after_export": {
+      "id": "file:84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+      "status": "unchanged",
+      "path": "Target/Synthetic Write-back Project/Untitled Text.md"
+    }
+  },
+  "baseline": {
+    "path": "Target/Synthetic Write-back Project/Untitled Text.md",
+    "baseline": "---\nbyok-id: \"84faffb0-b9b7-4a35-88c7-c95a5ff5cd94\"\nbyok-type: text\nbyok-updated: \"2026-11-10T02:49:19.266Z\"\n---\n\nVault revised synthetic body typed through the Studio UI. Second synthetic sentence typed through the Studi Edit typed in Studio after the write-back.o UI.\n",
+    "studioContent": "<p class=\"editor-paragraph\">Vault revised synthetic body typed through the Studio UI. Second synthetic sentence typed through the Studi Edit typed in Studio after the write-back.o UI.</p>"
+  },
+  "snapshots": {
+    "before": {
+      "file": {
+        "id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+        "user_id": "local",
+        "project_id": "013e75cc-bc68-4d94-8ad1-7307c19e22ac",
+        "folder_id": null,
+        "type": "text",
+        "is_trashed": 0,
+        "position": 0,
+        "created_at": "2026-11-10T02:48:07.574Z",
+        "data": "{\"id\":\"84faffb0-b9b7-4a35-88c7-c95a5ff5cd94\",\"project\":\"013e75cc-bc68-4d94-8ad1-7307c19e22ac\",\"folder\":null,\"name\":\"Untitled Text\",\"type\":\"text\",\"content\":\"<p class=\\\"editor-paragraph\\\">Original synthetic body typed through the Studio UI. Second synthetic sentence typed through the Studio UI.</p>\",\"file\":null,\"createdAt\":\"2026-11-10T02:48:07.574Z\",\"updatedAt\":\"2026-11-10T02:48:21.117Z\",\"contentUpdatedAt\":\"2026-11-10T02:48:21.117Z\",\"isTrashed\":false,\"position\":0,\"gridLayout\":null,\"cardColor\":null,\"tags\":[],\"isFavorited\":false,\"description\":\"\",\"plainSyncWarningAcked\":false,\"autoLinkedDeviceIds\":[]}",
+        "mirrored_at": 1794278901117
+      },
+      "project": {
+        "id": "013e75cc-bc68-4d94-8ad1-7307c19e22ac",
+        "user_id": "local",
+        "created_at": "2026-11-10T02:47:59.697Z",
+        "data": "{\"id\":\"013e75cc-bc68-4d94-8ad1-7307c19e22ac\",\"name\":\"Synthetic Write-back Project\",\"color\":\"#f0f0f0\",\"titleColor\":\"#4A4A4A\",\"pinned\":false,\"pinnedAt\":null,\"type\":\"book\",\"user\":null,\"createdAt\":\"2026-11-10T02:47:59.697Z\",\"updatedAt\":\"2026-11-10T02:47:59.699Z\",\"backgroundImage\":null,\"overlayOpacity\":\"0.20\",\"borderColor\":\"var(--tile-background)\",\"isTutorial\":false,\"tags\":[]}",
+        "mirrored_at": 1794278879699
+      },
+      "history": [
+        {
+          "id": "c43611c9-9e67-4d05-b458-d998cdcee3e2",
+          "file_id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+          "content": "\"<p class=\\\"editor-paragraph\\\">Original synthetic body typed through the Studio UI.</p>\"",
+          "extras": null,
+          "fingerprint": "0028044b2a25e1a1d32d2635e7b10dd1e4fa1b09e803b0f732dcec41b685449e",
+          "reason": "manual",
+          "file_name": "Untitled Text",
+          "content_size": 88,
+          "created_at": "2026-11-10T02:48:18.603Z"
+        }
+      ],
+      "outbox": [
+        {
+          "id": 1,
+          "user_id": "local",
+          "kind": "project.create",
+          "entity_type": "project",
+          "entity_id": "013e75cc-bc68-4d94-8ad1-7307c19e22ac",
+          "method": "POST",
+          "url": "/projects/",
+          "body": "{\"name\":\"Synthetic Write-back Project\",\"border_color\":\"var(--tile-background)\",\"type\":\"book\"}",
+          "temp_ids": "[\"013e75cc-bc68-4d94-8ad1-7307c19e22ac\"]",
+          "status": "pending",
+          "attempts": 0,
+          "last_error": null,
+          "created_at": 1794278879702,
+          "updated_at": 1794278879702
+        },
+        {
+          "id": 2,
+          "user_id": "local",
+          "kind": "file.create",
+          "entity_type": "file",
+          "entity_id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+          "method": "POST",
+          "url": "/projects/013e75cc-bc68-4d94-8ad1-7307c19e22ac/files/",
+          "body": "{\"id\":\"b3c1dc2e-9bcc-4230-aaa5-fa3df0dc9add\",\"name\":\"Untitled Text\",\"type\":\"text\",\"content\":\"\",\"tags\":[],\"description\":\"\"}",
+          "temp_ids": "[\"84faffb0-b9b7-4a35-88c7-c95a5ff5cd94\"]",
+          "status": "pending",
+          "attempts": 0,
+          "last_error": null,
+          "created_at": 1794278887575,
+          "updated_at": 1794278887575
+        },
+        {
+          "id": 3,
+          "user_id": "local",
+          "kind": "file.update",
+          "entity_type": "file",
+          "entity_id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+          "method": "PUT",
+          "url": "/files/84faffb0-b9b7-4a35-88c7-c95a5ff5cd94/",
+          "body": "{\"content\":\"<p class=\\\"editor-paragraph\\\">Original synthetic body typed through the Studio UI. Second synthetic sentence typed through the Studio UI.</p>\",\"project_id\":\"013e75cc-bc68-4d94-8ad1-7307c19e22ac\",\"base_content_updated_at\":\"2026-11-10T02:48:07.574Z\"}",
+          "temp_ids": null,
+          "status": "pending",
+          "attempts": 0,
+          "last_error": null,
+          "created_at": 1794278895101,
+          "updated_at": 1794278901118
+        }
+      ],
+      "integrity": "ok",
+      "foreign_keys": 0
+    },
+    "after_import": {
+      "file": {
+        "id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+        "user_id": "local",
+        "project_id": "013e75cc-bc68-4d94-8ad1-7307c19e22ac",
+        "folder_id": null,
+        "type": "text",
+        "is_trashed": 0,
+        "position": 0,
+        "created_at": "2026-11-10T02:48:07.574Z",
+        "data": "{\"id\":\"84faffb0-b9b7-4a35-88c7-c95a5ff5cd94\",\"project\":\"013e75cc-bc68-4d94-8ad1-7307c19e22ac\",\"folder\":null,\"name\":\"Untitled Text\",\"type\":\"text\",\"content\":\"<p class=\\\"editor-paragraph\\\">Original synthetic body typed through the Studio UI. Second synthetic sentence typed through the Studio UI.</p>\",\"file\":null,\"createdAt\":\"2026-11-10T02:48:07.574Z\",\"updatedAt\":\"2026-11-10T02:48:21.117Z\",\"contentUpdatedAt\":\"2026-11-10T02:48:21.117Z\",\"isTrashed\":false,\"position\":0,\"gridLayout\":null,\"cardColor\":null,\"tags\":[],\"isFavorited\":false,\"description\":\"\",\"plainSyncWarningAcked\":false,\"autoLinkedDeviceIds\":[]}",
+        "mirrored_at": 1794278901117
+      },
+      "project": {
+        "id": "013e75cc-bc68-4d94-8ad1-7307c19e22ac",
+        "user_id": "local",
+        "created_at": "2026-11-10T02:47:59.697Z",
+        "data": "{\"id\":\"013e75cc-bc68-4d94-8ad1-7307c19e22ac\",\"name\":\"Synthetic Write-back Project\",\"color\":\"#f0f0f0\",\"titleColor\":\"#4A4A4A\",\"pinned\":false,\"pinnedAt\":null,\"type\":\"book\",\"user\":null,\"createdAt\":\"2026-11-10T02:47:59.697Z\",\"updatedAt\":\"2026-11-10T02:47:59.699Z\",\"backgroundImage\":null,\"overlayOpacity\":\"0.20\",\"borderColor\":\"var(--tile-background)\",\"isTutorial\":false,\"tags\":[]}",
+        "mirrored_at": 1794278879699
+      },
+      "history": [
+        {
+          "id": "c43611c9-9e67-4d05-b458-d998cdcee3e2",
+          "file_id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+          "content": "\"<p class=\\\"editor-paragraph\\\">Original synthetic body typed through the Studio UI.</p>\"",
+          "extras": null,
+          "fingerprint": "0028044b2a25e1a1d32d2635e7b10dd1e4fa1b09e803b0f732dcec41b685449e",
+          "reason": "manual",
+          "file_name": "Untitled Text",
+          "content_size": 88,
+          "created_at": "2026-11-10T02:48:18.603Z"
+        }
+      ],
+      "outbox": [
+        {
+          "id": 1,
+          "user_id": "local",
+          "kind": "project.create",
+          "entity_type": "project",
+          "entity_id": "013e75cc-bc68-4d94-8ad1-7307c19e22ac",
+          "method": "POST",
+          "url": "/projects/",
+          "body": "{\"name\":\"Synthetic Write-back Project\",\"border_color\":\"var(--tile-background)\",\"type\":\"book\"}",
+          "temp_ids": "[\"013e75cc-bc68-4d94-8ad1-7307c19e22ac\"]",
+          "status": "pending",
+          "attempts": 0,
+          "last_error": null,
+          "created_at": 1794278879702,
+          "updated_at": 1794278879702
+        },
+        {
+          "id": 2,
+          "user_id": "local",
+          "kind": "file.create",
+          "entity_type": "file",
+          "entity_id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+          "method": "POST",
+          "url": "/projects/013e75cc-bc68-4d94-8ad1-7307c19e22ac/files/",
+          "body": "{\"id\":\"b3c1dc2e-9bcc-4230-aaa5-fa3df0dc9add\",\"name\":\"Untitled Text\",\"type\":\"text\",\"content\":\"\",\"tags\":[],\"description\":\"\"}",
+          "temp_ids": "[\"84faffb0-b9b7-4a35-88c7-c95a5ff5cd94\"]",
+          "status": "pending",
+          "attempts": 0,
+          "last_error": null,
+          "created_at": 1794278887575,
+          "updated_at": 1794278887575
+        },
+        {
+          "id": 3,
+          "user_id": "local",
+          "kind": "file.update",
+          "entity_type": "file",
+          "entity_id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+          "method": "PUT",
+          "url": "/files/84faffb0-b9b7-4a35-88c7-c95a5ff5cd94/",
+          "body": "{\"content\":\"<p class=\\\"editor-paragraph\\\">Original synthetic body typed through the Studio UI. Second synthetic sentence typed through the Studio UI.</p>\",\"project_id\":\"013e75cc-bc68-4d94-8ad1-7307c19e22ac\",\"base_content_updated_at\":\"2026-11-10T02:48:07.574Z\"}",
+          "temp_ids": null,
+          "status": "pending",
+          "attempts": 0,
+          "last_error": null,
+          "created_at": 1794278895101,
+          "updated_at": 1794278901118
+        }
+      ],
+      "integrity": "ok",
+      "foreign_keys": 0
+    },
+    "after_write": {
+      "file": {
+        "id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+        "user_id": "local",
+        "project_id": "013e75cc-bc68-4d94-8ad1-7307c19e22ac",
+        "folder_id": null,
+        "type": "text",
+        "is_trashed": 0,
+        "position": 0,
+        "created_at": "2026-11-10T02:48:07.574Z",
+        "data": "{\"id\":\"84faffb0-b9b7-4a35-88c7-c95a5ff5cd94\",\"project\":\"013e75cc-bc68-4d94-8ad1-7307c19e22ac\",\"folder\":null,\"name\":\"Untitled Text\",\"type\":\"text\",\"content\":\"<p class=\\\"editor-paragraph\\\">Vault revised synthetic body typed through the Studio UI. Second synthetic sentence typed through the Studio UI.</p>\",\"file\":null,\"createdAt\":\"2026-11-10T02:48:07.574Z\",\"updatedAt\":\"2026-11-10T02:48:28.554Z\",\"contentUpdatedAt\":\"2026-11-10T02:48:28.554Z\",\"isTrashed\":false,\"position\":0,\"gridLayout\":null,\"cardColor\":null,\"tags\":[],\"isFavorited\":false,\"description\":\"\",\"plainSyncWarningAcked\":false,\"autoLinkedDeviceIds\":[]}",
+        "mirrored_at": 1794278908554
+      },
+      "project": {
+        "id": "013e75cc-bc68-4d94-8ad1-7307c19e22ac",
+        "user_id": "local",
+        "created_at": "2026-11-10T02:47:59.697Z",
+        "data": "{\"id\":\"013e75cc-bc68-4d94-8ad1-7307c19e22ac\",\"name\":\"Synthetic Write-back Project\",\"color\":\"#f0f0f0\",\"titleColor\":\"#4A4A4A\",\"pinned\":false,\"pinnedAt\":null,\"type\":\"book\",\"user\":null,\"createdAt\":\"2026-11-10T02:47:59.697Z\",\"updatedAt\":\"2026-11-10T02:47:59.699Z\",\"backgroundImage\":null,\"overlayOpacity\":\"0.20\",\"borderColor\":\"var(--tile-background)\",\"isTutorial\":false,\"tags\":[]}",
+        "mirrored_at": 1794278879699
+      },
+      "history": [
+        {
+          "id": "c43611c9-9e67-4d05-b458-d998cdcee3e2",
+          "file_id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+          "content": "\"<p class=\\\"editor-paragraph\\\">Original synthetic body typed through the Studio UI.</p>\"",
+          "extras": null,
+          "fingerprint": "0028044b2a25e1a1d32d2635e7b10dd1e4fa1b09e803b0f732dcec41b685449e",
+          "reason": "manual",
+          "file_name": "Untitled Text",
+          "content_size": 88,
+          "created_at": "2026-11-10T02:48:18.603Z"
+        },
+        {
+          "id": "4c349b32-f61c-4fd4-bcee-5e5400cc9f4f",
+          "file_id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+          "content": "\"<p class=\\\"editor-paragraph\\\">Original synthetic body typed through the Studio UI. Second synthetic sentence typed through the Studio UI.</p>\"",
+          "extras": null,
+          "fingerprint": "f8b07a3ee3ce7c329abec741dba16eacd89e99aa063e3364cae12474458e7d0d",
+          "reason": "manual",
+          "file_name": "Untitled Text",
+          "content_size": 143,
+          "created_at": "2026-11-10T02:48:28.554Z"
+        }
+      ],
+      "outbox": [
+        {
+          "id": 1,
+          "user_id": "local",
+          "kind": "project.create",
+          "entity_type": "project",
+          "entity_id": "013e75cc-bc68-4d94-8ad1-7307c19e22ac",
+          "method": "POST",
+          "url": "/projects/",
+          "body": "{\"name\":\"Synthetic Write-back Project\",\"border_color\":\"var(--tile-background)\",\"type\":\"book\"}",
+          "temp_ids": "[\"013e75cc-bc68-4d94-8ad1-7307c19e22ac\"]",
+          "status": "pending",
+          "attempts": 0,
+          "last_error": null,
+          "created_at": 1794278879702,
+          "updated_at": 1794278879702
+        },
+        {
+          "id": 2,
+          "user_id": "local",
+          "kind": "file.create",
+          "entity_type": "file",
+          "entity_id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+          "method": "POST",
+          "url": "/projects/013e75cc-bc68-4d94-8ad1-7307c19e22ac/files/",
+          "body": "{\"id\":\"b3c1dc2e-9bcc-4230-aaa5-fa3df0dc9add\",\"name\":\"Untitled Text\",\"type\":\"text\",\"content\":\"\",\"tags\":[],\"description\":\"\"}",
+          "temp_ids": "[\"84faffb0-b9b7-4a35-88c7-c95a5ff5cd94\"]",
+          "status": "pending",
+          "attempts": 0,
+          "last_error": null,
+          "created_at": 1794278887575,
+          "updated_at": 1794278887575
+        },
+        {
+          "id": 3,
+          "user_id": "local",
+          "kind": "file.update",
+          "entity_type": "file",
+          "entity_id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+          "method": "PUT",
+          "url": "/files/84faffb0-b9b7-4a35-88c7-c95a5ff5cd94/",
+          "body": "{\"content\":\"<p class=\\\"editor-paragraph\\\">Original synthetic body typed through the Studio UI. Second synthetic sentence typed through the Studio UI.</p>\",\"project_id\":\"013e75cc-bc68-4d94-8ad1-7307c19e22ac\",\"base_content_updated_at\":\"2026-11-10T02:48:07.574Z\"}",
+          "temp_ids": null,
+          "status": "pending",
+          "attempts": 0,
+          "last_error": null,
+          "created_at": 1794278895101,
+          "updated_at": 1794278901118
+        }
+      ],
+      "integrity": "ok",
+      "foreign_keys": 0
+    },
+    "after_repeat": {
+      "file": {
+        "id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+        "user_id": "local",
+        "project_id": "013e75cc-bc68-4d94-8ad1-7307c19e22ac",
+        "folder_id": null,
+        "type": "text",
+        "is_trashed": 0,
+        "position": 0,
+        "created_at": "2026-11-10T02:48:07.574Z",
+        "data": "{\"id\":\"84faffb0-b9b7-4a35-88c7-c95a5ff5cd94\",\"project\":\"013e75cc-bc68-4d94-8ad1-7307c19e22ac\",\"folder\":null,\"name\":\"Untitled Text\",\"type\":\"text\",\"content\":\"<p class=\\\"editor-paragraph\\\">Vault revised synthetic body typed through the Studio UI. Second synthetic sentence typed through the Studio UI.</p>\",\"file\":null,\"createdAt\":\"2026-11-10T02:48:07.574Z\",\"updatedAt\":\"2026-11-10T02:48:28.554Z\",\"contentUpdatedAt\":\"2026-11-10T02:48:28.554Z\",\"isTrashed\":false,\"position\":0,\"gridLayout\":null,\"cardColor\":null,\"tags\":[],\"isFavorited\":false,\"description\":\"\",\"plainSyncWarningAcked\":false,\"autoLinkedDeviceIds\":[]}",
+        "mirrored_at": 1794278908554
+      },
+      "project": {
+        "id": "013e75cc-bc68-4d94-8ad1-7307c19e22ac",
+        "user_id": "local",
+        "created_at": "2026-11-10T02:47:59.697Z",
+        "data": "{\"id\":\"013e75cc-bc68-4d94-8ad1-7307c19e22ac\",\"name\":\"Synthetic Write-back Project\",\"color\":\"#f0f0f0\",\"titleColor\":\"#4A4A4A\",\"pinned\":false,\"pinnedAt\":null,\"type\":\"book\",\"user\":null,\"createdAt\":\"2026-11-10T02:47:59.697Z\",\"updatedAt\":\"2026-11-10T02:47:59.699Z\",\"backgroundImage\":null,\"overlayOpacity\":\"0.20\",\"borderColor\":\"var(--tile-background)\",\"isTutorial\":false,\"tags\":[]}",
+        "mirrored_at": 1794278879699
+      },
+      "history": [
+        {
+          "id": "c43611c9-9e67-4d05-b458-d998cdcee3e2",
+          "file_id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+          "content": "\"<p class=\\\"editor-paragraph\\\">Original synthetic body typed through the Studio UI.</p>\"",
+          "extras": null,
+          "fingerprint": "0028044b2a25e1a1d32d2635e7b10dd1e4fa1b09e803b0f732dcec41b685449e",
+          "reason": "manual",
+          "file_name": "Untitled Text",
+          "content_size": 88,
+          "created_at": "2026-11-10T02:48:18.603Z"
+        },
+        {
+          "id": "4c349b32-f61c-4fd4-bcee-5e5400cc9f4f",
+          "file_id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+          "content": "\"<p class=\\\"editor-paragraph\\\">Original synthetic body typed through the Studio UI. Second synthetic sentence typed through the Studio UI.</p>\"",
+          "extras": null,
+          "fingerprint": "f8b07a3ee3ce7c329abec741dba16eacd89e99aa063e3364cae12474458e7d0d",
+          "reason": "manual",
+          "file_name": "Untitled Text",
+          "content_size": 143,
+          "created_at": "2026-11-10T02:48:28.554Z"
+        }
+      ],
+      "outbox": [
+        {
+          "id": 1,
+          "user_id": "local",
+          "kind": "project.create",
+          "entity_type": "project",
+          "entity_id": "013e75cc-bc68-4d94-8ad1-7307c19e22ac",
+          "method": "POST",
+          "url": "/projects/",
+          "body": "{\"name\":\"Synthetic Write-back Project\",\"border_color\":\"var(--tile-background)\",\"type\":\"book\"}",
+          "temp_ids": "[\"013e75cc-bc68-4d94-8ad1-7307c19e22ac\"]",
+          "status": "pending",
+          "attempts": 0,
+          "last_error": null,
+          "created_at": 1794278879702,
+          "updated_at": 1794278879702
+        },
+        {
+          "id": 2,
+          "user_id": "local",
+          "kind": "file.create",
+          "entity_type": "file",
+          "entity_id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+          "method": "POST",
+          "url": "/projects/013e75cc-bc68-4d94-8ad1-7307c19e22ac/files/",
+          "body": "{\"id\":\"b3c1dc2e-9bcc-4230-aaa5-fa3df0dc9add\",\"name\":\"Untitled Text\",\"type\":\"text\",\"content\":\"\",\"tags\":[],\"description\":\"\"}",
+          "temp_ids": "[\"84faffb0-b9b7-4a35-88c7-c95a5ff5cd94\"]",
+          "status": "pending",
+          "attempts": 0,
+          "last_error": null,
+          "created_at": 1794278887575,
+          "updated_at": 1794278887575
+        },
+        {
+          "id": 3,
+          "user_id": "local",
+          "kind": "file.update",
+          "entity_type": "file",
+          "entity_id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+          "method": "PUT",
+          "url": "/files/84faffb0-b9b7-4a35-88c7-c95a5ff5cd94/",
+          "body": "{\"content\":\"<p class=\\\"editor-paragraph\\\">Original synthetic body typed through the Studio UI. Second synthetic sentence typed through the Studio UI.</p>\",\"project_id\":\"013e75cc-bc68-4d94-8ad1-7307c19e22ac\",\"base_content_updated_at\":\"2026-11-10T02:48:07.574Z\"}",
+          "temp_ids": null,
+          "status": "pending",
+          "attempts": 0,
+          "last_error": null,
+          "created_at": 1794278895101,
+          "updated_at": 1794278901118
+        }
+      ],
+      "integrity": "ok",
+      "foreign_keys": 0
+    },
+    "reopened": {
+      "file": {
+        "id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+        "user_id": "local",
+        "project_id": "013e75cc-bc68-4d94-8ad1-7307c19e22ac",
+        "folder_id": null,
+        "type": "text",
+        "is_trashed": 0,
+        "position": 0,
+        "created_at": "2026-11-10T02:48:07.574Z",
+        "data": "{\"id\":\"84faffb0-b9b7-4a35-88c7-c95a5ff5cd94\",\"project\":\"013e75cc-bc68-4d94-8ad1-7307c19e22ac\",\"folder\":null,\"name\":\"Untitled Text\",\"type\":\"text\",\"content\":\"<p class=\\\"editor-paragraph\\\">Vault revised synthetic body typed through the Studio UI. Second synthetic sentence typed through the Studio UI.</p>\",\"file\":null,\"createdAt\":\"2026-11-10T02:48:07.574Z\",\"updatedAt\":\"2026-11-10T02:48:28.554Z\",\"contentUpdatedAt\":\"2026-11-10T02:48:28.554Z\",\"isTrashed\":false,\"position\":0,\"gridLayout\":null,\"cardColor\":null,\"tags\":[],\"isFavorited\":false,\"description\":\"\",\"plainSyncWarningAcked\":false,\"autoLinkedDeviceIds\":[]}",
+        "mirrored_at": 1794278908554
+      },
+      "project": {
+        "id": "013e75cc-bc68-4d94-8ad1-7307c19e22ac",
+        "user_id": "local",
+        "created_at": "2026-11-10T02:47:59.697Z",
+        "data": "{\"id\":\"013e75cc-bc68-4d94-8ad1-7307c19e22ac\",\"name\":\"Synthetic Write-back Project\",\"color\":\"#f0f0f0\",\"titleColor\":\"#4A4A4A\",\"pinned\":false,\"pinnedAt\":null,\"type\":\"book\",\"user\":null,\"createdAt\":\"2026-11-10T02:47:59.697Z\",\"updatedAt\":\"2026-11-10T02:47:59.699Z\",\"backgroundImage\":null,\"overlayOpacity\":\"0.20\",\"borderColor\":\"var(--tile-background)\",\"isTutorial\":false,\"tags\":[]}",
+        "mirrored_at": 1794278879699
+      },
+      "history": [
+        {
+          "id": "c43611c9-9e67-4d05-b458-d998cdcee3e2",
+          "file_id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+          "content": "\"<p class=\\\"editor-paragraph\\\">Original synthetic body typed through the Studio UI.</p>\"",
+          "extras": null,
+          "fingerprint": "0028044b2a25e1a1d32d2635e7b10dd1e4fa1b09e803b0f732dcec41b685449e",
+          "reason": "manual",
+          "file_name": "Untitled Text",
+          "content_size": 88,
+          "created_at": "2026-11-10T02:48:18.603Z"
+        },
+        {
+          "id": "4c349b32-f61c-4fd4-bcee-5e5400cc9f4f",
+          "file_id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+          "content": "\"<p class=\\\"editor-paragraph\\\">Original synthetic body typed through the Studio UI. Second synthetic sentence typed through the Studio UI.</p>\"",
+          "extras": null,
+          "fingerprint": "f8b07a3ee3ce7c329abec741dba16eacd89e99aa063e3364cae12474458e7d0d",
+          "reason": "manual",
+          "file_name": "Untitled Text",
+          "content_size": 143,
+          "created_at": "2026-11-10T02:48:28.554Z"
+        }
+      ],
+      "outbox": [
+        {
+          "id": 1,
+          "user_id": "local",
+          "kind": "project.create",
+          "entity_type": "project",
+          "entity_id": "013e75cc-bc68-4d94-8ad1-7307c19e22ac",
+          "method": "POST",
+          "url": "/projects/",
+          "body": "{\"name\":\"Synthetic Write-back Project\",\"border_color\":\"var(--tile-background)\",\"type\":\"book\"}",
+          "temp_ids": "[\"013e75cc-bc68-4d94-8ad1-7307c19e22ac\"]",
+          "status": "pending",
+          "attempts": 0,
+          "last_error": null,
+          "created_at": 1794278879702,
+          "updated_at": 1794278879702
+        },
+        {
+          "id": 2,
+          "user_id": "local",
+          "kind": "file.create",
+          "entity_type": "file",
+          "entity_id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+          "method": "POST",
+          "url": "/projects/013e75cc-bc68-4d94-8ad1-7307c19e22ac/files/",
+          "body": "{\"id\":\"b3c1dc2e-9bcc-4230-aaa5-fa3df0dc9add\",\"name\":\"Untitled Text\",\"type\":\"text\",\"content\":\"\",\"tags\":[],\"description\":\"\"}",
+          "temp_ids": "[\"84faffb0-b9b7-4a35-88c7-c95a5ff5cd94\"]",
+          "status": "pending",
+          "attempts": 0,
+          "last_error": null,
+          "created_at": 1794278887575,
+          "updated_at": 1794278887575
+        },
+        {
+          "id": 3,
+          "user_id": "local",
+          "kind": "file.update",
+          "entity_type": "file",
+          "entity_id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+          "method": "PUT",
+          "url": "/files/84faffb0-b9b7-4a35-88c7-c95a5ff5cd94/",
+          "body": "{\"content\":\"<p class=\\\"editor-paragraph\\\">Original synthetic body typed through the Studio UI. Second synthetic sentence typed through the Studio UI.</p>\",\"project_id\":\"013e75cc-bc68-4d94-8ad1-7307c19e22ac\",\"base_content_updated_at\":\"2026-11-10T02:48:07.574Z\"}",
+          "temp_ids": null,
+          "status": "pending",
+          "attempts": 0,
+          "last_error": null,
+          "created_at": 1794278895101,
+          "updated_at": 1794278901118
+        }
+      ],
+      "integrity": "ok",
+      "foreign_keys": 0
+    },
+    "studio_edit": {
+      "file": {
+        "id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+        "user_id": "local",
+        "project_id": "013e75cc-bc68-4d94-8ad1-7307c19e22ac",
+        "folder_id": null,
+        "type": "text",
+        "is_trashed": 0,
+        "position": 0,
+        "created_at": "2026-11-10T02:48:07.574Z",
+        "data": "{\"id\":\"84faffb0-b9b7-4a35-88c7-c95a5ff5cd94\",\"project\":\"013e75cc-bc68-4d94-8ad1-7307c19e22ac\",\"folder\":null,\"name\":\"Untitled Text\",\"type\":\"text\",\"content\":\"<p class=\\\"editor-paragraph\\\">Vault revised synthetic body typed through the Studio UI. Second synthetic sentence typed through the Studi Edit typed in Studio after the write-back.o UI.</p>\",\"file\":null,\"createdAt\":\"2026-11-10T02:48:07.574Z\",\"updatedAt\":\"2026-11-10T02:49:19.266Z\",\"contentUpdatedAt\":\"2026-11-10T02:49:19.266Z\",\"isTrashed\":false,\"position\":0,\"gridLayout\":null,\"cardColor\":null,\"tags\":[],\"isFavorited\":false,\"description\":\"\",\"plainSyncWarningAcked\":false,\"autoLinkedDeviceIds\":[]}",
+        "mirrored_at": 1794278959267
+      },
+      "project": {
+        "id": "013e75cc-bc68-4d94-8ad1-7307c19e22ac",
+        "user_id": "local",
+        "created_at": "2026-11-10T02:47:59.697Z",
+        "data": "{\"id\":\"013e75cc-bc68-4d94-8ad1-7307c19e22ac\",\"name\":\"Synthetic Write-back Project\",\"color\":\"#f0f0f0\",\"titleColor\":\"#4A4A4A\",\"pinned\":false,\"pinnedAt\":null,\"type\":\"book\",\"user\":null,\"createdAt\":\"2026-11-10T02:47:59.697Z\",\"updatedAt\":\"2026-11-10T02:47:59.699Z\",\"backgroundImage\":null,\"overlayOpacity\":\"0.20\",\"borderColor\":\"var(--tile-background)\",\"isTutorial\":false,\"tags\":[]}",
+        "mirrored_at": 1794278879699
+      },
+      "history": [
+        {
+          "id": "c43611c9-9e67-4d05-b458-d998cdcee3e2",
+          "file_id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+          "content": "\"<p class=\\\"editor-paragraph\\\">Original synthetic body typed through the Studio UI.</p>\"",
+          "extras": null,
+          "fingerprint": "0028044b2a25e1a1d32d2635e7b10dd1e4fa1b09e803b0f732dcec41b685449e",
+          "reason": "manual",
+          "file_name": "Untitled Text",
+          "content_size": 88,
+          "created_at": "2026-11-10T02:48:18.603Z"
+        },
+        {
+          "id": "4c349b32-f61c-4fd4-bcee-5e5400cc9f4f",
+          "file_id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+          "content": "\"<p class=\\\"editor-paragraph\\\">Original synthetic body typed through the Studio UI. Second synthetic sentence typed through the Studio UI.</p>\"",
+          "extras": null,
+          "fingerprint": "f8b07a3ee3ce7c329abec741dba16eacd89e99aa063e3364cae12474458e7d0d",
+          "reason": "manual",
+          "file_name": "Untitled Text",
+          "content_size": 143,
+          "created_at": "2026-11-10T02:48:28.554Z"
+        }
+      ],
+      "outbox": [
+        {
+          "id": 1,
+          "user_id": "local",
+          "kind": "project.create",
+          "entity_type": "project",
+          "entity_id": "013e75cc-bc68-4d94-8ad1-7307c19e22ac",
+          "method": "POST",
+          "url": "/projects/",
+          "body": "{\"name\":\"Synthetic Write-back Project\",\"border_color\":\"var(--tile-background)\",\"type\":\"book\"}",
+          "temp_ids": "[\"013e75cc-bc68-4d94-8ad1-7307c19e22ac\"]",
+          "status": "pending",
+          "attempts": 0,
+          "last_error": null,
+          "created_at": 1794278879702,
+          "updated_at": 1794278879702
+        },
+        {
+          "id": 2,
+          "user_id": "local",
+          "kind": "file.create",
+          "entity_type": "file",
+          "entity_id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+          "method": "POST",
+          "url": "/projects/013e75cc-bc68-4d94-8ad1-7307c19e22ac/files/",
+          "body": "{\"id\":\"b3c1dc2e-9bcc-4230-aaa5-fa3df0dc9add\",\"name\":\"Untitled Text\",\"type\":\"text\",\"content\":\"\",\"tags\":[],\"description\":\"\"}",
+          "temp_ids": "[\"84faffb0-b9b7-4a35-88c7-c95a5ff5cd94\"]",
+          "status": "pending",
+          "attempts": 0,
+          "last_error": null,
+          "created_at": 1794278887575,
+          "updated_at": 1794278887575
+        },
+        {
+          "id": 3,
+          "user_id": "local",
+          "kind": "file.update",
+          "entity_type": "file",
+          "entity_id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+          "method": "PUT",
+          "url": "/files/84faffb0-b9b7-4a35-88c7-c95a5ff5cd94/",
+          "body": "{\"content\":\"<p class=\\\"editor-paragraph\\\">Vault revised synthetic body typed through the Studio UI. Second synthetic sentence typed through the Studi Edit typed in Studio after the write-back.o UI.</p>\",\"project_id\":\"013e75cc-bc68-4d94-8ad1-7307c19e22ac\",\"base_content_updated_at\":\"2026-11-10T02:48:07.574Z\"}",
+          "temp_ids": null,
+          "status": "pending",
+          "attempts": 0,
+          "last_error": null,
+          "created_at": 1794278895101,
+          "updated_at": 1794278959268
+        }
+      ],
+      "integrity": "ok",
+      "foreign_keys": 0
+    },
+    "after_export": {
+      "file": {
+        "id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+        "user_id": "local",
+        "project_id": "013e75cc-bc68-4d94-8ad1-7307c19e22ac",
+        "folder_id": null,
+        "type": "text",
+        "is_trashed": 0,
+        "position": 0,
+        "created_at": "2026-11-10T02:48:07.574Z",
+        "data": "{\"id\":\"84faffb0-b9b7-4a35-88c7-c95a5ff5cd94\",\"project\":\"013e75cc-bc68-4d94-8ad1-7307c19e22ac\",\"folder\":null,\"name\":\"Untitled Text\",\"type\":\"text\",\"content\":\"<p class=\\\"editor-paragraph\\\">Vault revised synthetic body typed through the Studio UI. Second synthetic sentence typed through the Studi Edit typed in Studio after the write-back.o UI.</p>\",\"file\":null,\"createdAt\":\"2026-11-10T02:48:07.574Z\",\"updatedAt\":\"2026-11-10T02:49:19.266Z\",\"contentUpdatedAt\":\"2026-11-10T02:49:19.266Z\",\"isTrashed\":false,\"position\":0,\"gridLayout\":null,\"cardColor\":null,\"tags\":[],\"isFavorited\":false,\"description\":\"\",\"plainSyncWarningAcked\":false,\"autoLinkedDeviceIds\":[]}",
+        "mirrored_at": 1794278959267
+      },
+      "project": {
+        "id": "013e75cc-bc68-4d94-8ad1-7307c19e22ac",
+        "user_id": "local",
+        "created_at": "2026-11-10T02:47:59.697Z",
+        "data": "{\"id\":\"013e75cc-bc68-4d94-8ad1-7307c19e22ac\",\"name\":\"Synthetic Write-back Project\",\"color\":\"#f0f0f0\",\"titleColor\":\"#4A4A4A\",\"pinned\":false,\"pinnedAt\":null,\"type\":\"book\",\"user\":null,\"createdAt\":\"2026-11-10T02:47:59.697Z\",\"updatedAt\":\"2026-11-10T02:47:59.699Z\",\"backgroundImage\":null,\"overlayOpacity\":\"0.20\",\"borderColor\":\"var(--tile-background)\",\"isTutorial\":false,\"tags\":[]}",
+        "mirrored_at": 1794278879699
+      },
+      "history": [
+        {
+          "id": "c43611c9-9e67-4d05-b458-d998cdcee3e2",
+          "file_id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+          "content": "\"<p class=\\\"editor-paragraph\\\">Original synthetic body typed through the Studio UI.</p>\"",
+          "extras": null,
+          "fingerprint": "0028044b2a25e1a1d32d2635e7b10dd1e4fa1b09e803b0f732dcec41b685449e",
+          "reason": "manual",
+          "file_name": "Untitled Text",
+          "content_size": 88,
+          "created_at": "2026-11-10T02:48:18.603Z"
+        },
+        {
+          "id": "4c349b32-f61c-4fd4-bcee-5e5400cc9f4f",
+          "file_id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+          "content": "\"<p class=\\\"editor-paragraph\\\">Original synthetic body typed through the Studio UI. Second synthetic sentence typed through the Studio UI.</p>\"",
+          "extras": null,
+          "fingerprint": "f8b07a3ee3ce7c329abec741dba16eacd89e99aa063e3364cae12474458e7d0d",
+          "reason": "manual",
+          "file_name": "Untitled Text",
+          "content_size": 143,
+          "created_at": "2026-11-10T02:48:28.554Z"
+        }
+      ],
+      "outbox": [
+        {
+          "id": 1,
+          "user_id": "local",
+          "kind": "project.create",
+          "entity_type": "project",
+          "entity_id": "013e75cc-bc68-4d94-8ad1-7307c19e22ac",
+          "method": "POST",
+          "url": "/projects/",
+          "body": "{\"name\":\"Synthetic Write-back Project\",\"border_color\":\"var(--tile-background)\",\"type\":\"book\"}",
+          "temp_ids": "[\"013e75cc-bc68-4d94-8ad1-7307c19e22ac\"]",
+          "status": "pending",
+          "attempts": 0,
+          "last_error": null,
+          "created_at": 1794278879702,
+          "updated_at": 1794278879702
+        },
+        {
+          "id": 2,
+          "user_id": "local",
+          "kind": "file.create",
+          "entity_type": "file",
+          "entity_id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+          "method": "POST",
+          "url": "/projects/013e75cc-bc68-4d94-8ad1-7307c19e22ac/files/",
+          "body": "{\"id\":\"b3c1dc2e-9bcc-4230-aaa5-fa3df0dc9add\",\"name\":\"Untitled Text\",\"type\":\"text\",\"content\":\"\",\"tags\":[],\"description\":\"\"}",
+          "temp_ids": "[\"84faffb0-b9b7-4a35-88c7-c95a5ff5cd94\"]",
+          "status": "pending",
+          "attempts": 0,
+          "last_error": null,
+          "created_at": 1794278887575,
+          "updated_at": 1794278887575
+        },
+        {
+          "id": 3,
+          "user_id": "local",
+          "kind": "file.update",
+          "entity_type": "file",
+          "entity_id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+          "method": "PUT",
+          "url": "/files/84faffb0-b9b7-4a35-88c7-c95a5ff5cd94/",
+          "body": "{\"content\":\"<p class=\\\"editor-paragraph\\\">Vault revised synthetic body typed through the Studio UI. Second synthetic sentence typed through the Studi Edit typed in Studio after the write-back.o UI.</p>\",\"project_id\":\"013e75cc-bc68-4d94-8ad1-7307c19e22ac\",\"base_content_updated_at\":\"2026-11-10T02:48:07.574Z\"}",
+          "temp_ids": null,
+          "status": "pending",
+          "attempts": 0,
+          "last_error": null,
+          "created_at": 1794278895101,
+          "updated_at": 1794278959268
+        }
+      ],
+      "integrity": "ok",
+      "foreign_keys": 0
+    },
+    "final_repeat": {
+      "file": {
+        "id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+        "user_id": "local",
+        "project_id": "013e75cc-bc68-4d94-8ad1-7307c19e22ac",
+        "folder_id": null,
+        "type": "text",
+        "is_trashed": 0,
+        "position": 0,
+        "created_at": "2026-11-10T02:48:07.574Z",
+        "data": "{\"id\":\"84faffb0-b9b7-4a35-88c7-c95a5ff5cd94\",\"project\":\"013e75cc-bc68-4d94-8ad1-7307c19e22ac\",\"folder\":null,\"name\":\"Untitled Text\",\"type\":\"text\",\"content\":\"<p class=\\\"editor-paragraph\\\">Vault revised synthetic body typed through the Studio UI. Second synthetic sentence typed through the Studi Edit typed in Studio after the write-back.o UI.</p>\",\"file\":null,\"createdAt\":\"2026-11-10T02:48:07.574Z\",\"updatedAt\":\"2026-11-10T02:49:19.266Z\",\"contentUpdatedAt\":\"2026-11-10T02:49:19.266Z\",\"isTrashed\":false,\"position\":0,\"gridLayout\":null,\"cardColor\":null,\"tags\":[],\"isFavorited\":false,\"description\":\"\",\"plainSyncWarningAcked\":false,\"autoLinkedDeviceIds\":[]}",
+        "mirrored_at": 1794278959267
+      },
+      "project": {
+        "id": "013e75cc-bc68-4d94-8ad1-7307c19e22ac",
+        "user_id": "local",
+        "created_at": "2026-11-10T02:47:59.697Z",
+        "data": "{\"id\":\"013e75cc-bc68-4d94-8ad1-7307c19e22ac\",\"name\":\"Synthetic Write-back Project\",\"color\":\"#f0f0f0\",\"titleColor\":\"#4A4A4A\",\"pinned\":false,\"pinnedAt\":null,\"type\":\"book\",\"user\":null,\"createdAt\":\"2026-11-10T02:47:59.697Z\",\"updatedAt\":\"2026-11-10T02:47:59.699Z\",\"backgroundImage\":null,\"overlayOpacity\":\"0.20\",\"borderColor\":\"var(--tile-background)\",\"isTutorial\":false,\"tags\":[]}",
+        "mirrored_at": 1794278879699
+      },
+      "history": [
+        {
+          "id": "c43611c9-9e67-4d05-b458-d998cdcee3e2",
+          "file_id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+          "content": "\"<p class=\\\"editor-paragraph\\\">Original synthetic body typed through the Studio UI.</p>\"",
+          "extras": null,
+          "fingerprint": "0028044b2a25e1a1d32d2635e7b10dd1e4fa1b09e803b0f732dcec41b685449e",
+          "reason": "manual",
+          "file_name": "Untitled Text",
+          "content_size": 88,
+          "created_at": "2026-11-10T02:48:18.603Z"
+        },
+        {
+          "id": "4c349b32-f61c-4fd4-bcee-5e5400cc9f4f",
+          "file_id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+          "content": "\"<p class=\\\"editor-paragraph\\\">Original synthetic body typed through the Studio UI. Second synthetic sentence typed through the Studio UI.</p>\"",
+          "extras": null,
+          "fingerprint": "f8b07a3ee3ce7c329abec741dba16eacd89e99aa063e3364cae12474458e7d0d",
+          "reason": "manual",
+          "file_name": "Untitled Text",
+          "content_size": 143,
+          "created_at": "2026-11-10T02:48:28.554Z"
+        }
+      ],
+      "outbox": [
+        {
+          "id": 1,
+          "user_id": "local",
+          "kind": "project.create",
+          "entity_type": "project",
+          "entity_id": "013e75cc-bc68-4d94-8ad1-7307c19e22ac",
+          "method": "POST",
+          "url": "/projects/",
+          "body": "{\"name\":\"Synthetic Write-back Project\",\"border_color\":\"var(--tile-background)\",\"type\":\"book\"}",
+          "temp_ids": "[\"013e75cc-bc68-4d94-8ad1-7307c19e22ac\"]",
+          "status": "pending",
+          "attempts": 0,
+          "last_error": null,
+          "created_at": 1794278879702,
+          "updated_at": 1794278879702
+        },
+        {
+          "id": 2,
+          "user_id": "local",
+          "kind": "file.create",
+          "entity_type": "file",
+          "entity_id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+          "method": "POST",
+          "url": "/projects/013e75cc-bc68-4d94-8ad1-7307c19e22ac/files/",
+          "body": "{\"id\":\"b3c1dc2e-9bcc-4230-aaa5-fa3df0dc9add\",\"name\":\"Untitled Text\",\"type\":\"text\",\"content\":\"\",\"tags\":[],\"description\":\"\"}",
+          "temp_ids": "[\"84faffb0-b9b7-4a35-88c7-c95a5ff5cd94\"]",
+          "status": "pending",
+          "attempts": 0,
+          "last_error": null,
+          "created_at": 1794278887575,
+          "updated_at": 1794278887575
+        },
+        {
+          "id": 3,
+          "user_id": "local",
+          "kind": "file.update",
+          "entity_type": "file",
+          "entity_id": "84faffb0-b9b7-4a35-88c7-c95a5ff5cd94",
+          "method": "PUT",
+          "url": "/files/84faffb0-b9b7-4a35-88c7-c95a5ff5cd94/",
+          "body": "{\"content\":\"<p class=\\\"editor-paragraph\\\">Vault revised synthetic body typed through the Studio UI. Second synthetic sentence typed through the Studi Edit typed in Studio after the write-back.o UI.</p>\",\"project_id\":\"013e75cc-bc68-4d94-8ad1-7307c19e22ac\",\"base_content_updated_at\":\"2026-11-10T02:48:07.574Z\"}",
+          "temp_ids": null,
+          "status": "pending",
+          "attempts": 0,
+          "last_error": null,
+          "created_at": 1794278895101,
+          "updated_at": 1794278959268
+        }
+      ],
+      "integrity": "ok",
+      "foreign_keys": 0
+    }
+  },
+  "editor_html": "<p class=\"editor-paragraph\">Vault revised synthetic body typed through the Studio UI. Second synthetic sentence typed through the Studio UI.</p>"
+}
