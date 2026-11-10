@@ -308,6 +308,7 @@ for i,p,f in [('c','q','g'),('d','p','f')]: c.execute('insert into files values 
   for (const entry of Object.values(durable.scopes[key])) delete entry.ancestors;
   sql(`c.execute('insert into files values (?,?,?,?,?,?)',('e','q','g','text',0,json.dumps({'name':'e','content':'<p>new</p>'})))`);
   const legacy = await run();
+  assert.ok(legacy.some(r => r.status === 'legacy-hierarchy'));
   assert.ok(legacy.some(r => r.id === 'file:e' && r.status === 'imported'), JSON.stringify(legacy));
   assert.notEqual(durable.scopes[key]['file:e'].path, 'Target/Other/Other folder/e.md');
 });

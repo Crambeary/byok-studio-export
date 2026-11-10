@@ -1,5 +1,9 @@
 # Studio upgrade compatibility experiment (issue #5)
 
+**Historical experiment:** this lab depends on the former experimental writer
+and schema allowlist removed from the one-way importer. Reproduce it using the
+earlier repository revision that produced its checked-in evidence.
+
 Does a library made by an older Studio survive an upgrade to the tested 1.1.3,
 and does the current guarded write behave safely on it? This directory answers
 that with a real older build and synthetic libraries only. It is research code,

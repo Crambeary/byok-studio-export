@@ -166,6 +166,9 @@ async function sync({ database, folder, vault, vaultId, state, save, normalizePa
       if (entry.ancestors) { const id = entry.ancestors[i]; remember(parent, id, name); parent = JSON.stringify([parent, id]); }
     });
   }
+  if (Object.values(entries).some(entry => !entry.ancestors)) {
+    reports.push({ status: 'legacy-hierarchy', detail: 'Older imports lack folder identities. New notes may use separate suffixed folders; existing notes are preserved.' });
+  }
   function hierarchy(row) {
     let parent = '', physical = '';
     return chainFor(row).map((item, i) => {
