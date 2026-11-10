@@ -9,6 +9,30 @@ Tested against Studio 1.1.3 on Linux (`app.asar` sha256 `25e93b78…`, Electron
 44.4.5, SQLite 3.53.4). Results are in `evidence/sqlite_lab.json` (19 of 19) and
 `evidence/studio_lab.json`.
 
+## Production decision: fail closed
+
+The plugin currently refuses every write, including when Studio appears closed.
+The SQL transaction below remains research code and its other checks are retained.
+The observed idle connection is not proof that a Studio process is absent: the
+recorded startup experiment also shows a live process before it opens SQLite, and
+the timeout experiment shows a live process with no database lock after startup
+failure. A process scan cannot close that launch race. Executable names, command
+lines, symlinks, and versions are not exhaustive identities; `/proc` access may
+be denied or filtered (including hidepid), and PID or mount namespaces can hide
+processes or change paths. An incomplete scan must never authorize a write.
+Electron's stale/replaced singleton lock is not a reliable exclusion primitive.
+A future implementation needs a tested mechanism that prevents Studio launching
+or remaining active for the entire transaction, including across relevant users
+and namespaces, plus the existing SQLite and compatibility checks. Until then,
+permission failures and uncertainty both leave writes disabled. The test suite
+checks the unconditional production refusal on disposable paths, including an
+inaccessible file; it does not claim to simulate kernel permission boundaries.
+
+The checked-in real-Studio evidence below predates this production refusal. It
+tests the SQLite experiment, not a process-absence proof. In particular, the
+launch-during-lock result demonstrates why lock acquisition cannot meet the
+closed-process requirement.
+
 ## The guard
 
 Run on one connection, with a zero busy timeout, as the first statements:

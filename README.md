@@ -31,7 +31,7 @@ the imported content and record paths per database path, vault path, destination
 data; moving a database or vault, upgrading from the previous import-only
 state, or removing state starts a separate import and can create additional
 notes. Do not edit or delete that state if you
-want to retain the mapping. Experimental write-back is restricted to explicitly marked disposable libraries, using the Linux Studio 1.1.3 WAL exclusive-lock guard. The setting requires the tested Studio app.asar. Inside the transaction, the guard requires the exact recorded schema, migration marker and last-launch version, zero SQLite header versions, and local account state with no auth row. These conservative checks can refuse otherwise safe libraries. They do not establish migration provenance or compatibility with older builds; real libraries remain ineligible. See `experiments/studio_migration_provenance/README.md` for the evidence and limitations. The narrow literal-paragraph codec limits eligible edits.
+want to retain the mapping. Write-back is currently disabled because Studio being closed cannot be established throughout a write. The experimental transaction is restricted to explicitly marked disposable libraries and uses the Linux Studio 1.1.3 WAL exclusive-lock guard. The setting requires the tested Studio app.asar. Inside the transaction, the guard requires the exact recorded schema, migration marker and last-launch version, zero SQLite header versions, and local account state with no auth row. These conservative checks can refuse otherwise safe libraries. They do not establish migration provenance or compatibility with older builds; real libraries remain ineligible. See `experiments/studio_migration_provenance/README.md` for the evidence and limitations. The narrow literal-paragraph codec limits eligible edits.
 Pending outbox operations may contain stale text and must be checked before any
 future write-back; the experiment observed this hazard. Future Studio sync behavior
 is outside the plugin's control and has not been verified. No unmarked Studio database is written. A state-save failure after a note update requires manual
@@ -178,11 +178,7 @@ references. The disposable-only restriction also remains in force.
 
 ### Disposable local-only experiment
 
-The **Disposable local-only experiment** setting is off by default. With it enabled,
-write-back may accept JSON null local ownership and existing queued references, but
-only for a marked disposable synthetic library that passes all other write-back
-checks. Studio must be closed. It never changes the outbox. The pinned build,
-local metadata, schema, ownership, and live-library restrictions still apply.
+The **Disposable local-only experiment** setting is off by default. Write-back remains disabled even when enabled. The research transaction can accept JSON null local ownership and existing queued references only for marked disposable synthetic libraries; it never changes the outbox. The pinned build, local metadata, schema, ownership, and live-library restrictions remain in the research transaction.
 
 **Future Studio Sync can overwrite these edits** using older queued operations or
 remote data. This setting does not make Studio Sync safe. Do not use it on real
