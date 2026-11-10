@@ -90,6 +90,7 @@ async function sync({ database, folder, vault, vaultId, state, save, normalizePa
     const parts = entry.path.split("/");
     if (entry.path.includes("\\") || parts.some(p => !p || p === "." || p === ".." || safe(p) !== p) || (root && !entry.path.startsWith(root + "/")) || reservedPaths.has(keyForPath(entry.path))) throw new Error("Invalid or duplicate record path");
     reservedPaths.add(keyForPath(entry.path));
+    if (Object.hasOwn(entry, "textRefresh") && (!object(entry.textRefresh) || typeof entry.textRefresh.from !== "string" || typeof entry.textRefresh.to !== "string" || typeof entry.textRefresh.studio !== "string" || entry.textRefresh.from !== entry.baseline)) throw new Error("Invalid text refresh state");
     if (Object.hasOwn(entry, "structuredRefresh") && (!object(entry.structuredRefresh) || typeof entry.structuredRefresh.from !== "string" || typeof entry.structuredRefresh.to !== "string" || entry.structuredRefresh.from !== entry.baseline)) throw new Error("Invalid structured refresh state");
     if (Object.hasOwn(entry, "recovery")) {
       const r = entry.recovery;
@@ -139,21 +140,47 @@ async function sync({ database, folder, vault, vaultId, state, save, normalizePa
     }
     return result;
   }
-  // Disambiguate same-named projects and sibling folders deterministically.
-  function component(row, peers) {
-    const name = safe(row.data?.name);
-    return peers.filter(p => keyForPath(safe(p.data?.name)) === keyForPath(name)).length > 1
-      ? withSuffix(name, ` (${createHash("sha256").update(String(row.id)).digest("hex").slice(0, 16)})`) : name;
-  }
-  function hierarchy(row) {
+  const records = rows.filter(r => r.kind === "file" || r.kind === "manuscript");
+  // Existing record paths are durable evidence of hierarchy names. Seed all of
+  // them before allocating names for newly discovered siblings.
+  const names = new Map(), owners = new Map(), ambiguous = new Set();
+  function chainFor(row) {
     const project = projects.get(String(row.project_id));
     if (!project || !project.data) throw new Error(`Missing or malformed project ${row.project_id}`);
-    const projectName = component(project, [...projects.values()]);
     folderParts(row.folder_id); let id = row.folder_id; const chain = [];
     while (id != null && id !== "") { const f = folders.get(String(id)); chain.unshift(f); id = f.folder_id; }
-    return [projectName, ...chain.map(f => component(f, [...folders.values()].filter(p => String(p.folder_id || "") === String(f.folder_id || ""))))];
+    return [project, ...chain];
   }
-  const records = rows.filter(r => r.kind === "file" || r.kind === "manuscript");
+  function identity(row, index) { return `${index === 0 ? "project" : "folder"}:${row.id}`; }
+  function remember(parent, id, name) {
+    const ownerKey = JSON.stringify([parent, keyForPath(name)]), nameKey = JSON.stringify([parent, id]);
+    if ((names.has(nameKey) && names.get(nameKey) !== name) || (owners.has(ownerKey) && owners.get(ownerKey) !== id)) ambiguous.add(parent);
+    else { names.set(nameKey, name); owners.set(ownerKey, id); }
+  }
+  for (const row of records) {
+    const entry = entries[`${row.kind}:${row.id}`]; if (!entry) continue;
+    try {
+      const chain = chainFor(row), parts = entry.path.split('/').slice(root ? root.split('/').length : 0, -1);
+      if (parts.length !== chain.length) continue;
+      let parent = '';
+      chain.forEach((item, i) => { const id = identity(item, i); remember(parent, id, parts[i]); parent = JSON.stringify([parent, id]); });
+    } catch { /* Invalid source hierarchy is reported per record. */ }
+  }
+  function hierarchy(row) {
+    let parent = '';
+    return chainFor(row).map((item, i) => {
+      if (ambiguous.has(parent)) throw new Error('Ambiguous existing hierarchy mapping; manual reconciliation required');
+      const id = identity(item, i), nameKey = JSON.stringify([parent, id]);
+      let name = names.get(nameKey);
+      if (!name) {
+        const base = safe(item.data?.name); name = base;
+        const taken = candidate => owners.has(JSON.stringify([parent, keyForPath(candidate)]));
+        if (taken(name)) { const suffix = createHash('sha256').update(id).digest('hex'); let n = 16; do { name = withSuffix(base, ` (${suffix.slice(0, n)})`); n += 4; } while (taken(name) && n <= 68); if (taken(name)) throw new Error('Hierarchy name collision'); }
+        remember(parent, id, name);
+      }
+      parent = JSON.stringify([parent, id]); return name;
+    });
+  }
   const seen = new Set();
   const reportRecovery = id => reports.push({ id, status: "recovery-required", path: entries[id].path, detail: "A Studio write may have been interrupted. Preserve both notes and the saved recovery snapshots; reconcile manually before clearing recovery state." });
   for (const row of records) {
@@ -248,7 +275,14 @@ async function sync({ database, folder, vault, vaultId, state, save, normalizePa
           const existing = await vault.read(prior.path);
           if (existing === null) {
             if (await vault.exists(prior.path)) { reports.push({ id, status: "changed", path: prior.path }); continue; }
-            await vault.create(prior.path, prior.baseline);
+            const fresh = await readRecord(library, row);
+            if (!fresh || JSON.stringify(fresh) !== JSON.stringify(row)) { reports.push({ id, status: "changed-during-sync", path: prior.path }); continue; }
+            const oldBaseline = prior.baseline, oldStudio = prior.studioContent;
+            prior.baseline = content; prior.studioContent = row.data.content;
+            try { await save(state); } catch (error) { prior.baseline = oldBaseline; prior.studioContent = oldStudio; throw error; }
+            const rechecked = await readRecord(library, row);
+            if (!rechecked || JSON.stringify(rechecked) !== JSON.stringify(row) || !await safeToMutate(prior.path)) { reports.push({ id, status: "changed-during-sync", path: prior.path }); continue; }
+            await vault.create(prior.path, content);
           } else { reports.push({ id, status: "changed", path: prior.path, detail: "Reserved path is occupied; ownership cannot be proven. Close editors, move the note to another path, then retry and reconcile the preserved note" }); continue; }
           delete prior.pending;
           try { await save(state); } catch (error) { prior.pending = true; throw error; }
@@ -265,17 +299,20 @@ async function sync({ database, folder, vault, vaultId, state, save, normalizePa
         if (current === prior.baseline && current === content) {
           reports.push({ id, status: "unchanged", path: prior.path }); continue;
         }
-        // A prior refresh may have completed before its state save failed.
-        // Matching the current source proves that no note replacement is needed.
-        if (current === content && current !== prior.baseline) {
-          const fresh = await readRecord(library, row);
-          if (!fresh || JSON.stringify(fresh) !== JSON.stringify(row) || !await safeToMutate(prior.path) || typeof vault.compareAndWrite !== "function" || !await vault.compareAndWrite(prior.path, current, current)) {
-            reports.push({ id, status: "changed-during-sync", path: prior.path }); continue;
-          }
-          const oldBaseline = prior.baseline, oldStudioContent = prior.studioContent;
-          prior.baseline = content; prior.studioContent = row.data.content;
-          try { await save(state); } catch (error) { prior.baseline = oldBaseline; prior.studioContent = oldStudioContent; throw error; }
-          reports.push({ id, status: "recovered", path: prior.path }); continue;
+        if (prior.textRefresh) {
+          const intent = prior.textRefresh;
+          if (current === intent.to) {
+            const oldStudioContent = prior.studioContent;
+            prior.baseline = intent.to; prior.studioContent = intent.studio; delete prior.textRefresh;
+            try { await save(state); } catch (error) { prior.baseline = intent.from; prior.studioContent = oldStudioContent; prior.textRefresh = intent; throw error; }
+            if (current === content) {
+              const fresh = await readRecord(library, row);
+              reports.push({ id, status: fresh && JSON.stringify(fresh) === JSON.stringify(row) ? "recovered" : "changed-during-sync", path: prior.path }); continue;
+            }
+          } else if (current === intent.from) {
+            delete prior.textRefresh;
+            try { await save(state); } catch (error) { prior.textRefresh = intent; throw error; }
+          } else { reports.push({ id, status: "changed", path: prior.path, detail: "Interrupted refresh requires manual reconciliation" }); continue; }
         }
         if (current !== prior.baseline) {
           reports.push({ id, status: "changed", path: prior.path, detail: "Vault edit preserved; reconcile manually before refreshing" }); continue;
@@ -285,12 +322,16 @@ async function sync({ database, folder, vault, vaultId, state, save, normalizePa
         if (!fresh || JSON.stringify(fresh) !== JSON.stringify(row)) {
           reports.push({ id, status: "changed-during-sync", path: prior.path }); continue;
         }
-        if (!await safeToMutate(prior.path) || typeof vault.compareAndWrite !== "function" || !await vault.compareAndWrite(prior.path, current, content)) {
+        if (!await safeToMutate(prior.path) || typeof vault.compareAndWrite !== "function") { reports.push({ id, status: "changed-during-sync", path: prior.path }); continue; }
+        const intent = { from: current, to: content, studio: row.data.content }; prior.textRefresh = intent;
+        try { await save(state); } catch (error) { delete prior.textRefresh; throw error; }
+        const rechecked = await readRecord(library, row);
+        if (!rechecked || JSON.stringify(rechecked) !== JSON.stringify(row) || !await safeToMutate(prior.path) || !await vault.compareAndWrite(prior.path, current, content)) {
           reports.push({ id, status: "changed-during-sync", path: prior.path }); continue;
         }
         const oldBaseline = prior.baseline, oldStudioContent = prior.studioContent;
-        prior.baseline = content; prior.studioContent = row.data.content;
-        try { await save(state); } catch (error) { prior.baseline = oldBaseline; prior.studioContent = oldStudioContent; throw error; }
+        prior.baseline = content; prior.studioContent = row.data.content; delete prior.textRefresh;
+        try { await save(state); } catch (error) { prior.baseline = oldBaseline; prior.studioContent = oldStudioContent; prior.textRefresh = intent; throw error; }
         reports.push({ id, status: "updated", path: prior.path }); continue;
       }
       const directory = [root, ...hierarchy(row)].filter(Boolean).join("/");

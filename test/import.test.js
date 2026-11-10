@@ -241,3 +241,41 @@ c.execute('insert into files values (?,?,?,?,?,?)',('broken','p','f','text',0,'{
   assert.ok(entries.some(e => e.path.endsWith('/_.secret.md')));
   assert.ok((await run(structuredClone(durable))).some(r => r.status === 'unchanged'));
 });
+
+test('sync boundaries preserve ownership, hierarchy and current pending source', async t => {
+  const tmp = await fs.mkdtemp(path.join(os.tmpdir(), 'byok-boundary-'));
+  t.after(() => fs.rm(tmp, { recursive: true, force: true }));
+  const db = path.join(tmp, 'synthetic.sqlite');
+  const sql = code => execFileSync('python3', ['-c', `import sqlite3,json,sys\nc=sqlite3.connect(sys.argv[1])\n${code}\nc.commit()`, db]);
+  sql(`c.executescript("create table projects(id text,data text); create table folders(id text,parent_folder_id text,data text); create table files(id text,project_id text,folder_id text,type text,is_trashed integer,data text); create table manuscript_files(id text,project_id text,folder_id text,is_trashed integer,data text);")
+c.execute('insert into projects values (?,?)',('p',json.dumps({'name':'Project'})))
+c.execute('insert into folders values (?,?,?)',('f',None,json.dumps({'name':'Folder'})))
+c.execute('insert into files values (?,?,?,?,?,?)',('a','p','f','text',0,json.dumps({'name':'A','content':'<p>old</p>'})))`);
+  const notes = new Map(), state = { version: 1, scopes: {} }; let failCreate = false;
+  const vault = { safeToMutate: async () => true, exists: async p => notes.has(p), read: async p => notes.get(p) ?? null,
+    create: async (p,c) => { if (failCreate && p.endsWith('/Pending.md')) throw Error('failed'); if (notes.has(p)) throw Error('exists'); notes.set(p,c); },
+    compareAndWrite: async (p,a,b) => { if (notes.get(p) !== a) return false; notes.set(p,b); return true; } };
+  const run = () => sync({ database: db, folder: 'Target', vault, vaultId: tmp, state, save: async () => {} });
+  await run();
+  const entry = state.scopes[JSON.stringify([db, tmp, 'Target'])]['file:a'];
+  sql(`d=json.loads(c.execute("select data from files where id='a'").fetchone()[0]); d['content']='<p>new</p>'; c.execute("update files set data=? where id='a'",(json.dumps(d),))`);
+  notes.set(entry.path, entry.baseline.replace('old', 'new'));
+  assert.ok((await run()).some(r => r.id === 'file:a' && r.status === 'changed'));
+  assert.match(entry.baseline, /old/);
+  sql(`c.execute('insert into projects values (?,?)',('q',json.dumps({'name':'Project'})))
+c.execute('insert into folders values (?,?,?)',('g',None,json.dumps({'name':'Folder'})))
+for ident,project,folder,name in [('b','p','f','B'),('c','p','g','C'),('d','q','f','D'),('e','p','f','Pending')]: c.execute('insert into files values (?,?,?,?,?,?)',(ident,project,folder,'text',0,json.dumps({'name':name,'content':'<p>first</p>'})))`);
+  failCreate = true;
+  await run();
+  const scope = state.scopes[JSON.stringify([db, tmp, 'Target'])];
+  assert.equal(scope['file:b'].path, 'Target/Project/Folder/B.md');
+  assert.notEqual(scope['file:c'].path.split('/')[2], 'Folder');
+  assert.notEqual(scope['file:d'].path.split('/')[1], 'Project');
+  assert.equal(scope['file:e'].pending, true);
+  sql(`d=json.loads(c.execute("select data from files where id='e'").fetchone()[0]); d['content']='<p>second</p>'; c.execute("update files set data=? where id='e'",(json.dumps(d),))`);
+  failCreate = false;
+  assert.ok((await run()).some(r => r.id === 'file:e' && r.status === 'recovered'));
+  assert.match(notes.get(scope['file:e'].path), /second/);
+  assert.equal(scope['file:e'].baseline, notes.get(scope['file:e'].path));
+  assert.equal(scope['file:e'].studioContent, '<p>second</p>');
+});
