@@ -193,7 +193,12 @@ return async function sync({ database, folder, vault, vaultId, state, save, stud
             await reserveMarker(id);
             if (!await safeToMutate(prior.path)) { reports.push({ id, status: "changed", path: prior.path, detail: "Close editors before retrying" }); continue; }
             if (await vault.read(prior.path) !== null || await vault.exists(prior.path)) { reports.push({ id, status: "changed", path: prior.path, detail: "Reserved path occupied; preserve and move the note before retrying" }); continue; }
-            await vault.create(prior.path, prior.baseline);
+            if (!await sourceUnchanged()) { reports.push({ id, status: "changed-during-sync", path: prior.path }); continue; }
+            const previousBaseline = prior.baseline;
+            prior.baseline = content;
+            try { await save(state); } catch (error) { prior.baseline = previousBaseline; throw error; }
+            if (!await sourceUnchanged() || !await safeToMutate(prior.path)) { reports.push({ id, status: "changed-during-sync", path: prior.path }); continue; }
+            await vault.create(prior.path, content);
             delete prior.pending;
             try { await save(state); } catch (error) { prior.pending = true; throw error; }
             reports.push({ id, status: "recovered", path: prior.path }); continue;
@@ -202,14 +207,17 @@ return async function sync({ database, folder, vault, vaultId, state, save, stud
           if (current === null) { reports.push({ id, status: "missing", path: prior.path }); continue; }
           if (prior.structuredRefresh) {
             const intent = prior.structuredRefresh;
-            if (current === intent.to && content === intent.to && await sourceUnchanged()) {
+            if (current === intent.to) {
               prior.baseline = intent.to; delete prior.structuredRefresh;
               try { await save(state); } catch (error) { prior.baseline = intent.from; prior.structuredRefresh = intent; throw error; }
-              reports.push({ id, status: "recovered", path: prior.path }); continue;
+              if (current === content) {
+                reports.push({ id, status: await sourceUnchanged() ? "recovered" : "changed-during-sync", path: prior.path }); continue;
+              }
+            } else {
+              if (current !== intent.from) { reports.push({ id, status: "changed", path: prior.path, detail: "Interrupted structured refresh requires manual reconciliation" }); continue; }
+              delete prior.structuredRefresh;
+              try { await save(state); } catch (error) { prior.structuredRefresh = intent; throw error; }
             }
-            if (current !== intent.from) { reports.push({ id, status: "changed", path: prior.path, detail: "Interrupted structured refresh requires manual reconciliation" }); continue; }
-            delete prior.structuredRefresh;
-            try { await save(state); } catch (error) { prior.structuredRefresh = intent; throw error; }
           }
           if (current !== prior.baseline) { reports.push({ id, status: "changed", path: prior.path, detail: "Structured view edited; preserved. Reconcile manually; structured write-back is unavailable" }); continue; }
           if (current === content) { reports.push({ id, status: "unchanged", path: prior.path }); continue; }
